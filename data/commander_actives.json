@@ -1,0 +1,7 @@
+[
+    {"color": "W", "archetype": "Token", "name": "Holy Light", "desc": "Active: Heal target unit or hero for 3 HP."},
+    {"color": "U", "archetype": "Blink", "name": "Time Reversal", "desc": "Active: Return target non-land permanent to hand."},
+    {"color": "B", "archetype": "Graveyard", "name": "Soul Reaper", "desc": "Active: Destroy target minion with cost <= 3."},
+    {"color": "R", "archetype": "Spells", "name": "Flame Burst", "desc": "Active: Deal 3 damage to any target."},
+    {"color": "G", "archetype": "Ramp", "name": "Wild Growth", "desc": "Active: Search your deck for a basic land card."}
+  ]

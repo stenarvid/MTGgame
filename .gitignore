@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+save.json
+save.tmp
+run-save.json
+run-save.tmp
+settings.json
+settings.tmp

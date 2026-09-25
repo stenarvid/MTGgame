@@ -1,0 +1,10 @@
+[
+    {"name": "Chronosphere Core", "rarity": "Boss", "desc": "Start every combat with +1 extra Mana."},
+    {"name": "Valkyrie Plating", "rarity": "Elite", "desc": "Start every combat with 5 armor. Armor absorbs damage before HP."},
+    {"name": "Aether Prism", "rarity": "Common", "desc": "Card draw effects yield +1 extra card."},
+    {"name": "Shadow Fang", "rarity": "Common", "desc": "Whenever you deal spell damage, drain 1 HP."},
+    {"name": "Titan Gauntlet", "rarity": "Elite", "desc": "All creature cards cost 1 less energy (min 1)."},
+    {"name": "Plasma Reactor", "rarity": "Boss", "desc": "Damage spells deal double damage."},
+    {"name": "Starlight Pendant", "rarity": "Common", "desc": "Heal 3 HP at the start of every combat encounter."},
+    {"name": "Void Core", "rarity": "Boss", "desc": "Enemy creatures enter with -1 attack (minimum 0)."}
+  ]
