@@ -15,7 +15,7 @@ class ContentTests(unittest.TestCase):
     def test_all_fifty_structured_spells_cast_and_resolve(self):
         pool=self.fixture().pool
         spells=[c for c in pool['cards'] if c.get('spell')]
-        self.assertEqual(len(spells),50)
+        self.assertEqual(len(spells),60)
         for data in spells:
             with self.subTest(card=data['name']):
                 f=self.fixture(); b=f.b

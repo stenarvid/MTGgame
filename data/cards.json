@@ -99,6 +99,108 @@
         "hp": 0,
         "text": "Search your deck for 2 basic land cards."
       }
+    ],
+    "Morph": [
+      {
+        "name": "Memory Bloom",
+        "type": "Instant Spell",
+        "color": "P",
+        "cost": 2,
+        "atk": 0,
+        "hp": 0,
+        "text": "Morph target friendly creature perpetually. It gets +1/+1 and gains 'When this enters, draw a card.'",
+        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "insight", "amount": 1}]}
+      },
+      {
+        "name": "Chorus Seed",
+        "type": "Instant Spell",
+        "color": "P",
+        "cost": 3,
+        "atk": 0,
+        "hp": 0,
+        "text": "Morph target friendly creature perpetually. At your upkeep, gain 1 life for each chorus effect you control.",
+        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "chorus", "amount": 1}]}
+      },
+      {
+        "name": "Welcoming Shape",
+        "type": "Instant Spell",
+        "color": "P",
+        "cost": 3,
+        "atk": 0,
+        "hp": 0,
+        "text": "Morph target friendly creature perpetually. It gets +1/+1 and gains 'Whenever another friendly creature enters, gain 1 life.'",
+        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "hospitality", "amount": 1}]}
+      },
+      {
+        "name": "Cinder Shape",
+        "type": "Instant Spell",
+        "color": "P",
+        "cost": 3,
+        "atk": 0,
+        "hp": 0,
+        "text": "Morph target friendly creature perpetually. It gets +1/+1 and gains 'Whenever you cast a noncreature spell, deal 1 damage to the enemy hero.'",
+        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "spellflame", "amount": 1}]}
+      },
+      {
+        "name": "Rooted Shape",
+        "type": "Instant Spell",
+        "color": "P",
+        "cost": 3,
+        "atk": 0,
+        "hp": 0,
+        "text": "Morph target friendly creature perpetually. It gets +1/+1 and gains 'Whenever you play a land, this gets +1/+1 perpetually.'",
+        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "landgrowth", "amount": 1}]}
+      },
+      {
+        "name": "Mourning Shape",
+        "type": "Instant Spell",
+        "color": "P",
+        "cost": 3,
+        "atk": 0,
+        "hp": 0,
+        "text": "Morph target friendly creature perpetually. It gets +1/+1 and gains 'Whenever another friendly creature dies, gain 1 life.'",
+        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "mourning", "amount": 1}]}
+      },
+      {
+        "name": "Hostile Rewrite",
+        "type": "Instant Spell",
+        "color": "P",
+        "cost": 5,
+        "atk": 0,
+        "hp": 0,
+        "text": "Morph every enemy creature on the battlefield, in their deck, and in their graveyard perpetually. Whenever one dies, its controller loses 1 life.",
+        "spell": {"effects": [{"effect": "morph_board", "selection": "enemy", "mutation": "death_curse", "amount": 1}]}
+      },
+      {
+        "name": "Chorus Evolution",
+        "type": "Instant Spell",
+        "color": "P",
+        "cost": 4,
+        "atk": 0,
+        "hp": 0,
+        "text": "Morph every friendly creature on the battlefield, in your deck, and in your graveyard perpetually. At your upkeep, gain 1 life for each chorus effect you control.",
+        "spell": {"effects": [{"effect": "morph_board", "selection": "friendly", "mutation": "chorus", "amount": 1}]}
+      },
+      {
+        "name": "Memory Migration",
+        "type": "Instant Spell",
+        "color": "P",
+        "cost": 5,
+        "atk": 0,
+        "hp": 0,
+        "text": "Morph every friendly creature on the battlefield, in your deck, and in your graveyard perpetually. Each gains 'When this enters, draw a card.'",
+        "spell": {"effects": [{"effect": "morph_board", "selection": "friendly", "mutation": "insight", "amount": 1}]}
+      },
+      {
+        "name": "Grand Reassembly",
+        "type": "Instant Spell",
+        "color": "P",
+        "cost": 5,
+        "atk": 0,
+        "hp": 0,
+        "text": "Blink every friendly nontoken creature. Their perpetual morphs and ETB abilities trigger again.",
+        "spell": {"effects": [{"effect": "blink_board", "amount": 1}]}
+      }
     ]
   },
   "starter_cards": {
@@ -151,6 +253,16 @@
       "hp": 1,
       "text": "Tap to add 1 Mana.",
       "archetype": "Ramp"
+    },
+    "P": {
+      "name": "Prism Larva",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 1,
+      "atk": 1,
+      "hp": 2,
+      "text": "When this enters, if it is morphed, draw 1 card.",
+      "archetype": "Morph"
     }
   },
   "expansion_cards": [
@@ -211,7 +323,8 @@
       "cost": 2,
       "atk": 0,
       "hp": 0,
-      "text": "Return the highest-cost creature from your discard to your hand.",
+      "text": "Return the highest-cost creature from your discard to your hand. Flashback 3B: cast from your graveyard, then exile this spell.",
+      "flashback_cost": 4,
       "archetype": "Graveyard"
     },
     {

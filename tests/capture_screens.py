@@ -23,7 +23,7 @@ def main():
     random.seed(10)
     temp = tempfile.TemporaryDirectory()
     game = Game(save_path=Path(temp.name) / 'run.json', progress_path=Path(temp.name) / 'unlocks.json')
-    output = ROOT / 'artifacts'
+    output = Path(os.environ.get('CAPTURE_OUTPUT', ROOT / 'artifacts'))
     output.mkdir(exist_ok=True)
 
     def save(name):

@@ -81,8 +81,15 @@ def decode_graph(data, pool):
             setattr(obj, key, decode(value))
         if isinstance(obj, Card):
             obj.rect = pygame.Rect(0, 0, obj.width, obj.height)
+            if not hasattr(obj, 'plus_one_counters'):
+                perpetual = getattr(obj, 'perpetual', {})
+                obj.plus_one_counters = (sum(perpetual.get(key, 0) for key in
+                                             ('chorus', 'insight', 'death_curse', 'hospitality',
+                                              'spellflame', 'landgrowth', 'mourning'))
+                                         + perpetual.get('mosaic', 0) + perpetual.get('growth_bonus', 0))
             definition = next((c for c in pool['cards'] if c['name'] == obj.name), None)
             if definition and not isinstance(obj, Commander):
+                obj.flashback_cost = definition.get('flashback_cost')
                 obj.text = definition.get('text', '')
                 if obj.upgraded:
                     obj.text += ' [Upgrade: +1/+1.]' if obj.is_creature else ' [Upgrade: +1 to numerical effects; counters also draw 1.]'
@@ -107,11 +114,14 @@ def decode_graph(data, pool):
         for side in (battle.player, battle.enemy):
             if not isinstance(side, Side):
                 raise ValueError('Invalid combatant')
-            for zone in ('deck', 'hand', 'board', 'lands', 'discard'):
+            if not hasattr(side, 'exile'):
+                side.exile = []
+            for zone in ('deck', 'hand', 'board', 'lands', 'discard', 'exile'):
                 if any(not isinstance(c, Card) for c in getattr(side, zone)):
                     raise ValueError('Invalid combat zone')
         if any(not isinstance(item, StackItem) for item in battle.stack):
             raise ValueError('Invalid spell stack')
+        battle.init_commander()
     if root['state'] == 'BATTLE' and battle is None:
         raise ValueError('Missing battle')
     random.Random().setstate(root['rng'])  # Validate without changing the live RNG.

@@ -5,7 +5,8 @@ from pathlib import Path
 
 COLOR_PIP_MAP = {
     'W': (245, 240, 210), 'U': (60, 160, 240), 'B': (80, 60, 95),
-    'R': (240, 65, 80), 'G': (50, 180, 90), 'C': (170, 170, 185)
+    'R': (240, 65, 80), 'G': (50, 180, 90), 'P': (245, 105, 190),
+    'C': (170, 170, 185)
 }
 
 class Card:
@@ -24,7 +25,9 @@ class Card:
         self.keywords = []
         self.upgraded = False
         self.temp_attack = self.temp_health = 0
-        self.pips = {color_code: 1} if mana_cost and card_type != 'Land' and color_code in 'WUBRG' else {}
+        self.perpetual = {}
+        self.plus_one_counters = 0
+        self.pips = {color_code: 1} if mana_cost and card_type != 'Land' and color_code in 'WUBRGP' else {}
         self.width, self.height = 110, 150
         self.rect = pygame.Rect(0, 0, self.width, self.height)
 
@@ -41,6 +44,7 @@ class Card:
         )
         card.pips = data.get('pips', card.pips).copy()
         card.keywords = list(data.get('keywords', []))
+        card.flashback_cost = data.get('flashback_cost')
         return card
 
     @property
@@ -53,6 +57,9 @@ class Card:
         card.keywords = list(getattr(self, 'keywords', []))
         card.upgraded = self.upgraded
         card.pips = self.pips.copy()
+        card.flashback_cost = getattr(self, 'flashback_cost', None)
+        card.perpetual = dict(getattr(self, 'perpetual', {}))
+        card.plus_one_counters = getattr(self, 'plus_one_counters', 0)
         return card
 
     def upgrade(self):
@@ -201,11 +208,14 @@ def complete_node(grid, node):
 
 def color_starters(pool, color, archetype):
     """Stable previews; all archetype cards plus enough basics for a playable deck."""
-    cards = [Card.from_dict(c) for c in pool['archetype_boosters'].get(archetype, [])]
+    # Every commander choice contributes the same package: two signature cards,
+    # two copies of its basic starter, and four lands. Additional archetype cards
+    # remain in the reward/shop pool instead of inflating the opening deck.
+    cards = [Card.from_dict(c) for c in pool['archetype_boosters'].get(archetype, [])[:2]]
     if not cards:
         cards = [Card.from_dict(c) for c in pool['cards']
                  if c['color'] == color and c.get('archetype')][:2]
     cards += [Card.from_dict(pool['starter_cards'][color]) for _ in range(2)]
     cards += [Card(f'{color} Mana Conduit', 'Land', color, 0,
-                   text=f'Permanent. Tap for {color} mana. One land play per turn.') for _ in range(4)]
+                   text=f'Permanent. Tap for {color} mana. One land play perlaun turn.') for _ in range(4)]
     return cards

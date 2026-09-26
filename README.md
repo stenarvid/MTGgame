@@ -12,16 +12,85 @@ python main.py
 ```
 
 The window resizes and scales the complete interface while preserving mouse hitboxes.
+
+The battlefield uses compact artwork cards, hero portraits/life totals, separate
+land rows and a fanned hand. Click ready creatures to select attackers, then use
+**Attack** or Space. Attack arrows point to the defending hero; blockers are
+assigned during combat. Clicking a targeted spell keeps it selected for the next
+target click; drag casting also works. Drop a hand card onto another hand card to
+move it into that position; the cards between them shift automatically. This also
+works when the moved card cannot currently be cast.
+
+Targeted enter-the-battlefield abilities resolve after the creature appears. A
+purple targeting arrow then follows the cursor until you click a highlighted
+target. Blink, return-to-hand, and death transitions have separate visual
+effects, including a short blood splash for destroyed creatures.
+
+Your commander starts each battle in the lower-right command zone. Click it to
+cast using the cost shown in its mana pips. Its two selected colors supply its
+colored requirements (two pips if both choices share a color). Each command-zone
+cast adds two generic mana to its next cast; the tax resets between battles.
+Death, countering, and returning it to hand instead return it to the command zone.
+Blinking keeps it on the battlefield. Existing passive and active abilities remain
+available independently of whether the commander creature is in play.
+
+Cards with permission to cast from graveyard/exile appear in a separate tray
+between the hand and commander. Available plays glow; unavailable ones remain
+visible with their cost. Smoke animates when animations are enabled. **Grave
+Recall** can be cast from the graveyard for **3B** (flashback), after which it is
+exiled even if countered. Ordinary discarded or exiled cards cannot be cast
+without permission. Older saves are migrated when resumed.
+
+Pink (`P`) is the Morph color. Its spells permanently rewrite creatures with
+new effects: friendly chorus forms gain life at upkeep, insight forms draw when
+they enter, and hostile forms damage their controller when they die. Pink also
+has board-wide mutations and **Grand Reassembly**, which blinks all your
+nontoken creatures to reuse their enter-the-battlefield effects. **Living
+Mosaic** adds another permanent +1/+1 whenever you morph one of your creatures;
+**Adaptive Bloom** lets you choose Might, Insight, or Renewal for the turn and
+is stronger on an already morphed creature.
+
+Board-wide Morph spells affect creature cards on the battlefield, in the draw
+pile, and in the graveyard. The perpetual mutation is already present when a
+rewritten card is later drawn, revived, or returned to play.
+
+Pink can also graft abilities associated with the other colors onto creatures:
+**Welcoming Shape** gains life when allies enter, **Cinder Shape** damages the
+enemy when you cast noncreature spells, **Rooted Shape** grows when you play
+lands, and **Mourning Shape** gains life when allies die. These abilities and
+their accumulated perpetual bonuses survive zone changes and blinking.
+
+Creatures and lands visibly rotate when tapped, attackers surge toward the
+defending side, and priority advances automatically when you have no legal
+instant-speed response. The commander ability and its Morph choice controls sit
+directly below the command-zone card.
+
+The active hero glows to make turn ownership obvious. A five-step track beside
+the hero marks upkeep, first main, combat, second main, and end; the current step
+lights up in gold. Mana costs use separate circular generic and colored pips,
+and lands use wide overlapping battlefield cards that rotate when tapped.
+
+When the commander is on the battlefield, clicking its command-zone panel during
+a main phase opens or uses its active ability. Adaptive Bloom's Might, Insight,
+and Renewal buttons show their exact normal and enhanced effects when hovered.
 Display settings offer 75%, 100%, and 125% sizes, fullscreen, and reduced animations.
 On smaller desktops the initial window fits the available screen.
+F11 toggles fullscreen from any screen, and the passive/active builder also has
+a visible fullscreen button. Letterboxed space uses a dimmed scene background
+instead of black bars. Builder choices show colored mana glyphs rather than letters.
 
 ## Run progression
 
 Choose a passive and active to create a commander and a 16-card starting deck. The
-builder previews the exact starting cards. Follow available map nodes to the boss.
+builder previews the exact starting cards. Each color/archetype contributes the
+same eight-card starting package. Follow available map nodes to the boss.
 HP, gold, deck changes, and relics persist between encounters.
 
-- **Combat / Elite / Boss:** gain 20 / 35 / 60 gold, then choose one of three cards
+A run contains four map areas. Defeating the first three bosses opens a fresh
+map while preserving your run, and defeating the fourth boss wins the run.
+Enemy health increases in later areas.
+
+- **Combat / Elite / Boss:** gain 20 / 35 / 60 gold, then choose a three-card synergy booster. Packs use concrete labels such as Token Generation, Creature Buffing, Direct Damage, Blink & ETB, Graveyard Recovery, Mana Ramp, or Morphing, and every card shown belongs to that theme.
   matching your commander colors, or skip. Rewards cannot be collected twice.
 - **Merchant:** buy matching-color cards and use one service per visit: remove a
   card for 40 gold or upgrade one for 30. Review the selected card before confirming.

@@ -74,6 +74,119 @@ class FlowTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.save_dir = Path(self.temp.name)
 
+    def map_game(self):
+        game = Game(save_path=self.save_dir / 'run.json', progress_path=self.save_dir / 'unlocks.json')
+        self.addCleanup(pygame.quit)
+        game.start_builder()
+        game.choose(game.choices[0])
+        game.choose(game.choices[0])
+        return game
+
+    def click_logical(self, game, x, y):
+        viewport = game.viewport()
+        position = (round(viewport.x + x * viewport.w / 1280),
+                    round(viewport.y + y * viewport.h / 900))
+        game.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=position))
+
+    def test_mana_cost_is_split_into_arena_style_symbols(self):
+        game = Game(save_path=self.save_dir / 'run.json', progress_path=self.save_dir / 'unlocks.json')
+        self.addCleanup(pygame.quit)
+        card = Card('Test Spell', 'Instant Spell', 'W', 4)
+        self.assertEqual(game.card_painter.mana_symbols(card), ['3', 'W'])
+        card.pips = {'U': 2, 'P': 1}
+        self.assertEqual(game.card_painter.mana_symbols(card, 6), ['3', 'U', 'U', 'P'])
+
+    def test_builder_fullscreen_toggle_and_scene_filled_letterbox(self):
+        game = Game(save_path=self.save_dir / 'run.json', progress_path=self.save_dir / 'unlocks.json')
+        self.addCleanup(pygame.quit)
+        game.start_builder()
+        game.window = pygame.display.set_mode((1000, 500), pygame.RESIZABLE)
+        game.windowed_size = (1000, 500)
+        game.draw(); game.present()
+        viewport = game.viewport()
+        self.assertGreater(viewport.x, 0)
+        self.assertNotEqual(game.window.get_at((5, 5))[:3], (5, 7, 13))
+        game.toggle_fullscreen()
+        self.assertTrue(game.fullscreen)
+        game.toggle_fullscreen()
+        self.assertFalse(game.fullscreen)
+        self.assertEqual(game.window.get_size(), (1000, 500))
+
+    def test_map_icons_and_labels_are_clickable_at_window_sizes(self):
+        game = self.map_game()
+        for size in ((1280, 900), (960, 675), (640, 450), (1400, 700)):
+            for label in (False, True):
+                with self.subTest(size=size, label=label):
+                    game.run = Run(game.run.commander, game.pool)
+                    game.battle = None
+                    game.state = 'MAP'
+                    game.window = pygame.display.set_mode(size, pygame.RESIZABLE)
+                    game.draw()
+                    node = game.run.grid[0][0]
+                    point = (node.x, node.y + (57 if label else 25))
+                    self.assertTrue(node.rect.collidepoint(point))
+                    self.click_logical(game, *point)
+                    self.assertEqual(game.state, 'BATTLE')
+                    self.assertIs(game.run.node, node)
+                    self.assertEqual(game.battle.phase, 'MULLIGAN')
+
+    def test_map_click_after_resume_and_locked_location_feedback(self):
+        game = self.map_game()
+        game.resume_run()
+        game.draw()
+        locked = game.run.grid[1][0]
+        self.click_logical(game, locked.x, locked.y + 25)
+        self.assertEqual(game.state, 'MAP')
+        self.assertIsNone(game.run.node)
+        self.assertIn('green', game.message)
+        node = game.run.grid[0][0]
+        self.click_logical(game, node.x, node.y + 57)
+        self.assertEqual(game.state, 'BATTLE')
+
+    def test_map_progression_through_every_encounter_and_boss(self):
+        game = self.map_game()
+        for row, kind in enumerate(('Combat', 'Merchant', 'Rest', 'Treasure', 'Elite', 'Boss')):
+            node = next(n for n in game.run.grid[row] if n.available)
+            node.node_type = kind
+            game.draw()
+            self.click_logical(game, node.x, node.y + 57)
+            if kind in ('Combat', 'Elite', 'Boss'):
+                game.keep_hand()
+                game.battle.enemy.hp = 0
+                game.battle.check_result()
+                game.end_battle()
+                self.assertEqual(game.state, 'REWARD')
+                game.take_reward()
+            elif kind == 'Merchant':
+                game.leave_shop()
+            elif kind == 'Rest':
+                game.rest()
+            else:
+                game.take_relic(0)
+            self.assertTrue(node.visited)
+            self.assertIsNone(game.run.node)
+            self.assertFalse(game.run.reward_pending)
+            self.assertEqual(game.state, 'MAP')
+        self.assertEqual(game.run.area, 2)
+        self.assertFalse(game.run.won)
+
+    def test_fourth_area_boss_is_the_run_victory(self):
+        game = self.map_game()
+        for expected_area in range(1, 5):
+            boss = game.run.grid[-1][0]
+            for row in game.run.grid:
+                for node in row:
+                    node.available = False
+            boss.available = True
+            self.assertTrue(game.run.enter(boss))
+            self.assertTrue(game.run.finish())
+            if expected_area < 4:
+                self.assertEqual(game.run.area, expected_area + 1)
+                self.assertFalse(game.run.won)
+                self.assertTrue(all(node.available for node in game.run.grid[0]))
+            else:
+                self.assertTrue(game.run.won)
+
     def test_all_screens_render_and_mouse_routes_to_new_screen(self):
         random.seed(12)
         game = Game(save_path=self.save_dir / 'run.json', progress_path=self.save_dir / 'unlocks.json')
@@ -122,6 +235,7 @@ class FlowTests(unittest.TestCase):
                     random.seed(index * 5 + j)
                     cmd = generate_procedural_commander(meta, [], [], passive, active)
                     run = Run(cmd, pool)
+                    run.total_areas = 1
                     for _ in range(6):
                         choices = [n for row in run.grid for n in row if n.available]
                         node = random.choice(choices)

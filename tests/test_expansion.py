@@ -10,7 +10,7 @@ from pathlib import Path
 from unittest.mock import patch
 import pygame
 
-from engine import Battle, Run, StackItem
+from engine import Battle, Run, StackItem, reward_theme
 from models import Card, generate_procedural_commander, load_game_data
 from persistence import RunStore, encode_graph, decode_graph
 from main import Game
@@ -27,8 +27,8 @@ class ExpansionRules(unittest.TestCase):
         self.b.keep_hand()
         self.b.enemy.hand = []
         self.b.theme = 'C'
-        self.b.player.colored_mana = dict.fromkeys('WUBRG', 30)
-        self.b.enemy.colored_mana = dict.fromkeys('WUBRG', 30)
+        self.b.player.colored_mana = dict.fromkeys('WUBRGP', 30)
+        self.b.enemy.colored_mana = dict.fromkeys('WUBRGP', 30)
 
     def card(self, name):
         return Card.from_dict(next(c for c in self.pool['cards'] if c['name'] == name))
@@ -203,6 +203,8 @@ class ExpansionRules(unittest.TestCase):
         self.cast('Aether Warp', medic)
         self.resolve()
         self.assertEqual(self.b.player.hp, 16)
+        self.assertIsNot(self.b.player.board[0], medic)
+        self.assertIn('blink', [event['kind'] for event in self.b.events])
         drawn = self.run.stats['cards_drawn']
         self.cast('Tide Scholar')
         self.resolve()
@@ -210,6 +212,18 @@ class ExpansionRules(unittest.TestCase):
         duelist = self.cast('Ember Duelist')
         self.resolve()
         self.assertFalse(duelist.sick)
+
+    def test_structured_friendly_blink_replaces_card_and_retriggers_etb(self):
+        medic = self.cast('Dawn Medic')
+        self.resolve()
+        self.b.player.hp = 10
+        self.cast('Fleeting Reflection', medic)
+        self.resolve()
+        returned = next(card for card in self.b.player.board if card.name == 'Dawn Medic')
+        self.assertIsNot(returned, medic)
+        self.assertTrue(returned.sick)
+        self.assertEqual(self.b.player.hp, 13)
+        self.assertIn('blink', [event['kind'] for event in self.b.events])
 
     def test_recall_collector_and_area_damage(self):
         self.cast('Soul Collector')
@@ -231,7 +245,11 @@ class ExpansionRules(unittest.TestCase):
         self.b.check_result()
         self.b.collect_reward()
         self.assertEqual(len(self.run.rewards), 3)
-        self.assertTrue(all(c['color'] in self.run.commander.colors for c in self.run.rewards))
+        self.assertTrue(all(len(pack['cards']) == 3 for pack in self.run.rewards))
+        self.assertTrue(all({reward_theme(c) for c in pack['cards']} == {pack['theme']}
+                            for pack in self.run.rewards))
+        self.assertTrue(all(c['color'] in self.run.commander.colors
+                            for pack in self.run.rewards for c in pack['cards']))
         node = next(n for row in self.run.grid for n in row if n.available)
         self.assertFalse(self.run.enter(node))
         size = len(self.run.deck)
@@ -239,10 +257,25 @@ class ExpansionRules(unittest.TestCase):
         run = restored['run']
         self.assertTrue(run.take_card_reward(0))
         self.assertFalse(run.take_card_reward(0))
-        self.assertEqual(len(run.deck), size + 1)
+        self.assertEqual(len(run.deck), size + 3)
         self.assertEqual(restored['battle'].collect_reward(), 0)
         self.run.take_card_reward()
         self.assertEqual(len(self.run.deck), size)
+
+    def test_every_color_offers_three_card_concrete_theme_boosters(self):
+        _, meta, pool = load_game_data()
+        for color in 'WUBRGP':
+            with self.subTest(color=color):
+                passive = next(choice for choice in meta['passives'] if choice['color'] == color)
+                active = next(choice for choice in meta['actives'] if choice['color'] == color)
+                run = Run(generate_procedural_commander(meta, [], [], passive, active), pool)
+                run.offer_rewards()
+                self.assertEqual(len(run.rewards), 3)
+                for pack in run.rewards:
+                    self.assertEqual(len(pack['cards']), 3)
+                    self.assertEqual({reward_theme(card) for card in pack['cards']}, {pack['theme']})
+                if color == 'P':
+                    self.assertEqual({pack['theme'] for pack in run.rewards}, {'Morphing'})
 
     def test_services_upgrade_persists_and_battle_buffs_do_not(self):
         self.run.node.node_type = 'Merchant'

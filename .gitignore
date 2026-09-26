@@ -7,3 +7,4 @@ run-save.json
 run-save.tmp
 settings.json
 settings.tmp
+.ollama-backups/

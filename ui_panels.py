@@ -1,6 +1,7 @@
 """Run persistence, inspection, rewards, services, and scalable-window controls."""
 import random
 import json
+import math
 import pygame
 from models import Card
 from art import fitted
@@ -43,7 +44,7 @@ class QolPanels:
         if state in ('WIN', 'LOSS'):
             return self.store.clear()
         payload = dict(run=self.run, battle=self.battle, state=state, rng=random.getstate(),
-                       ui=dict(chosen=self.chosen, pending=None if self.drag_card else self.pending, blocker=self.blocker,
+                       ui=dict(chosen=self.chosen, pending=None if self.drag_card else self.pending, blockers=self.blockers,
                                hand_page=self.hand_page, recent_unlocks=self.recent_unlocks))
         saved = self.store.save(payload)
         if not saved:
@@ -58,10 +59,27 @@ class QolPanels:
             self.message = self.store.error
             return
         self.run, self.battle, self.state = payload['run'], payload['battle'], payload['state']
+        if not hasattr(self.run, 'area'):
+            self.run.area = 1
+        if not hasattr(self.run, 'total_areas'):
+            self.run.total_areas = 4
+        # Convert pre-booster reward saves without losing their offered cards.
+        if self.run.reward_pending and self.run.rewards and 'cards' not in self.run.rewards[0]:
+            from engine import reward_theme
+            migrated = []
+            for offered in self.run.rewards:
+                theme = reward_theme(offered)
+                extras = [c for c in self.run.card_choices()
+                          if reward_theme(c) == theme and c['name'] != offered['name']][:2]
+                migrated.append(dict(theme=theme, cards=[offered] + extras))
+            self.run.rewards = migrated
         random.setstate(payload['rng'])
         ui = payload.get('ui', {})
         self.chosen = ui.get('chosen', set())
-        self.pending, self.blocker = ui.get('pending'), ui.get('blocker')
+        self.pending = ui.get('pending')
+        self.blockers = ui.get('blockers', set())
+        if not self.blockers and ui.get('blocker') is not None:
+            self.blockers = {ui['blocker']}
         self.hand_page = ui.get('hand_page', 0)
         self.recent_unlocks = ui.get('recent_unlocks', [])
         self.page = 0
@@ -157,26 +175,39 @@ class QolPanels:
 
     def present(self):
         rect = self.viewport()
-        self.window.fill((5, 7, 13))
+        # Continue the scene through letterboxed space instead of showing black bars.
+        key = 'arena' if self.state == 'BATTLE' else 'land'
+        backdrop = self.artwork.image(key, self.window.get_size()).copy()
+        shade = pygame.Surface(self.window.get_size(), pygame.SRCALPHA)
+        shade.fill((10, 9, 24, 180))
+        backdrop.blit(shade, (0, 0))
+        self.window.blit(backdrop, (0, 0))
         self.window.blit(pygame.transform.smoothscale(self.screen, rect.size), rect)
         pygame.display.flip()
 
     def take_reward(self, index=None):
         if self.run.take_card_reward(index):
-            self.message = 'Reward skipped.' if index is None else 'Card added to your deck.'
+            self.message = 'Reward skipped.' if index is None else 'Three-card booster added to your deck.'
             self.state = 'WIN' if self.run.won else 'MAP'
             self.battle = None
-            self.pending = self.blocker = None
+            self.pending = None
+            self.blockers.clear()
             self.chosen.clear()
 
     def reward_screen(self):
-        self.title('Victory: choose a card', 'Take one card for your deck, or skip. Your gold reward has already been added.')
-        for i, data in enumerate(self.run.rewards):
-            card = Card.from_dict(data)
-            x = 150 + 350 * i
-            self.card(card, (x, 150, 275, 410))
-            self.button((x, 590, 275, 50), 'Add to deck', lambda index=i: self.take_reward(index))
-        self.button((500, 725, 280, 50), 'Skip card reward', self.take_reward)
+        self.title('Victory: choose a booster', 'Each pack adds all three cards from one archetype. Your gold is already added.')
+        for i, reward in enumerate(self.run.rewards):
+            pack = reward.get('cards', [reward])
+            archetype = reward.get('theme', reward.get('archetype', 'Mixed'))
+            x = 25 + 415 * i
+            pygame.draw.rect(self.screen, (25, 29, 38), (x, 115, 390, 535), border_radius=12)
+            pygame.draw.rect(self.screen, (192, 164, 108), (x, 115, 390, 535), 2, border_radius=12)
+            self.text(f'{archetype} booster', x + 18, 132, (245, 206, 105))
+            self.text('All 3 cards are added', x + 18, 164, (159, 155, 178), self.small)
+            for j, data in enumerate(pack):
+                self.card(Card.from_dict(data), (x + 10 + j * 125, 200, 120, 285))
+            self.button((x + 25, 545, 340, 50), 'Take all 3 cards', lambda index=i: self.take_reward(index))
+        self.button((500, 705, 280, 50), 'Skip booster reward', self.take_reward)
 
     def mulligan_screen(self):
         self.title('Opening hand', 'Select cards to replace once for free. Your two starting lands stay in play.')
@@ -295,6 +326,8 @@ class QolPanels:
             for side, top in ((self.battle.enemy, 175), (self.battle.player, 425)):
                 if target in side.board:
                     x, y = 91 + side.board.index(target) * 139, top
+            if isinstance(target, Card) and getattr(target, 'rect', None):
+                x, y = target.rect.center
             if event['kind'] == 'cast':
                 x, y = 640, 375
             self.effects.append(dict(x=x, y=y, label=event['label'], kind=event['kind'], born=now))
@@ -303,6 +336,23 @@ class QolPanels:
         if self.animations:
             for i, effect in enumerate(self.effects):
                 elapsed = (now - effect['born']) / 1400
-                color = (115, 255, 166) if effect['kind'] == 'heal' else (250, 211, 135) if effect['kind'] == 'cast' else (255, 130, 130)
+                color = (115, 255, 166) if effect['kind'] == 'heal' else (250, 211, 135) if effect['kind'] == 'cast' else (175, 130, 255) if effect['kind'] == 'blink' else (100, 205, 255) if effect['kind'] == 'return' else (255, 130, 130)
+                if effect['kind'] == 'blink':
+                    radius = int(18 + elapsed * 65)
+                    pygame.draw.circle(self.screen, color, (effect['x'], effect['y']), radius,
+                                       max(1, int(5 * (1 - elapsed))))
+                elif effect['kind'] == 'return':
+                    for trail in range(4):
+                        offset = int(elapsed * 90 + trail * 13)
+                        pygame.draw.circle(self.screen, color,
+                                           (effect['x'] - offset, effect['y'] - offset // 3), max(2, 7 - trail))
+                elif effect['kind'] == 'death':
+                    for drop in range(12):
+                        angle = drop * math.tau / 12
+                        distance = elapsed * (28 + (drop % 4) * 9)
+                        point = (int(effect['x'] + math.cos(angle) * distance),
+                                 int(effect['y'] + math.sin(angle) * distance + elapsed * elapsed * 35))
+                        pygame.draw.circle(self.screen, (150 + drop % 3 * 22, 18, 35), point,
+                                           max(2, int(7 * (1 - elapsed))))
                 label = fitted(effect['label'], 350, 24, color)
                 self.screen.blit(label, (effect['x'] - label.get_width() // 2, effect['y'] - elapsed * 48 - i % 3 * 16))

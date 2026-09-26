@@ -6,6 +6,7 @@ from collections import Counter
 import pygame
 import test_expansion as fixtures
 from engine import StackItem
+from models import Card
 from persistence import encode_graph, decode_graph
 from main import Game
 
@@ -61,7 +62,9 @@ class TriggerTests(unittest.TestCase):
 
     def test_thirty_cards_per_archetype(self):
         counts=Counter(c['archetype'] for c in self.fixture.pool['cards'])
-        self.assertEqual(counts,dict.fromkeys(['Token','Blink','Graveyard','Spells','Ramp'],30))
+        self.assertEqual({key: counts[key] for key in ['Token','Blink','Graveyard','Spells','Ramp']},
+                         dict.fromkeys(['Token','Blink','Graveyard','Spells','Ramp'],30))
+        self.assertEqual(counts['Morph'], 11)
 
     def test_attack_copy_choice_stack_entry_and_exile(self):
         source=self.put('Astra, Echo Conduit'); target=self.put('Tide Scholar')
@@ -132,6 +135,8 @@ class TriggerTests(unittest.TestCase):
         self.assertIs(self.b.stack[-1].card,source)
         self.settle()
         count=len(self.b.player.lands)
+        if not any(c.card_type == 'Land' for c in self.b.player.deck):
+            self.b.player.deck.append(Card('Test Conduit', 'Land', 'G', 0))
         self.b.resolve_card(StackItem(self.card('Grove Tender'),self.b.player,None))
         self.settle()
         self.assertEqual(len(self.b.player.lands),count+1)
@@ -195,6 +200,29 @@ class DragTests(unittest.TestCase):
         self.assertIsNone(self.game.drag_card)
         self.assertEqual(self.game.state,'BATTLE')
 
+    def test_dragging_sixth_card_onto_third_reorders_hand(self):
+        hand = [self.card(name) for name in ('Magma Bolt', 'Citadel Recruit', 'Null Sigil',
+                'Thorn Sentinel', 'Dawn Medic', 'Overcharge Bolt')]
+        self.game.battle.player.hand = hand[:]
+        self.game.draw()
+        positions = {card: rect.center for card, rect, _ in self.game.hand_hits}
+        self.event(pygame.MOUSEBUTTONDOWN, button=1, pos=positions[hand[5]])
+        self.event(pygame.MOUSEBUTTONUP, button=1, pos=positions[hand[2]])
+        self.assertEqual(self.game.battle.player.hand,
+                         [hand[0], hand[1], hand[5], hand[2], hand[3], hand[4]])
+        self.assertIn('position 3', self.game.message)
+
+    def test_unplayable_card_can_still_be_reordered(self):
+        hand = [self.card('Citadel Recruit'), self.card('Thorn Sentinel'), self.card('Dawn Medic')]
+        self.game.battle.player.hand = hand[:]
+        self.game.battle.player.colored_mana = dict.fromkeys('WUBRGP', 0)
+        self.game.draw()
+        positions = {card: rect.center for card, rect, _ in self.game.hand_hits}
+        self.event(pygame.MOUSEBUTTONDOWN, button=1, pos=positions[hand[2]])
+        self.assertIs(self.game.drag_card, hand[2])
+        self.event(pygame.MOUSEBUTTONUP, button=1, pos=positions[hand[0]])
+        self.assertEqual(self.game.battle.player.hand, [hand[2], hand[0], hand[1]])
+
     def test_targeted_drop_and_counter_on_stack(self):
         target=self.card('Thorn Sentinel'); self.game.battle.enemy.board=[target]
         bolt=self.card('Overcharge Bolt'); self.grab(bolt)
@@ -205,6 +233,19 @@ class DragTests(unittest.TestCase):
         item,rect=self.game.stack_hits[-1]
         self.event(pygame.MOUSEBUTTONUP,button=1,pos=rect.center)
         self.assertIs(self.game.battle.stack[-1].target,item)
+
+    def test_click_spell_then_creature_keeps_target_selection(self):
+        target = self.card('Thorn Sentinel')
+        self.game.battle.enemy.board = [target]
+        bolt = self.card('Overcharge Bolt')
+        self.grab(bolt)
+        self.event(pygame.MOUSEBUTTONUP, button=1, pos=self.game.drag_start)
+        self.assertIs(self.game.pending, bolt)
+        self.assertIsNone(self.game.drag_card)
+        self.game.draw()
+        self.event(pygame.MOUSEBUTTONDOWN, button=1, pos=target.rect.center)
+        self.assertIs(self.game.battle.stack[-1].target, target)
+        self.assertIsNone(self.game.pending)
 
     def test_run_results_distinguish_new_old_and_partial_unlocks(self):
         g = self.game
@@ -287,5 +328,16 @@ class DragTests(unittest.TestCase):
         self.event(pygame.MOUSEBUTTONDOWN,button=1,pos=pos); self.game.draw()
         self.assertIsNone(self.game.hand_hover)
         self.assertIsNone(self.game.lifted_rect)
+
+    def test_hover_modifier_lists_morph_counters_and_temporary_buffs(self):
+        card = self.card('Citadel Recruit')
+        self.game.battle.player.board = [card]
+        self.game.battle.morph(self.game.battle.player, card, 'insight')
+        card.attack += 2; card.max_health += 1; card.current_health += 1
+        card.temp_attack = 2; card.temp_health = 1
+        details = self.game.card_modifier_details(card)
+        self.assertTrue(any('Insight Morph' in item for item in details))
+        self.assertTrue(any('Temporary buff: +2/+1' in item for item in details))
+        self.assertEqual(card.plus_one_counters, 1)
 
 if __name__=='__main__': unittest.main()

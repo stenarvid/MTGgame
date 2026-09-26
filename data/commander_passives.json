@@ -34,5 +34,11 @@
     "archetype": "Token",
     "name": "Mirror Legion",
     "desc": "Whenever you create tokens, create twice that many instead, including attacking copies."
+  },
+  {
+    "color": "P",
+    "archetype": "Morph",
+    "name": "Living Mosaic",
+    "desc": "Whenever you permanently morph a creature, it gets an additional perpetual +1/+1."
   }
 ]

@@ -1,6 +1,7 @@
 """Run progression and MTG-inspired combat with colored mana and response priority."""
 import json
 import random
+import time
 from pathlib import Path
 
 from trigger_rules import TriggerRules
@@ -27,6 +28,43 @@ UNLOCKS = [
     dict(name='Living Roots', color='G', archetype='Ramp',
          desc='Whenever you play a land, heal your hero for 2.', stat='lands_played', goal=10),
 ]
+
+MORPH_MUTATIONS = ('chorus', 'insight', 'death_curse', 'hospitality',
+                   'spellflame', 'landgrowth', 'mourning')
+
+
+def reward_theme(card):
+    """Describe the card's concrete deck-building theme instead of its color class."""
+    text = card.get('text', '').lower()
+    effects = {effect.get('effect') for effect in card.get('spell', {}).get('effects', [])}
+    trigger = card.get('trigger', {}).get('effect')
+    if card.get('color') == 'P' or 'morph' in text or any(e and e.startswith('morph') for e in effects):
+        return 'Morphing'
+    if 'blink' in text or 'blink' in effects:
+        return 'Blink & ETB'
+    if (('discard' in text and ('return' in text or 'recover' in text)) or
+            trigger in ('recover', 'recover_spell', 'mill') or effects & {'recall', 'recover_spell', 'mill'}):
+        return 'Graveyard Recovery'
+    if any(phrase in text for phrase in ('search 1 land', 'search 2 land', 'six lands',
+                                          'play a land', 'tap for', ' mana')) or effects & {'ramp', 'search'}:
+        return 'Mana Ramp'
+    if 'create' in text or effects & {'tokens'} or trigger in ('tokens', 'token'):
+        return 'Token Generation'
+    if any(phrase in text for phrase in ('gets +', 'get +', 'give it +', 'gains guard', 'gain guard')) or effects & {'buff', 'team_buff'}:
+        return 'Creature Buffing'
+    if 'haste' in text:
+        return 'Haste & Aggro'
+    if any(phrase in text for phrase in ('whenever you cast', 'spell you cast', 'spells you cast')):
+        return 'Spellcasting'
+    if 'damage' in text or effects & {'damage', 'area_damage'}:
+        return 'Direct Damage'
+    if 'draw' in text or effects & {'draw', 'loot'}:
+        return 'Card Draw'
+    if any(word in text for word in ('heal', 'life', 'armor')) or effects & {'heal', 'armor', 'drain'}:
+        return 'Life & Defense'
+    if effects & {'destroy', 'bounce', 'freeze'}:
+        return 'Control'
+    return f"{card.get('archetype', 'Deck')} Synergy"
 
 
 class Progress:
@@ -68,6 +106,8 @@ class Run:
         self.relics = []
         self.stats = dict(cards_drawn=0, kills=0, spell_damage=0)
         self.grid = generate_spire_map()
+        self.area = 1
+        self.total_areas = 4
         self.node = None
         self.shop = []
         self.choices = []
@@ -98,7 +138,16 @@ class Run:
         node = self.node
         if not complete_node(self.grid, node):
             return False
-        self.won = node.node_type == 'Boss'
+        if node.node_type == 'Boss':
+            area = getattr(self, 'area', 1)
+            total = getattr(self, 'total_areas', 4)
+            if area >= total:
+                self.won = True
+            else:
+                self.area = area + 1
+                self.total_areas = total
+                self.grid = generate_spire_map()
+                self.won = False
         self.node = None
         return True
 
@@ -113,18 +162,33 @@ class Run:
         item['sold'] = True
         return True
 
-    def card_choices(self):
-        return [c for c in self.pool['cards'] if c['color'] in self.commander.colors]
+    def card_choices(self, archetype=None):
+        return [c for c in self.pool['cards'] if c['color'] in self.commander.colors
+                and (archetype is None or c.get('archetype') == archetype)]
 
     def offer_rewards(self):
-        self.rewards = random.sample(self.card_choices(), 3)
+        groups = {}
+        for card in self.card_choices():
+            groups.setdefault(reward_theme(card), []).append(card)
+        themes = [theme for theme, cards in groups.items() if len(cards) >= 3]
+        if not themes:
+            themes = list(groups)
+        random.shuffle(themes)
+        pack_types = [themes[i % len(themes)] for i in range(3)]
+        self.rewards = []
+        for theme in pack_types:
+            choices = groups[theme]
+            cards = random.sample(choices, min(3, len(choices)))
+            self.rewards.append(dict(theme=theme, cards=cards))
         self.reward_pending = True
 
     def take_card_reward(self, index=None):
         if not self.reward_pending or (index is not None and not 0 <= index < len(self.rewards)):
             return False
         if index is not None:
-            self.deck.append(Card.from_dict(self.rewards[index]))
+            reward = self.rewards[index]
+            cards = reward.get('cards', [reward])
+            self.deck.extend(Card.from_dict(card) for card in cards)
         self.reward_pending = False
         self.rewards = []
         return True
@@ -180,8 +244,9 @@ class Side:
         self.deck = [c.fresh() for c in deck]
         random.shuffle(self.deck)
         self.hand, self.board, self.lands, self.discard = [], [], [], []
+        self.exile = []
         self.mana = 0
-        self.colored_mana = dict.fromkeys('WUBRG', 0)
+        self.colored_mana = dict.fromkeys('WUBRGP', 0)
         self.armor = 0
         self.land_played = False
         self.creatures_played = 0
@@ -219,10 +284,12 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         self.passive = run.commander.passive_name
         self.active = run.commander.active_name
         self.player = Side(run.deck, run.hp, run.max_hp, run.commander.name)
+        self.init_commander()
         row = run.node.row if run.node else 0
+        progression_row = row + (getattr(run, 'area', 1) - 1) * 6
         kind = run.node.node_type if run.node else 'Combat'
         elite, boss = kind == 'Elite', kind == 'Boss'
-        enemy_hp = 12 + row * 2 + (6 if elite else 12 if boss else 0)
+        enemy_hp = 12 + progression_row * 2 + (6 if elite else 12 if boss else 0)
         colors = ['U', 'R'] if boss else random.sample(list('WUBRG'), 2)
         self.theme = colors[0]
         self.elite, self.boss = elite, boss
@@ -231,7 +298,7 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         self.enemy_damage_bonus_used = False
         self.intent = ('Sovereign: alternates extra draws and 1 hero damage; at half HP, summons two Guards and empowers its board.'
                        if boss else ENCOUNTERS[self.theme][1])
-        archetypes = dict(W='Token', U='Blink', B='Graveyard', R='Spells', G='Ramp')
+        archetypes = dict(W='Token', U='Blink', B='Graveyard', R='Spells', G='Ramp', P='Morph')
         enemy_deck = sum((color_starters(run.pool, c, archetypes[c]) for c in colors), [])
         enemy_deck += [Card.from_dict(c) for c in run.pool['cards']
                        if c['color'] in colors and c['name'] in ('Dawn Medic', 'Null Sigil', 'Soul Collector',
@@ -254,6 +321,8 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         self.event_serial = 0
         self.turn = 0
         self.active_used = False
+        self.pending_entry = None
+        self.pending_entries = []
         self.attackers = []
         self.assignments = {}
         self.result = None
@@ -266,6 +335,24 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         self.draw(self.player, 5)
         self.draw(self.enemy, 5)
         self.note('Choose cards to replace once for free, or keep your opening hand.')
+
+    def init_commander(self):
+        """Add a command zone to new battles and migrate pre-command-zone saves."""
+        if hasattr(self, 'commander'):
+            return
+        source = self.run.commander
+        self.commander = Card(source.name, 'Commander Creature', source.color_code,
+                              max(source.mana_cost, len(source.colors)), source.attack,
+                              source.max_health, source.text)
+        self.commander.pips = {color: source.colors.count(color) for color in source.colors}
+        self.commander.is_commander = True
+        self.commander_casts = 0
+        self.commander_zone = 'COMMAND'
+
+    def return_commander(self, card):
+        self.commander = self.base_card(card)
+        self.commander_zone = 'COMMAND'
+        self.note(f'{card.name} returns to the command zone.')
 
     def mulligan(self, cards):
         if self.phase != 'MULLIGAN' or self.mulligan_used:
@@ -346,7 +433,7 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         side.land_played = False
         side.creatures_played = 0
         side.mana = 0
-        side.colored_mana = dict.fromkeys('WUBRG', 0)
+        side.colored_mana = dict.fromkeys('WUBRGP', 0)
         for card in side.board + side.lands:
             if getattr(card, 'frozen', False):
                 card.frozen = False
@@ -356,6 +443,11 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         side.colored_mana['G'] += sum(2 for c in side.board if c.name == 'Titan Overseer')
         if side is self.player:
             self.turn += 1
+            morphed = [card for card in side.board if getattr(card, 'perpetual', {})]
+            chorus = sum(card.perpetual.get('chorus', 0) for card in morphed)
+            if chorus:
+                self.heal(side, chorus)
+                self.note(f'Morph chorus: gain {chorus} life from {chorus} chorus effect(s).')
         else:
             self.enemy_turn_number += 1
             self.enemy_damage_bonus_used = False
@@ -379,8 +471,11 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         return side.mana + sum(side.colored_mana.values()) + sum(not c.tapped for c in side.lands)
 
     def cost(self, side, card):
-        cost = card.mana_cost
+        cost = (card.flashback_cost if card in side.discard and getattr(card, 'flashback_cost', None) is not None
+                else card.mana_cost)
         if side is self.player:
+            if card is self.commander and self.commander_zone == 'COMMAND':
+                cost += 2 * self.commander_casts
             if card.is_creature and 'Titan Gauntlet' in self.relics:
                 cost = max(1, cost - 1)
             if card.card_type == 'Instant Spell' and self.passive == 'Overcharge Core':
@@ -389,6 +484,8 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
 
     def payment_plan(self, side, card):
         pool = dict(side.colored_mana, C=side.mana)
+        for color in 'CWUBRGP':
+            pool.setdefault(color, 0)
         lands = [c for c in side.lands if not c.tapped]
         tapped = []
         for color, required in card.pips.items():
@@ -402,7 +499,7 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
                     lands.remove(land)
                     tapped.append(land)
         generic = self.cost(side, card) - sum(card.pips.values())
-        for color in 'CWUBRG':
+        for color in 'CWUBRGP':
             used = min(generic, pool.get(color, 0))
             pool[color] -= used
             generic -= used
@@ -426,7 +523,7 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         return True
 
     def mana_summary(self, side):
-        counts = {c: side.colored_mana[c] + sum(not l.tapped and l.color_code == c for l in side.lands) for c in 'WUBRG'}
+        counts = {c: side.colored_mana.get(c, 0) + sum(not l.tapped and l.color_code == c for l in side.lands) for c in 'WUBRGP'}
         return ' '.join(f'{c}:{n}' for c, n in counts.items() if n) + (f' C:{side.mana}' if side.mana else '') or '0'
 
     def search_lands(self, side, count):
@@ -438,6 +535,9 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         self.note(f'{side.name} found {len(found)} land(s).')
 
     def summon(self, side, card, played=False):
+        if getattr(card, 'is_commander', False):
+            self.commander = card
+            self.commander_zone = 'BOARD'
         card.tapped = False
         card.sick = not self.has_keyword(card, 'haste')
         for other in side.board:
@@ -463,6 +563,14 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
                 card.max_health += 1
                 card.current_health += 1
         side.board.append(card)
+        if getattr(card, 'perpetual', {}).get('insight'):
+            self.draw(side, card.perpetual['insight'], effect=True)
+            self.note(f'{card.name} enters in its insight form: draw {card.perpetual["insight"]}.')
+        hospitality = sum(getattr(other, 'perpetual', {}).get('hospitality', 0)
+                          for other in side.board if other is not card and other.current_health > 0)
+        if hospitality:
+            self.heal(side, hospitality)
+            self.note(f'Welcoming forms gain {hospitality} life as {card.name} enters.')
         self.emit_trigger('ally_enters', side, card)
         if played:
             side.creatures_played += 1
@@ -482,17 +590,22 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
 
     def return_unit(self, side, card, blink=False, actor=None):
         actor = actor or self.player
+        self.event(card, 'BLINK' if blink else 'TO HAND', 'blink' if blink else 'return')
         side.board.remove(card)
         if actor is self.player:
             self.run.record('blink_returns')
             if self.passive == 'Rift Sanctuary':
                 self.heal(self.player, 2)
         if not card.token:
+            if getattr(card, 'is_commander', False) and not blink:
+                self.return_commander(card)
+                if actor is self.player and self.passive == 'Aether Flux':
+                    self.draw(self.player, effect=True)
+                return
             fresh = self.base_card(card)
             if blink:
                 self.summon(side, fresh)
-                foe = self.opponent(side)
-                self.enter_effect(side, fresh, foe.board[0] if foe.board else None)
+                self.begin_enter_effect(side, fresh)
             else:
                 side.hand.append(fresh)
         if actor is self.player and self.passive == 'Aether Flux':
@@ -503,7 +616,47 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         fresh = Card.from_dict(data) if data else card.fresh()
         if card.upgraded and not fresh.upgraded:
             fresh.upgrade()
+        if getattr(card, 'is_commander', False):
+            fresh.is_commander = True
+        fresh.perpetual = dict(getattr(card, 'perpetual', {}))
+        fresh.plus_one_counters = getattr(card, 'plus_one_counters', 0)
+        # Morph changes are perpetual, so rebuilding a card after blink, death,
+        # bounce, or command-zone movement must restore their stat bonuses too.
+        morph_bonus = sum(fresh.perpetual.get(key, 0) for key in MORPH_MUTATIONS)
+        morph_bonus += fresh.perpetual.get('mosaic', 0) + fresh.perpetual.get('growth_bonus', 0)
+        if data and morph_bonus:
+            fresh.attack += morph_bonus
+            fresh.max_health += morph_bonus
+            fresh.current_health += morph_bonus
         return fresh
+
+    def morph(self, side, card, mutation, amount=1, announce=True):
+        zones = side.board + side.deck + side.discard
+        if card not in zones or card.max_health <= 0:
+            return False
+        card.perpetual = dict(getattr(card, 'perpetual', {}))
+        card.perpetual[mutation] = card.perpetual.get(mutation, 0) + amount
+        card.plus_one_counters = getattr(card, 'plus_one_counters', 0) + amount
+        card.attack += amount
+        card.max_health += amount
+        card.current_health += amount
+        if side is self.player and self.passive == 'Living Mosaic':
+            card.attack += 1
+            card.max_health += 1
+            card.current_health += 1
+            card.perpetual['mosaic'] = card.perpetual.get('mosaic', 0) + 1
+            card.plus_one_counters += 1
+        if announce:
+            self.note(f'{card.name} is perpetually morphed: {mutation}.')
+        return True
+
+    def morph_board(self, caster, selection, mutation, amount=1):
+        side = caster if selection == 'friendly' else self.opponent(caster)
+        creatures = [card for zone in (side.board, side.deck, side.discard)
+                     for card in list(zone) if card.max_health > 0]
+        changed = sum(self.morph(side, card, mutation, amount, announce=False) for card in creatures)
+        zone_name = 'friendly' if side is caster else 'enemy'
+        self.note(f'Morphed {changed} {zone_name} creature(s) across battlefield, deck, and graveyard: {mutation}.')
 
     def enter_effect(self, side, card, target=None):
         self.emit_trigger('enter', side, card)
@@ -514,6 +667,44 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
             self.heal(side, 3)
         elif card.name == 'Tide Scholar':
             self.draw(side, effect=True)
+
+    def begin_enter_effect(self, side, card):
+        """Resolve an ETB after the permanent is visible on the battlefield."""
+        if card.name == 'Phase Shifter' and self.opponent(side).board:
+            if side is self.player:
+                if getattr(self, 'pending_entry', None):
+                    self.pending_entries = getattr(self, 'pending_entries', [])
+                    self.pending_entries.append(card)
+                else:
+                    self.pending_entry = card
+                self.note(f'{card.name} entered. Choose an enemy creature to return to hand.')
+            else:
+                self.enter_effect(side, card, self.ai_target(card, side))
+            return
+        self.enter_effect(side, card)
+
+    def advance_pending_entry(self):
+        self.pending_entry = None
+        queue = getattr(self, 'pending_entries', [])
+        while queue:
+            source = queue.pop(0)
+            if source not in self.player.board:
+                continue
+            if self.enemy.board:
+                self.pending_entry = source
+                self.note(f'{source.name}: choose an enemy creature to return to hand.')
+                return
+            # A targeted ETB with no remaining legal target simply resolves
+            # without its targeted action, while its ordinary enter triggers fire.
+            self.enter_effect(self.player, source)
+
+    def resolve_pending_entry(self, target):
+        source = getattr(self, 'pending_entry', None)
+        if source not in self.player.board or target not in self.enemy.board:
+            return False
+        self.enter_effect(self.player, source, target)
+        self.advance_pending_entry()
+        return True
 
     def damage_spell_bonus(self, side):
         if side is self.enemy and self.theme == 'R' and not self.boss and not self.enemy_damage_bonus_used:
@@ -554,11 +745,34 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
             return side.board + foe.board
         if name == 'Soul Reaper':
             return [c for c in side.board + foe.board if c.mana_cost <= 3]
+        if name == 'Adaptive Bloom':
+            return list(side.board)
         return []
+
+    def cast_targets(self, card, side=None):
+        """Targets chosen while casting; ETB targets are chosen after entry."""
+        return [] if card.is_creature and card.name == 'Phase Shifter' else self.targets(card.name, side)
+
+    def alternate_zone(self, card, side=None):
+        side = side or self.player
+        if card in side.discard and getattr(card, 'flashback_cost', None) is not None:
+            return 'GRAVEYARD'
+        if card in side.exile and getattr(card, 'play_from_exile', False):
+            return 'EXILE'
+        return None
+
+    def alternate_cards(self):
+        return [card for card in self.player.discard + self.player.exile if self.alternate_zone(card)]
+
+    def finish_spell(self, side, card):
+        zone = side.exile if getattr(card, 'exile_after_cast', False) else side.discard
+        zone.append(self.base_card(card))
 
     def play(self, card, target=None, side=None):
         side = side or self.player
-        if self.result or card not in side.hand:
+        from_command = side is self.player and card is self.commander and self.commander_zone == 'COMMAND'
+        alternate = self.alternate_zone(card, side)
+        if self.result or (card not in side.hand and not from_command and not alternate):
             return False
         main_phase = self.phase in ('MAIN', 'MAIN2') if side is self.player else self.phase == 'ENEMY_MAIN'
         response_phase = self.phase in ('RESPONSE', 'BLOCK', 'ATTACK_RESPONSE', 'DEFEND_RESPONSE')
@@ -578,11 +792,20 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
                 if self.passive == 'Living Roots':
                     self.heal(side, 2)
             self.emit_trigger('land', side, card)
+            for creature in list(side.board):
+                growth = getattr(creature, 'perpetual', {}).get('landgrowth', 0)
+                if growth:
+                    creature.attack += growth
+                    creature.max_health += growth
+                    creature.current_health += growth
+                    creature.perpetual['growth_bonus'] = creature.perpetual.get('growth_bonus', 0) + growth
+                    creature.plus_one_counters = getattr(creature, 'plus_one_counters', 0) + growth
+                    self.note(f'{creature.name} grows by +{growth}/+{growth} from its rooted form.')
             return True
         if not self.can_pay(side, card):
             self.note(f'Need {card.mana_label(self.cost(side, card))}; available mana: {self.mana_summary(side)}.')
             return False
-        targets = self.targets(card.name, side)
+        targets = self.cast_targets(card, side)
         definition = self.spell_definition(card.name)
         mandatory = bool(definition and definition.get('target')) or card.name in ('Aether Warp', 'Radiant Aegis', 'Verdant Surge', 'Null Sigil', 'Overcharge Bolt')
         if (targets and target not in targets) or (mandatory and not targets):
@@ -595,7 +818,15 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
             self.note(f'No implemented effect for {card.name}. Card was not spent.')
             return False
         self.pay(side, card)
-        side.hand.remove(card)
+        if from_command:
+            self.commander_casts += 1
+            self.commander_zone = 'STACK'
+        elif alternate:
+            (side.discard if alternate == 'GRAVEYARD' else side.exile).remove(card)
+            card.exile_after_cast = alternate == 'GRAVEYARD'
+            card.play_from_exile = False
+        else:
+            side.hand.remove(card)
         if not self.stack:
             self.return_phase = self.phase
         self.stack.append(StackItem(card, side, target))
@@ -612,6 +843,10 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         for creature in side.board:
             if not card.is_creature and creature.name == 'Spellweaver Pyromancer':
                 self.damage(self.opponent(side), 1)
+            spellflame = getattr(creature, 'perpetual', {}).get('spellflame', 0)
+            if not card.is_creature and spellflame:
+                self.damage(self.opponent(side), spellflame)
+                self.note(f'{creature.name} burns the enemy for {spellflame} from its cinder form.')
         self.cleanup_deaths()
         self.check_result()
         return True
@@ -627,7 +862,7 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
             # A creature still enters if its entry-effect target has disappeared.
             if not card.is_creature:
                 self.note(f'{card.name} fizzles: target is no longer legal.')
-                side.discard.append(self.base_card(card))
+                self.finish_spell(side, card)
                 return
             target = None
         self.note(f'{card.name} resolves.')
@@ -638,7 +873,7 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         enemy_bonus = self.damage_spell_bonus(side) if card.name in ('Overcharge Bolt', 'Magma Bolt', 'Cinder Volley') else 0
         if card.is_creature:
             self.summon(side, card, played=True)
-            self.enter_effect(side, card, target)
+            self.begin_enter_effect(side, card)
         else:
             if card.name == 'Phalanx Barrier':
                 self.tokens(side, 2 + bonus)
@@ -668,7 +903,10 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
                 target.temp_health += health
             elif card.name == 'Null Sigil':
                 self.stack.remove(target)
-                target.side.discard.append(self.base_card(target.card))
+                if getattr(target.card, 'is_commander', False):
+                    self.return_commander(target.card)
+                else:
+                    self.finish_spell(target.side, target.card)
                 self.note(f'{target.card.name} was countered.')
                 if bonus:
                     self.draw(side, effect=True)
@@ -681,7 +919,7 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
             elif card.name == 'Cinder Volley':
                 for creature in list(foe.board):
                     self.spell_damage(side, creature, 1 + bonus, enemy_bonus)
-            side.discard.append(self.base_card(card))
+            self.finish_spell(side, card)
         self.cleanup_deaths()
         self.check_result()
 
@@ -718,6 +956,20 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
                 return self.play(card, self.ai_target(card, self.enemy), self.enemy)
         return False
 
+    def player_can_respond(self):
+        if self.phase != 'RESPONSE' or self.result:
+            return False
+        for card in self.player.hand + self.alternate_cards():
+            if card.card_type != 'Instant Spell' or not self.can_pay(self.player, card):
+                continue
+            targets = self.targets(card.name, self.player)
+            definition = self.spell_definition(card.name)
+            mandatory = bool(definition and definition.get('target')) or card.name in (
+                'Aether Warp', 'Radiant Aegis', 'Verdant Surge', 'Null Sigil', 'Overcharge Bolt')
+            if not mandatory or targets:
+                return True
+        return False
+
     def pass_priority(self):
         if self.phase != 'RESPONSE' or self.result:
             return False
@@ -738,8 +990,9 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
                 self.enemy_step()
         return True
 
-    def use_active(self, target=None):
-        if self.result or self.phase not in ('MAIN', 'MAIN2') or self.active_used:
+    def use_active(self, target=None, morph_choice=None):
+        if (self.result or self.phase not in ('MAIN', 'MAIN2') or self.active_used
+                or self.stack):
             return False
         targets = self.targets(self.active)
         if self.active != 'Wild Growth' and target not in targets:
@@ -757,6 +1010,21 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
             self.damage(target, 3)
         elif self.active == 'Wild Growth':
             self.search_lands(self.player, 1)
+        elif self.active == 'Adaptive Bloom':
+            if morph_choice not in ('might', 'insight', 'renewal'):
+                self.active_used = False
+                self.note('Choose a temporary morph form first.')
+                return False
+            stronger = bool(getattr(target, 'perpetual', {}))
+            amount = 3 if stronger else 2
+            if morph_choice == 'might':
+                target.attack += amount; target.temp_attack += amount
+                target.max_health += amount; target.current_health += amount; target.temp_health += amount
+            elif morph_choice == 'insight':
+                self.draw(self.player, 2 if stronger else 1, effect=True)
+            else:
+                self.heal(self.player, 3 if stronger else 2)
+            self.note(f'{target.name} takes the temporary {morph_choice} form.')
         self.note(f'Commander uses {self.active}.')
         self.cleanup_deaths()
         self.check_result()
@@ -775,6 +1043,7 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
         dead = [(s, c) for s in (self.player, self.enemy) for c in s.board if c.current_health <= 0]
         for side, card in dead:
             self.note(f'{card.name} dies.')
+            self.event(card, 'DIED', 'death')
             side.board.remove(card)
             if side is self.enemy:
                 self.run.stats['kills'] += 1
@@ -783,12 +1052,24 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
                 if self.passive == 'Graveplate':
                     side.armor += 1
             if not card.token:
-                if side is self.player and self.passive == 'Endless Horde':
+                if getattr(card, 'is_commander', False):
+                    self.return_commander(card)
+                elif side is self.player and self.passive == 'Endless Horde':
                     returned = self.base_card(card)
                     returned.max_health = returned.current_health = 1
                     side.hand.append(returned)
                 else:
                     side.discard.append(self.base_card(card))
+            curse = getattr(card, 'perpetual', {}).get('death_curse', 0)
+            if curse:
+                side.hp -= curse
+                self.event(side, f'-{curse} morph curse')
+                self.note(f'{card.name} dies in its hostile form: {side.name} loses {curse} life.')
+            mourning = sum(getattr(source, 'perpetual', {}).get('mourning', 0)
+                           for source in side.board if source.current_health > 0)
+            if mourning:
+                self.heal(side, mourning)
+                self.note(f'Mourning forms gain {mourning} life as {card.name} dies.')
         for side, card in dead:
             self.emit_trigger('dies', side, card, snapshots[side])
             self.emit_trigger('ally_dies', side, card, snapshots[side])
@@ -876,6 +1157,7 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
 
     def resolve_attack(self, side, attackers, assignments, blocked=None):
         for attacker in attackers:
+            attacker.attack_animation_started = time.monotonic()
             if not self.has_keyword(attacker, 'vigilance'):
                 attacker.tapped = True
         for target, amount in self.damage_plan(side, attackers, assignments, blocked).items():
@@ -887,7 +1169,7 @@ class Battle(TriggerRules, SpellRules, IdentityRules):
     def clear_mana(self):
         for side in (self.player, self.enemy):
             side.mana = 0
-            side.colored_mana = dict.fromkeys('WUBRG', 0)
+            side.colored_mana = dict.fromkeys('WUBRGP', 0)
 
     def end_cleanup(self):
         self.clear_mana()

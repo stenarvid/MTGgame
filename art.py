@@ -2,15 +2,67 @@
 from functools import lru_cache
 from pathlib import Path
 import json
+import math
 import pygame
 
 ART_DIR = Path(__file__).resolve().parent / 'assets' / 'art'
 ART_FILES = dict(W='white-vanguard.png', U='blue-shifter.png', B='black-necromancer.png',
-                 R='red-pyromancer.png', G='green-overseer.png', land='astral-spire.png')
+                 R='red-pyromancer.png', G='green-overseer.png', P='blue-shifter.png', land='astral-spire.png')
 PALETTES = dict(W=(225, 207, 153), U=(101, 182, 240), B=(188, 141, 230),
-                R=(244, 133, 102), G=(128, 203, 158))
+                R=(244, 133, 102), G=(128, 203, 158), P=(245, 117, 199))
 INK = (18, 22, 35)
 GOLD = (192, 164, 108)
+
+
+def draw_mana_glyph(surface, symbol, center, radius, color=INK):
+    """Draw compact original glyphs for the six colored mana types."""
+    cx, cy = map(int, center)
+    r = max(5, int(radius))
+    line = max(1, r // 5)
+    if symbol == 'W':
+        pygame.draw.circle(surface, color, (cx, cy), max(2, r // 3))
+        for i in range(8):
+            angle = i * math.tau / 8
+            inner, outer = r * .52, r * .82
+            pygame.draw.line(surface, color,
+                             (cx + math.cos(angle) * inner, cy + math.sin(angle) * inner),
+                             (cx + math.cos(angle) * outer, cy + math.sin(angle) * outer), line)
+    elif symbol == 'U':
+        points = [(cx, cy - r + 1), (cx - int(r * .64), cy + int(r * .25)),
+                  (cx - int(r * .45), cy + int(r * .7)), (cx, cy + int(r * .82)),
+                  (cx + int(r * .45), cy + int(r * .7)), (cx + int(r * .64), cy + int(r * .25))]
+        pygame.draw.polygon(surface, color, points)
+        pygame.draw.circle(surface, color, (cx, cy + r // 4), int(r * .58))
+    elif symbol == 'B':
+        pygame.draw.circle(surface, color, (cx, cy - r // 5), int(r * .65))
+        pygame.draw.rect(surface, color, (cx - r // 2, cy, r, int(r * .62)), border_radius=2)
+        eye = max(1, r // 5)
+        hole = PALETTES['B']
+        pygame.draw.circle(surface, hole, (cx - r // 4, cy - r // 5), eye)
+        pygame.draw.circle(surface, hole, (cx + r // 4, cy - r // 5), eye)
+        pygame.draw.polygon(surface, hole, [(cx, cy), (cx - eye, cy + eye), (cx + eye, cy + eye)])
+        for dx in (-r // 3, 0, r // 3):
+            pygame.draw.line(surface, hole, (cx + dx, cy + r // 4), (cx + dx, cy + r // 2), 1)
+    elif symbol == 'R':
+        outer = [(cx, cy - r), (cx + r // 4, cy - r // 3), (cx + int(r * .7), cy - r // 2),
+                 (cx + int(r * .62), cy + r // 3), (cx, cy + r),
+                 (cx - int(r * .68), cy + r // 3), (cx - r // 3, cy - r // 4)]
+        pygame.draw.polygon(surface, color, outer)
+        pygame.draw.polygon(surface, PALETTES['R'], [(cx, cy - r // 3), (cx + r // 3, cy + r // 3),
+                                                    (cx, cy + int(r * .7)), (cx - r // 4, cy + r // 4)])
+    elif symbol == 'G':
+        leaf = [(cx - r // 5, cy + int(r * .75)), (cx - int(r * .72), cy),
+                (cx - r // 3, cy - int(r * .72)), (cx + int(r * .72), cy - int(r * .65)),
+                (cx + int(r * .58), cy + r // 4)]
+        pygame.draw.polygon(surface, color, leaf)
+        pygame.draw.line(surface, PALETTES['G'], (cx - r // 3, cy + r // 2),
+                         (cx + r // 3, cy - r // 3), line)
+    elif symbol == 'P':
+        box = pygame.Rect(cx - int(r * .72), cy - int(r * .72), int(r * 1.44), int(r * 1.44))
+        pygame.draw.arc(surface, color, box, .25, math.tau * .92, line + 1)
+        pygame.draw.circle(surface, color, (cx, cy), max(2, r // 5))
+        pygame.draw.polygon(surface, color, [(cx + int(r * .7), cy - r // 5),
+                                             (cx + r, cy), (cx + int(r * .67), cy + r // 5)])
 
 
 @lru_cache(maxsize=40)
@@ -68,7 +120,7 @@ class Artwork:
         manifest_path = ART_DIR / 'cards.json'
         self.card_files = json.loads(manifest_path.read_text(encoding='utf-8')) if manifest_path.exists() else {}
         loaded = {}
-        for key, filename in dict(ART_FILES, **self.card_files).items():
+        for key, filename in dict(ART_FILES, arena='arena-board.png', **self.card_files).items():
             try:
                 if filename not in loaded:
                     loaded[filename] = pygame.image.load(str(ART_DIR / filename)).convert()
@@ -101,22 +153,47 @@ class Artwork:
     def background(self, surface, mode):
         key = (surface.get_size(), mode)
         if key not in self.backgrounds:
-            result = self.image('land', surface.get_size()).copy()
+            result = self.image('arena' if mode == 'BATTLE' else 'land', surface.get_size()).copy()
             shade = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
-            shade.fill((8, 12, 23, 70 if mode == 'MENU' else 211 if mode == 'BATTLE' else 195))
+            shade.fill((8, 12, 23, 70 if mode == 'MENU' else 85 if mode == 'BATTLE' else 195))
             result.blit(shade, (0, 0))
             self.backgrounds[key] = result
         surface.blit(self.backgrounds[key], (0, 0))
         if mode == 'BATTLE':
             width = surface.get_width()
-            pygame.draw.line(surface, (103, 92, 75), (28, 350), (width - 28, 350))
-            pygame.draw.circle(surface, (100, 86, 63), (width // 2, 350), 17, 1)
-            pygame.draw.circle(surface, (100, 86, 63), (width // 2, 350), 9, 1)
+            pygame.draw.line(surface, (122, 111, 84), (28, 401), (1030, 401))
 
 
 class CardPainter:
     def __init__(self, artwork):
         self.artwork = artwork
+
+    def mana_symbols(self, card, cost=None):
+        total = card.mana_cost if cost is None else cost
+        colored = []
+        for color in 'WUBRGP':
+            colored.extend([color] * card.pips.get(color, 0))
+        generic = max(0, total - len(colored))
+        return ([str(generic)] if generic else []) + colored
+
+    def draw_mana_symbols(self, surface, card, rect, cost=None, compact=False):
+        symbols = self.mana_symbols(card, cost)
+        radius = 10 if compact else 13
+        gap = radius * 2 + 2
+        right = rect.right - 7
+        cy = rect.top + radius + 8
+        for i, symbol in enumerate(reversed(symbols)):
+            cx = right - radius - i * gap
+            fill = PALETTES.get(symbol, (210, 205, 190)) if symbol != '0' else (205, 205, 195)
+            pygame.draw.circle(surface, (5, 8, 12), (cx + 2, cy + 2), radius + 1)
+            pygame.draw.circle(surface, fill, (cx, cy), radius)
+            pygame.draw.circle(surface, (235, 225, 195), (cx, cy), radius, 1)
+            if symbol in 'WUBRGP':
+                draw_mana_glyph(surface, symbol, (cx, cy), radius - 2)
+            else:
+                glyph = font(11 if compact else 14, serif=True, bold=True).render(symbol, True, (18, 20, 22))
+                surface.blit(glyph, glyph.get_rect(center=(cx, cy)))
+        return len(symbols) * gap
 
     def draw(self, surface, card, rect, selected=False, subtitle='', cost=None, combat=False, playable=False):
         rect = pygame.Rect(rect)
@@ -133,14 +210,19 @@ class CardPainter:
 
         compact = w < 175
         title_h = 35 if compact else 32
-        mana_r = 13 if compact else 16
-        title_rect = pygame.Rect(x + 9, y + 7, w - 2 * mana_r - 20, title_h)
+        mana_width = max(26, len(self.mana_symbols(card, cost)) * (22 if compact else 28))
+        counters = getattr(card, 'plus_one_counters', 0)
+        counter_space = 30 if counters else 0
+        title_rect = pygame.Rect(x + 9 + counter_space, y + 7,
+                                 max(20, w - mana_width - 16 - counter_space), title_h)
         paragraph(surface, card.name + (' +' if card.upgraded else ''), title_rect, 12 if compact else 15, (248, 238, 209))
-        cx, cy = rect.right - mana_r - 7, y + mana_r + 8
-        pygame.draw.circle(surface, (12, 24, 38), (cx, cy), mana_r)
-        pygame.draw.circle(surface, accent, (cx, cy), mana_r, 2)
-        number = fitted(card.mana_label(cost), mana_r * 2 - 4, 14 if compact else 18, (248, 244, 228))
-        surface.blit(number, number.get_rect(center=(cx, cy)))
+        if counters:
+            badge_center = (x + 17, y + 18)
+            pygame.draw.circle(surface, (12, 16, 20), badge_center, 13)
+            pygame.draw.circle(surface, (245, 117, 199), badge_center, 12)
+            label = font(10 if compact else 11, bold=True).render(f'+{counters}', True, (24, 18, 26))
+            surface.blit(label, label.get_rect(center=badge_center))
+        self.draw_mana_symbols(surface, card, rect, cost, compact)
 
         art_top = y + title_h + 10
         art_height = int(h * (0.35 if compact else 0.47))
@@ -194,9 +276,10 @@ class CardPainter:
             pygame.draw.rect(surface, (24, 23, 37), tag)
             surface.blit(fitted('TAPPED', tag.w - 6, 11, accent), (tag.x + 4, tag.y))
 
-    def preview(self, surface, card, mx, my):
+    def preview(self, surface, card, mx, my, cost=None):
         w, h = 300, 445
         x = mx + 22 if mx + w + 30 < surface.get_width() else mx - w - 22
         x = max(10, min(x, surface.get_width() - w - 10))
         y = max(10, min(my - h // 2, surface.get_height() - h - 10))
-        self.draw(surface, card, (x, y, w, h))
+        self.draw(surface, card, (x, y, w, h), cost=cost)
+        return pygame.Rect(x, y, w, h)

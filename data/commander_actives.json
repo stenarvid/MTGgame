@@ -3,5 +3,6 @@
     {"color": "U", "archetype": "Blink", "name": "Time Reversal", "desc": "Active: Return target non-land permanent to hand."},
     {"color": "B", "archetype": "Graveyard", "name": "Soul Reaper", "desc": "Active: Destroy target minion with cost <= 3."},
     {"color": "R", "archetype": "Spells", "name": "Flame Burst", "desc": "Active: Deal 3 damage to any target."},
-    {"color": "G", "archetype": "Ramp", "name": "Wild Growth", "desc": "Active: Search your deck for a basic land card."}
+    {"color": "G", "archetype": "Ramp", "name": "Wild Growth", "desc": "Active: Search your deck for a basic land card."},
+    {"color": "P", "archetype": "Morph", "name": "Adaptive Bloom", "desc": "Active: Choose a friendly creature and give it a chosen form until end of turn. Morphed creatures get a stronger form."}
   ]

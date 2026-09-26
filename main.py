@@ -5,11 +5,12 @@ import pygame
 from engine import Battle, Progress, Run, UNLOCKS
 from models import Card, color_starters, generate_procedural_commander, load_game_data
 from rendering import draw_node_icon, draw_wrapped_text
-from art import Artwork, CardPainter, fitted, font as art_font
+from art import Artwork, CardPainter, PALETTES, draw_mana_glyph, fitted, font as art_font
 from persistence import RunStore
 from ui_panels import QolPanels
 from card_interaction import CardInteraction
 from battlefield_piles import BattlefieldPiles
+from arena_ui import ArenaUI
 
 BG = (20, 18, 28)
 TEXT = (232, 232, 240)
@@ -18,7 +19,7 @@ MUTED = (159, 155, 178)
 GREEN = (95, 218, 151)
 
 
-class Game(BattlefieldPiles, CardInteraction, QolPanels):
+class Game(ArenaUI, BattlefieldPiles, CardInteraction, QolPanels):
     def __init__(self, save_path=None, progress_path=None):
         pygame.init()
         art_font.cache_clear()
@@ -52,9 +53,13 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
         self.hover = None
         self.message = self.progress.error
         self.page = self.hand_page = 0
-        self.pending = self.blocker = None
+        self.pending = None
+        self.blockers = set()
         self.chosen = set()
         self.legend = False
+        self.morph_choice = None
+        self.priority_signature = None
+        self.priority_since = 0
         self.recent_unlocks = []
         self.init_card_interaction()
 
@@ -67,10 +72,10 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
     def button(self, rect, label, action, enabled=True, selected=False, readable=False):
         rect = pygame.Rect(rect)
         over = rect.collidepoint(self.mouse_pos())
-        color = (64, 57, 86) if over and enabled else (38, 33, 52)
+        color = (67, 66, 55) if over and enabled else (26, 32, 32)
         pygame.draw.rect(self.screen, color, rect, border_radius=7)
         pygame.draw.rect(self.screen, GREEN if selected else GOLD if enabled else (80, 74, 93),
-                         rect, 2, border_radius=7)
+                         rect, 1, border_radius=7)
         self.screen.blit(fitted(label, rect.w - 24, 18, TEXT if enabled or readable else MUTED), (rect.x + 12, rect.y + 10))
         if enabled:
             self.buttons.append((rect, action))
@@ -119,19 +124,24 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
             self.battle = None
             self.state = 'MAP'
             self.message = 'Choose a green node to begin your ascent.'
-            self.pending = self.blocker = None
+            self.pending = None
+            self.blockers.clear()
             self.chosen.clear()
             self.save_run()
 
     def enter_node(self, node):
         if not self.run.enter(node):
+            self.message = ('Finish choosing your battle reward first.' if self.run.reward_pending else
+                            'Finish your current encounter first.' if self.run.node is not None else
+                            'Choose a green location connected to your completed path.')
             return
         self.message = ''
         if node.node_type in ('Combat', 'Elite', 'Boss'):
             self.battle = Battle(self.run)
             self.state = 'BATTLE'
             self.hand_page = 0
-            self.pending = self.blocker = None
+            self.pending = None
+            self.blockers.clear()
             self.chosen.clear()
             self.last_event = 0
             self.effects = []
@@ -170,7 +180,7 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
             return
         if self.battle.result:
             return
-        if self.battle.targets(card.name):
+        if self.battle.cast_targets(card):
             self.pending = card
             self.message = f'{card.name}: click a highlighted target. Right-click to cancel.'
 
@@ -179,8 +189,17 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
             self.pending = None
 
     def active(self):
+        if (self.battle.result or self.battle.phase not in ('MAIN', 'MAIN2')
+                or self.battle.active_used or self.battle.stack
+                or self.battle.commander_zone != 'BOARD'):
+            self.message = 'Commander abilities use sorcery timing: your main phase, an empty stack, and the commander on the battlefield.'
+            return
         if self.battle.active == 'Wild Growth':
             self.battle.use_active()
+        elif self.battle.active == 'Adaptive Bloom':
+            self.pending = 'ACTIVE'
+            self.morph_choice = None
+            self.message = 'Choose a form under your commander, then choose a friendly creature.'
         else:
             self.pending = 'ACTIVE'
             self.message = f'{self.battle.active}: click a highlighted target. Right-click to cancel.'
@@ -188,7 +207,11 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
     def valid_targets(self):
         if self.battle.phase == 'ATTACK_TARGET':
             return self.battle.copy_targets(self.battle.attack_choices[0])
+        if getattr(self.battle, 'pending_entry', None):
+            return list(self.battle.enemy.board)
         if self.pending is None:
+            return []
+        if self.pending == 'ACTIVE' and self.battle.active == 'Adaptive Bloom' and not self.morph_choice:
             return []
         return self.battle.targets(self.battle.active if self.pending == 'ACTIVE' else self.pending.name)
 
@@ -198,24 +221,39 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
             return
         if target not in self.valid_targets():
             return
-        success = (self.battle.use_active(target) if self.pending == 'ACTIVE'
-                   else self.battle.play(self.pending, target))
+        if getattr(self.battle, 'pending_entry', None):
+            success = self.battle.resolve_pending_entry(target)
+        else:
+            success = (self.battle.use_active(target, self.morph_choice) if self.pending == 'ACTIVE'
+                       else self.battle.play(self.pending, target))
         if success:
             self.pending = None
+            self.morph_choice = None
             self.message = ''
+
+    def choose_morph(self, choice):
+        self.morph_choice = choice
+        self.message = f'{choice.title()} form selected. Choose a highlighted friendly creature.'
 
     def click_creature(self, creature, friendly):
         battle = self.battle
-        if self.pending or battle.phase == 'ATTACK_TARGET':
+        if self.pending or getattr(battle, 'pending_entry', None) or battle.phase == 'ATTACK_TARGET':
             self.target(creature)
         elif battle.phase == 'BLOCK':
             if friendly and not creature.tapped:
-                self.blocker = creature
-            elif not friendly and self.blocker:
-                battle.assign_blocker(creature, self.blocker)
-                self.blocker = None
+                if creature in self.blockers:
+                    self.blockers.remove(creature)
+                else:
+                    self.blockers.add(creature)
+            elif not friendly and self.blockers:
+                for blocker in tuple(self.blockers):
+                    battle.assign_blocker(creature, blocker)
+                self.blockers.clear()
         elif battle.phase == 'ATTACK_RESPONSE' and not friendly:
             battle.reorder_blocker(creature)
+        elif (battle.phase in ('MAIN', 'MAIN2') and friendly and creature is battle.commander
+              and not battle.active_used and not battle.stack and battle.commander_zone == 'BOARD'):
+            self.active()
         elif battle.phase == 'MAIN' and friendly and not creature.sick and not creature.tapped:
             if creature in self.chosen:
                 self.chosen.remove(creature)
@@ -223,6 +261,9 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
                 self.chosen.add(creature)
 
     def advance_combat(self):
+        if getattr(self.battle, 'pending_entry', None):
+            self.message = 'Choose the highlighted ETB target first.'
+            return
         if self.battle.phase == 'ATTACK_TARGET':
             self.battle.choose_attack_copy(None)
         elif self.battle.phase == 'MAIN':
@@ -238,7 +279,8 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
         elif self.battle.phase == 'MULLIGAN':
             self.keep_hand()
         self.chosen.clear()
-        self.blocker = self.pending = None
+        self.pending = None
+        self.blockers.clear()
         self.message = ''
 
     def change_hand_page(self, delta):
@@ -276,7 +318,12 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
             pygame.draw.rect(self.screen, (35, 29, 48), (x, 115, 290, 695), border_radius=10)
             self.artwork.paint(self.screen, choice['color'], (x + 10, 125, 270, 175))
             self.text(choice['name'], x + 15, 320, GOLD)
-            self.text(f"{choice['color']} / {choice['archetype']}", x + 15, 352, MUTED)
+            pip_center = (x + 28, 363)
+            pip_color = PALETTES.get(choice['color'], (190, 180, 160))
+            pygame.draw.circle(self.screen, (12, 16, 22), pip_center, 13)
+            pygame.draw.circle(self.screen, pip_color, pip_center, 11)
+            draw_mana_glyph(self.screen, choice['color'], pip_center, 9)
+            self.text(choice['archetype'], x + 48, 352, MUTED)
             self.wrap(choice['desc'], x + 15, 392, 260)
             self.text('Starting cards (hover for details)', x + 15, 465, GREEN, self.small)
             for j, card in enumerate(color_starters(self.pool, choice['color'], choice['archetype'])):
@@ -286,10 +333,13 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
                     self.hover = card
             self.button((x + 15, 745, 260, 48), 'Choose', lambda c=choice: self.choose(c))
         self.button((25, 830, 170, 42), 'Back to menu', lambda: self.set_state('MENU'))
+        self.button((1040, 830, 215, 42), 'Exit fullscreen [F11]' if self.fullscreen else 'Fullscreen [F11]',
+                    self.toggle_fullscreen)
 
     def map_screen(self):
         run = self.run
         self.title(run.commander.name,
+                   f'AREA {getattr(run, "area", 1)} / {getattr(run, "total_areas", 4)}   |   '
                    f'HP {run.hp}/{run.max_hp}   |   Gold {run.gold}   |   Deck {len(run.deck)}   |   Relics {len(run.relics)}')
         self.button((910, 20, 160, 42), 'View deck', lambda: self.set_state('DECK'))
         self.button((1090, 20, 160, 42), 'Map legend', self.toggle_legend)
@@ -301,20 +351,29 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
         for row in run.grid:
             for node in row:
                 x, y = node.x, node.y + 25
+                # The icon and its label form one target, in logical screen coordinates.
+                label = self.small.render(node.node_type, True,
+                                          GREEN if node.available else GOLD if node.visited else MUTED)
+                label_rect = label.get_rect(midtop=(x, y + 24))
+                node.rect = pygame.Rect(x - 25, y - 25, 50, 50).union(label_rect).inflate(12, 8)
+                if node.available and node.rect.collidepoint(self.mouse_pos()):
+                    pygame.draw.rect(self.screen, (45, 65, 65), node.rect, border_radius=8)
+                    pygame.draw.rect(self.screen, GREEN, node.rect, 1, border_radius=8)
                 color = GREEN if node.available else GOLD if node.visited else (68, 61, 81)
                 pygame.draw.circle(self.screen, color, (x, y), 21)
                 draw_node_icon(self.screen, node.node_type, x, y)
-                self.text(node.node_type, x - 30, y + 24, color if node.available or node.visited else MUTED, self.small)
-                if node.available:
-                    self.buttons.append((pygame.Rect(x - 23, y - 23, 46, 46), lambda n=node: self.enter_node(n)))
+                self.screen.blit(label, label_rect)
+                self.buttons.append((node.rect, lambda n=node: self.enter_node(n)))
         self.button((30, 625, 175, 42), 'Run details', lambda: self.set_state('DETAILS'))
         self.button((225, 625, 180, 42), 'Save / pause', self.pause)
         self.button((1040, 625, 210, 42), 'Abandon run', lambda: self.set_state('ABANDON'))
+        self.text('Choose a green circle or its label. Start at the top; follow the paths downward.',
+                  30, 695, GREEN, self.small)
         if self.legend:
             pygame.draw.rect(self.screen, (35, 29, 48), (980, 88, 290, 290), border_radius=8)
             for i, label in enumerate(['Green: available', 'Gold: completed', 'Combat: earn gold',
                                        'Elite: harder duel, more gold', 'Rest: heal 10 HP',
-                                       'Merchant: buy cards', 'Treasure: choose a power-up', 'Boss: win the run']):
+                                       'Merchant: buy cards', 'Treasure: choose a power-up', 'Boss: advance / final boss wins']):
                 self.text(label, 995, 102 + i * 32, TEXT, self.small)
 
     def toggle_legend(self):
@@ -325,53 +384,62 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
         if b.phase == 'MULLIGAN':
             self.mulligan_screen()
             return
-        self.screen.blit(fitted(f'{b.enemy.name} | Turn {b.turn} | {b.phase.replace("_", " ").title()}', 715, 26, GOLD), (25, 15))
-        for x, label, callback in [(760, 'Draw [D]', lambda: self.inspect('deck')),
-                                    (885, 'Discard [G]', lambda: self.inspect('discard')),
-                                    (1010, 'Log [L]', lambda: self.set_state('LOG')),
-                                    (1135, 'Pause [P]', self.pause)]:
-            self.button((x, 12, 115, 36), label, callback)
-        targets = self.valid_targets()
-        for side, x in [(b.enemy, 25), (b.player, 650)]:
-            label = f'{"Enemy" if side is b.enemy else "You"}: {side.hp}/{side.max_hp} HP | Armor {side.armor}'
-            self.button((x, 59, 595, 42), label, lambda s=side: self.target(s),
-                        enabled=side in targets, selected=side in targets, readable=True)
-        self.screen.blit(fitted(f'Enemy mana {b.mana_summary(b.enemy)} | Hand {len(b.enemy.hand)} | {b.intent}', 1215, 13, MUTED), (25, 108))
-        self.text(f'Your lands {len(b.player.lands)} | Mana {b.mana_summary(b.player)} | '
-                  f'Land play: {"used" if b.player.land_played else "available"} | '
-                  f'Draw {len(b.player.deck)} / Discard {len(b.player.discard)}', 25, 366, GOLD, self.small)
+        self.text(f'TURN {b.turn}', 32, 25, GOLD, self.small)
+        self.screen.blit(fitted(b.phase.replace('_', ' ').title(), 240, 24, TEXT), (32, 48))
+        for x, label, callback in [(914, 'Log [L]', lambda: self.set_state('LOG')),
+                                    (1025, 'Help', lambda: self.set_state('BATTLE_HELP')),
+                                    (1136, 'Pause [P]', self.pause)]:
+            self.button((x, 18, 102, 34), label, callback)
+        self.draw_land_row(False)
+        self.draw_land_row(True)
         self.draw_battlefield()
+        self.draw_hero(False)
+        self.draw_hero(True)
+        self.draw_response_stack()
+        self.draw_phase_track()
+        if b.result:
+            self.button((1035, 582, 215, 58), f'{b.result.title()} - continue', self.end_battle)
+        else:
+            can_respond = b.player_can_respond() if b.phase == 'RESPONSE' else True
+            choosing_entry = bool(getattr(b, 'pending_entry', None))
+            label = {'ATTACK_TARGET': 'Skip copy', 'MAIN': f'Attack ({len(self.chosen)})' if self.chosen else 'Skip attacks',
+                     'MAIN2': 'End turn', 'RESPONSE': 'Pass priority' if can_respond else 'Resolving...', 'BLOCK': 'Confirm blocks',
+                     'ATTACK_RESPONSE': 'Resolve combat', 'DEFEND_RESPONSE': 'Resolve combat'}.get(b.phase, 'Continue')
+            label = 'Choose ETB target' if choosing_entry else label
+            self.button((1035, 582, 215, 58), label + (' [Space]' if can_respond and not choosing_entry else ''), self.advance_combat,
+                        enabled=can_respond and not choosing_entry)
+        self.button((40, 629, 132, 34), 'Draw pile [D]', lambda: self.inspect('deck'))
+        self.button((183, 629, 132, 34), 'Discard [G]', lambda: self.inspect('discard'))
+        self.button((326, 629, 130, 34), 'Clear selection', self.clear_selection)
+        sprite = next((c for c in b.player.board if c.name == 'Grove Sprite' and not c.sick and not c.tapped), None)
+        if sprite:
+            self.button((350, 572, 185, 33), 'Tap Sprite: +1 G', lambda: b.tap_sprite(sprite))
+        self.screen.blit(fitted(f'Mana {b.mana_summary(b.player)}  |  Deck {len(b.player.deck)}  |  Discard {len(b.player.discard)}',
+                                500, 14, GOLD), (40, 610))
         preview = b.combat_preview()
         if preview:
-            lethal = ', '.join(c.name for c in preview['deaths']) or 'none'
-            summary = f"Combat preview: you take {preview['player_damage']}, enemy takes {preview['enemy_damage']}. Lethal: {lethal}."
-            self.screen.blit(fitted(summary, 935, 14, GREEN), (25, 334))
-            self.text('Before later responses and death triggers.', 25, 350, MUTED, self.small)
-        self.draw_response_stack()
-        if b.result:
-            self.button((25, 590, 390, 46), f'{b.result.title()} - continue', self.end_battle)
-        else:
-            label = {'ATTACK_TARGET': 'Skip copy [Space]', 'MAIN': 'Declare attacks [Space]', 'MAIN2': 'End turn [Space]', 'RESPONSE': 'Pass priority [Space]',
-                     'BLOCK': 'Lock blocks [Space]', 'ATTACK_RESPONSE': 'Resolve combat [Space]', 'DEFEND_RESPONSE': 'Resolve combat [Space]'}.get(b.phase, 'Continue')
-            self.button((25, 590, 290, 46), label, self.advance_combat)
-            self.button((335, 590, 265, 46), b.active + (' (used)' if b.active_used else ''), self.active,
-                        enabled=b.phase in ('MAIN', 'MAIN2') and not b.active_used)
-            sprite = next((c for c in b.player.board if c.name == 'Grove Sprite' and not c.sick and not c.tapped), None)
-            self.button((620, 590, 230, 46), 'Tap Sprite: +1 G', lambda: b.tap_sprite(sprite), enabled=sprite is not None)
-            self.button((870, 590, 175, 46), 'Clear selection', self.clear_selection)
-        self.button((1065, 590, 185, 46), 'Rules / help', lambda: self.set_state('BATTLE_HELP'))
-        instruction = {'ATTACK_TARGET': 'Attack trigger: choose a highlighted creature to copy, or skip.', 'BLOCK': 'Select a blocker, then an attacker. Repeat to assign multiple blockers. Instants are playable.',
-                       'MAIN': 'Drag cards to play [1-9 also works]. Select attackers [A = all]. Declaring attacks opens a response window.',
-                       'MAIN2': 'Second main phase: play creatures or lands before ending your turn.',
-                       'RESPONSE': 'Cast an instant to respond, or pass priority. Newest spell resolves first.',
-                       'ATTACK_RESPONSE': 'Review blocks. Click an enemy blocker to move it last in damage order, or cast an instant.',
-                       'DEFEND_RESPONSE': 'Blocks locked. Cast instants or resolve damage.'}.get(b.phase, 'Battle finished.')
-        self.text(self.message or instruction, 25, 643, GREEN, self.small)
+            summary = f'COMBAT PREVIEW   You take {preview["player_damage"]} / Enemy takes {preview["enemy_damage"]}'
+            self.screen.blit(fitted(summary, 930, 14, TEXT), (45, 379))
+        elif b.phase == 'MAIN':
+            self.text(f'{len(self.chosen)} attackers selected. Click your ready creatures, then Attack.', 45, 379, TEXT, self.small)
+        instruction = {'MAIN': 'Click ready creatures to select attackers. Click a spell, then its target; or drag it to cast.',
+                       'MAIN2': 'Second main phase: play cards, then end your turn.',
+                       'BLOCK': 'Select one or more of your blockers, then click an enemy attacker. Confirm when finished.',
+                       'ATTACK_RESPONSE': 'Enemy blockers are assigned. Cast an instant or resolve combat.',
+                       'RESPONSE': 'Respond with an instant, or pass priority to resolve the stack.',
+                       'ATTACK_TARGET': 'Choose a highlighted creature to copy, or skip.'}.get(b.phase, 'Space advances the phase. Right-click cancels targeting.')
+        if getattr(b, 'pending_entry', None):
+            instruction = f'{b.pending_entry.name} entered. Click a highlighted enemy to finish its ETB effect.'
+        self.screen.blit(fitted(self.message or instruction, 950, 14, GREEN), (40, 686))
         self.draw_hand()
+        self.draw_alternate_hand()
+        self.draw_commander()
         self.render_feedback()
 
     def clear_selection(self):
-        self.pending = self.blocker = None
+        self.pending = None
+        self.blockers.clear()
+        self.morph_choice = None
         self.chosen.clear()
         if self.battle and self.battle.phase == 'BLOCK':
             self.battle.assignments.clear()
@@ -585,13 +653,13 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
             self.info_screen()
         if self.message and state not in ('BATTLE', 'WIN', 'LOSS'):
             self.text(self.message, 30, 876, GREEN, self.small)
-        if self.hover and not self.drag_card:
-            x, y = self.mouse_pos()
-            if self.state == 'BATTLE' and self.hand_hover is self.hover:
-                self.card_painter.draw(self.screen, self.hover, (35 if x > 640 else 665, 145, 300, 445),
-                                       cost=self.battle.cost(self.battle.player, self.hover))
-            else:
-                self.card_painter.preview(self.screen, self.hover, x, y)
+        if self.hover and not self.drag_card and pygame.key.get_pressed()[pygame.K_LALT]:
+            cost = (self.battle.cost(self.battle.player, self.hover)
+                    if self.state == 'BATTLE' and (self.hover in self.battle.player.hand
+                    or self.hover is self.battle.commander or self.battle.alternate_zone(self.hover)) else None)
+            preview_rect = pygame.Rect(360, 145, 300, 445)
+            self.card_painter.draw(self.screen, self.hover, preview_rect, cost=cost)
+            self.draw_card_modifiers(self.hover, preview_rect)
         if self.state == 'BATTLE':
             self.draw_drag()
         if self.store.error:
@@ -617,7 +685,7 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
                 self.save_run(True)
             elif event.key == pygame.K_ESCAPE:
                 if self.state == 'BATTLE':
-                    if self.pending or self.chosen or self.blocker:
+                    if self.pending or self.chosen or self.blockers:
                         self.clear_selection()
                     else:
                         self.pause()
@@ -671,10 +739,23 @@ class Game(BattlefieldPiles, CardInteraction, QolPanels):
             for event in pygame.event.get():
                 self.handle_event(event)
                 self.draw()
+            self.auto_pass_priority()
             self.check_unlocks()
             self.present()
             self.clock.tick(60)
         pygame.quit()
+
+    def auto_pass_priority(self):
+        if self.state != 'BATTLE' or not self.battle or self.battle.phase != 'RESPONSE' or self.battle.player_can_respond():
+            self.priority_signature = None
+            return
+        signature = tuple(id(item) for item in self.battle.stack)
+        now = pygame.time.get_ticks()
+        if signature != self.priority_signature:
+            self.priority_signature, self.priority_since = signature, now
+        elif now - self.priority_since >= 260:
+            self.battle.pass_priority()
+            self.priority_signature = None
 
 
 def main():

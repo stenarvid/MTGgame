@@ -72,6 +72,14 @@ class SpellRules:
             elif kind == 'ramp':
                 for land in [c for c in side.deck if c.card_type == 'Land'][:amount]:
                     side.deck.remove(land); land.tapped = True; side.lands.append(land)
-        side.discard.append(self.base_card(card))
+            elif kind == 'morph':
+                self.morph(side, target, effect['mutation'], amount)
+            elif kind == 'morph_board':
+                self.morph_board(side, effect.get('selection', 'friendly'), effect['mutation'], amount)
+            elif kind == 'blink_board':
+                for creature in list(side.board):
+                    if creature in side.board and not creature.token:
+                        self.return_unit(side, creature, blink=True, actor=side)
+        self.finish_spell(side, card)
         self.cleanup_deaths()
         self.check_result()

@@ -38,10 +38,12 @@ class RulesTests(unittest.TestCase):
         return card
 
     def test_pool_starters_and_preview_are_stable(self):
-        self.assertEqual(len(self.pool['cards']), 150)
+        self.assertEqual(len(self.pool['cards']), 161)
         first = color_starters(self.pool, 'R', 'Spells')
         self.assertEqual([c.name for c in first], [c.name for c in color_starters(self.pool, 'R', 'Spells')])
         self.assertIn('Spellweaver Pyromancer', [c.name for c in first])
+        self.assertEqual(len(color_starters(self.pool, 'P', 'Morph')), len(first))
+        self.assertEqual(len(color_starters(self.pool, 'P', 'Morph')), 8)
         self.assertEqual(len(self.run.deck), 16)
         self.assertEqual(self.run.stats['kills'], 0)
 
@@ -165,17 +167,48 @@ class RulesTests(unittest.TestCase):
         count = self.run.stats['cards_drawn']
         self.play('Aether Warp', creature)
         fresh = self.b.player.board[0]
+        self.assertIsNot(fresh, creature)
         self.assertEqual(fresh.attack, 1)
         self.assertTrue(fresh.sick)
         self.assertFalse(fresh.tapped)
         self.assertEqual(self.run.stats['cards_drawn'], count + 2)
+        self.assertIn('blink', [event['kind'] for event in self.b.events])
 
     def test_phase_shifter_returns_enemy(self):
         enemy = self.card('Grove Sprite')
         self.b.enemy.board.append(enemy)
         self.play('Phase Shifter', enemy)
+        shifter = next(card for card in self.b.player.board if card.name == 'Phase Shifter')
+        self.assertIs(self.b.pending_entry, shifter)
+        self.assertIn(enemy, self.b.enemy.board)
+        self.assertTrue(self.b.resolve_pending_entry(enemy))
         self.assertEqual(self.b.enemy.board, [])
         self.assertEqual(self.b.enemy.hand[-1].name, 'Grove Sprite')
+        self.assertEqual(self.b.events[-1]['kind'], 'return')
+
+    def test_blink_and_death_publish_animation_events(self):
+        creature = self.card('Grove Sprite')
+        self.b.player.board = [creature]
+        self.b.return_unit(self.b.player, creature, blink=True)
+        self.assertEqual(self.b.events[-1]['kind'], 'blink')
+        returned = self.b.player.board[0]
+        returned.current_health = 0
+        self.b.cleanup_deaths()
+        self.assertEqual(self.b.events[-1]['kind'], 'death')
+
+    def test_multiple_targeted_etbs_queue_and_do_not_softlock(self):
+        first = self.card('Phase Shifter'); second = self.card('Phase Shifter')
+        enemy = self.card('Grove Sprite')
+        self.b.player.board = [first, second]
+        self.b.enemy.board = [enemy]
+        self.b.begin_enter_effect(self.b.player, first)
+        self.b.begin_enter_effect(self.b.player, second)
+        self.assertIs(self.b.pending_entry, first)
+        self.assertEqual(self.b.pending_entries, [second])
+        self.assertTrue(self.b.resolve_pending_entry(enemy))
+        self.assertIsNone(self.b.pending_entry)
+        self.assertEqual(self.b.pending_entries, [])
+        self.assertEqual(self.b.enemy.hand[-1].name, enemy.name)
 
     def test_titan_growth_only_first_played_creature(self):
         self.b.passive = 'Titan Growth'
