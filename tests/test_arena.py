@@ -1,5 +1,6 @@
 """Regression coverage for drag casting, attack triggers and token replacement."""
 import unittest
+from unittest import mock
 import tempfile
 from pathlib import Path
 from collections import Counter
@@ -47,8 +48,7 @@ class TriggerTests(unittest.TestCase):
         self.assertEqual(b.player.hp, 12)
         self.assertEqual(b.run.stats['blink_returns'], 1)
         b.passive = 'Living Roots'
-        land = next(c for c in b.player.deck if c.card_type == 'Land')
-        b.player.deck.remove(land); b.player.hand.append(land)
+        land = b.player.land_reserve[0]
         self.assertTrue(b.play(land))
         self.assertEqual(b.player.hp, 14)
         self.assertEqual(b.run.stats['lands_played'], 1)
@@ -60,11 +60,10 @@ class TriggerTests(unittest.TestCase):
         self.assertFalse(b.play(spell))
         self.assertEqual(b.run.stats['spells_cast'], 1)
 
-    def test_thirty_cards_per_archetype(self):
+    def test_fifty_cards_per_faction(self):
         counts=Counter(c['archetype'] for c in self.fixture.pool['cards'])
-        self.assertEqual({key: counts[key] for key in ['Token','Blink','Graveyard','Spells','Ramp']},
-                         dict.fromkeys(['Token','Blink','Graveyard','Spells','Ramp'],30))
-        self.assertEqual(counts['Morph'], 11)
+        factions=['Token','Blink','Graveyard','Spells','Ramp','Morph']
+        self.assertEqual({key: counts[key] for key in factions},dict.fromkeys(factions,50))
 
     def test_attack_copy_choice_stack_entry_and_exile(self):
         source=self.put('Astra, Echo Conduit'); target=self.put('Tide Scholar')
@@ -129,18 +128,16 @@ class TriggerTests(unittest.TestCase):
 
     def test_land_and_enter_triggers(self):
         source=self.put('Rootbound Sage')
-        land=next(c for c in self.b.player.deck if c.card_type=='Land')
-        self.b.player.deck.remove(land); self.b.player.hand.append(land)
+        land=self.b.player.land_reserve[0]
         self.assertTrue(self.b.play(land))
         self.assertIs(self.b.stack[-1].card,source)
         self.settle()
         count=len(self.b.player.lands)
-        if not any(c.card_type == 'Land' for c in self.b.player.deck):
-            self.b.player.deck.append(Card('Test Conduit', 'Land', 'G', 0))
+        before_plays = self.b.player.land_plays_remaining
         self.b.resolve_card(StackItem(self.card('Grove Tender'),self.b.player,None))
         self.settle()
-        self.assertEqual(len(self.b.player.lands),count+1)
-        self.assertTrue(self.b.player.lands[-1].tapped)
+        self.assertEqual(len(self.b.player.lands), count)
+        self.assertEqual(self.b.player.land_plays_remaining, before_plays + 1)
 
     def test_death_triggers_finish_before_next_phase(self):
         self.put('Mourning Priest')
@@ -199,6 +196,67 @@ class DragTests(unittest.TestCase):
         self.grab(card); self.event(pygame.KEYDOWN,key=pygame.K_ESCAPE)
         self.assertIsNone(self.game.drag_card)
         self.assertEqual(self.game.state,'BATTLE')
+
+    def test_click_plays_untargeted_card_without_dragging(self):
+        card = self.card('Citadel Recruit')
+        self.game.battle.player.hand = [card]
+        self.game.draw()
+        pos = self.game.hand_hits[0][1].center
+        self.event(pygame.MOUSEBUTTONDOWN, button=1, pos=pos)
+        self.event(pygame.MOUSEBUTTONUP, button=1, pos=pos)
+        self.assertNotIn(card, self.game.battle.player.hand)
+        self.assertIs(self.game.battle.stack[-1].card, card)
+
+    def test_keyboard_does_not_target_an_unplayable_card(self):
+        card = self.card('Overcharge Bolt')
+        self.game.battle.player.hand = [card]
+        self.game.battle.phase = 'UPKEEP'
+        self.game.play_card(card)
+        self.assertIsNone(self.game.pending)
+        self.assertIn('priority', self.game.message.lower())
+
+    def test_cleanup_cards_are_selected_instead_of_dragged(self):
+        while len(self.game.battle.player.hand) < 9:
+            self.game.battle.player.hand.append(self.card('Citadel Recruit'))
+        self.game.battle.phase = 'DISCARD'
+        self.game.draw()
+        _, rect, _ = self.game.hand_hits[len(self.game.hand_hits) // 2]
+        card = self.game.hand_at(rect.center)
+        self.event(pygame.MOUSEBUTTONDOWN, button=1, pos=rect.center)
+        self.assertIn(card, self.game.chosen)
+        self.assertIsNone(self.game.drag_card)
+
+    def test_number_keys_select_cleanup_discards(self):
+        while len(self.game.battle.player.hand) < 9:
+            self.game.battle.player.hand.append(self.card('Citadel Recruit'))
+        self.game.battle.phase = 'DISCARD'
+        card = self.game.battle.player.hand[0]
+        self.event(pygame.KEYDOWN, key=pygame.K_1, unicode='1')
+        self.assertIn(card, self.game.chosen)
+        self.event(pygame.KEYDOWN, key=pygame.K_1, unicode='1')
+        self.assertNotIn(card, self.game.chosen)
+
+    def test_cleanup_selection_survives_save_and_resume(self):
+        while len(self.game.battle.player.hand) < 9:
+            self.game.battle.player.hand.append(self.card('Citadel Recruit'))
+        self.game.battle.phase = 'DISCARD'
+        selected = set(self.game.battle.player.hand[:2])
+        selected_names = {card.name for card in selected}
+        self.game.chosen = selected
+        self.assertTrue(self.game.save_run())
+        self.game.chosen.clear()
+        self.game.resume_run()
+        self.assertEqual(self.game.battle.phase, 'DISCARD')
+        self.assertEqual({card.name for card in self.game.chosen}, selected_names)
+        self.assertEqual(len(self.game.chosen), 2)
+
+    def test_discard_suggestion_selects_exact_required_count(self):
+        while len(self.game.battle.player.hand) < 10:
+            self.game.battle.player.hand.append(self.card('Citadel Recruit'))
+        self.game.battle.phase = 'DISCARD'
+        self.game.suggest_discards()
+        self.assertEqual(len(self.game.chosen), self.game.battle.required_discards())
+        self.assertTrue(self.game.chosen.issubset(set(self.game.battle.player.hand)))
 
     def test_dragging_sixth_card_onto_third_reorders_hand(self):
         hand = [self.card(name) for name in ('Magma Bolt', 'Citadel Recruit', 'Null Sigil',
@@ -288,6 +346,7 @@ class DragTests(unittest.TestCase):
 
     def test_pile_single_attack_and_count_select_all(self):
         b = self.game.battle
+        b.phase = 'COMBAT'
         b.tokens(b.player, 30)
         for c in b.player.board:
             c.sick = False
@@ -313,9 +372,10 @@ class DragTests(unittest.TestCase):
             b.summon(b.player, card)
         self.game.draw()
         self.assertEqual(len(self.game.board_groups(b.player)), 24)
-        self.assertEqual(len(self.game.board_hits), 7)
+        self.assertEqual(len(self.game.board_hits), 14)
+        self.assertEqual(len({rect.y for _, rect in self.game.board_hits}), 2)
         self.game.board_page(True, 3); self.game.draw()
-        self.assertEqual(len(self.game.board_hits), 3)
+        self.assertEqual(len(self.game.board_hits), 10)
         self.assertIs(self.game.drop_target(self.game.board_hits[-1][1].center), b.player.board[-1])
 
     def test_hover_lift_disappears_on_grab(self):
@@ -325,7 +385,12 @@ class DragTests(unittest.TestCase):
         self.game.draw()
         self.assertIs(self.game.hand_hover,card)
         self.assertIsNotNone(self.game.lifted_rect)
-        self.event(pygame.MOUSEBUTTONDOWN,button=1,pos=pos); self.game.draw()
+        keys = {pygame.K_LALT: True}
+        with mock.patch('pygame.key.get_pressed', return_value=keys):
+            self.game.draw()
+            self.assertIsNotNone(self.game.lifted_rect)
+        self.event(pygame.MOUSEBUTTONDOWN,button=1,pos=pos)
+        self.game.draw()
         self.assertIsNone(self.game.hand_hover)
         self.assertIsNone(self.game.lifted_rect)
 

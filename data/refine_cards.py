@@ -156,7 +156,7 @@ def describe(f, target=None):
  'area_damage':f'deal {n} damage to each enemy creature','drain':f'the enemy hero loses {n} life and you gain that much',
  'recall':f'return {n} highest-cost creature(s) from your discard to hand','recover_spell':f'return {n} highest-cost spell(s) from your discard to hand',
  'reanimate':f"return {n} highest-cost creature(s) costing at most {f.get('max_cost',3)} from your discard to play",
- 'search':f'search {n} land(s) from your deck into hand','land':f'search {n} land(s) from your deck into play tapped','ramp':f'search {n} land(s) from your deck into play tapped',
+ 'search':f'play {n} additional land(s) from your reserve this turn','land':f'play {n} additional land(s) from your reserve this turn','ramp':f'play {n} additional land(s) from your reserve this turn',
  'self_buff':f'this gets +{n}/+{n} permanently','team_buff':f'your creatures get +{n}/+{n} this turn',
  'buff_group':f"{SELECTION.get(f.get('selection','all'))} get +{f.get('power',n)}/+{n} "+('permanently' if f.get('permanent') else 'this turn'),
  'grant_keyword':('that creature' if target=='friendly' else SELECTION.get(f.get('selection','all')))+f" gains {f.get('keyword','')} permanently",
@@ -167,6 +167,8 @@ def describe(f, target=None):
  if k=='copy':
   texts[k]='choose another friendly nontoken creature; create a '+('1/1 ' if f.get('copy_mode')=='small' else '')+'token copy tapped and attacking'+('' if f.get('copy_mode')=='permanent' else '; exile it at turn end')
  text=texts[k]
+ if f.get('scale'):
+  text=text.replace('card(s)', 'cards').replace('creature(s)', 'creatures').replace('spell(s)', 'spells').replace('land(s)', 'lands').replace('token(s)', 'tokens')
  if f.get('condition'):text='if '+CONDITIONS[f['condition']]+', '+text
  if not f.get('scale'):
   amount=f.get('amount',0)
@@ -197,7 +199,7 @@ def apply_identities(data):
 
 def catalog(data):
  cards=[dict(c,archetype=a) for a,cs in data['archetype_boosters'].items() for c in cs]+list(data['starter_cards'].values())+data['expansion_cards']
- lines=['# Card catalog','',f'{len(cards)} cards; 30 per archetype. Expansion cards use existing anime portraits.','']
+ lines=['# Card catalog','',f'{len(cards)} cards; 50 per faction. Expansion cards reuse the faction art library.','']
  for archetype in data['archetype_boosters']:
   lines += ['## '+archetype,'','| Card | Mana / color | Stats | Rules |','|---|---|---|---|']
   for c in cards:
@@ -207,4 +209,4 @@ def catalog(data):
 if __name__=='__main__':
  path=ROOT/'data/cards.json';data=apply_identities(json.loads(path.read_text()))
  path.write_text(json.dumps(data,indent=2)+'\n');(ROOT/'CARD_CATALOG.md').write_text(catalog(data))
- print('Reviewed 125 expansion cards; 150 cards retained.')
+ print('Refreshed curated card rules and the complete faction catalog.')

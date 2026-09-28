@@ -15,7 +15,7 @@ class ContentTests(unittest.TestCase):
     def test_all_fifty_structured_spells_cast_and_resolve(self):
         pool=self.fixture().pool
         spells=[c for c in pool['cards'] if c.get('spell')]
-        self.assertEqual(len(spells),60)
+        self.assertGreaterEqual(len(spells),130)
         for data in spells:
             with self.subTest(card=data['name']):
                 f=self.fixture(); b=f.b
@@ -60,10 +60,11 @@ class ContentTests(unittest.TestCase):
 
     def test_every_new_creature_trigger_has_a_supported_effect(self):
         supported={'copy','tokens','draw','heal','damage','drain','recall','land','search','team_buff','self_buff',
-                   'buff_group','custom_tokens','loot','freeze','mill','reanimate','grant_keyword','recover_spell','armor'}
+                   'buff_group','custom_tokens','loot','freeze','mill','reanimate','grant_keyword','recover_spell','armor',
+                   'untap_lands','power_damage','morph_self'}
         pool=self.fixture().pool
         creatures=[c for c in pool['cards'] if c.get('trigger')]
-        self.assertEqual(len(creatures),75)
+        self.assertGreaterEqual(len(creatures),144)
         for data in creatures:
             with self.subTest(card=data['name']):
                 f=self.fixture();b=f.b
@@ -73,5 +74,15 @@ class ContentTests(unittest.TestCase):
                 self.assertIn(item.ability['effect'],supported)
                 b.resolve_trigger(item)
                 self.assertTrue(any('ability resolves' in line for line in b.log))
+
+    def test_every_faction_has_fifty_unique_cards(self):
+        pool=self.fixture().pool
+        for faction in ('Token','Blink','Graveyard','Spells','Ramp','Morph'):
+            cards=[card for card in pool['cards'] if card.get('archetype') == faction]
+            self.assertEqual(len(cards),50,faction)
+            self.assertEqual(len({card['name'] for card in cards}),50,faction)
+            designs={(card['type'],card['cost'],card.get('atk',0),card.get('hp',0),
+                      str(card.get('trigger')),str(card.get('spell')),card.get('text')) for card in cards}
+            self.assertEqual(len(designs),50,f'{faction} contains duplicate card designs')
 
 if __name__=='__main__':unittest.main()

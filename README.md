@@ -1,4 +1,4 @@
-﻿# Commander Spire
+# Commander Spire
 
 A Pygame deckbuilding roguelike inspired by Slay the Spire, Dungeon Run, and MTG.
 
@@ -31,8 +31,8 @@ cast using the cost shown in its mana pips. Its two selected colors supply its
 colored requirements (two pips if both choices share a color). Each command-zone
 cast adds two generic mana to its next cast; the tax resets between battles.
 Death, countering, and returning it to hand instead return it to the command zone.
-Blinking keeps it on the battlefield. Existing passive and active abilities remain
-available independently of whether the commander creature is in play.
+Blinking keeps it on the battlefield. Passive abilities remain available throughout
+combat; active abilities require the commander on the battlefield.
 
 Cards with permission to cast from graveyard/exile appear in a separate tray
 between the hand and commander. Available plays glow; unavailable ones remain
@@ -62,18 +62,19 @@ their accumulated perpetual bonuses survive zone changes and blinking.
 
 Creatures and lands visibly rotate when tapped, attackers surge toward the
 defending side, and priority advances automatically when you have no legal
-instant-speed response. The commander ability and its Morph choice controls sit
-directly below the command-zone card.
+instant-speed response. Once cast, the real battlefield commander has a small
+ability badge; clicking the card itself keeps the normal attack/block behavior.
 
 The active hero glows to make turn ownership obvious. A five-step track beside
 the hero marks upkeep, first main, combat, second main, and end; the current step
 lights up in gold. Mana costs use separate circular generic and colored pips,
 and lands use wide overlapping battlefield cards that rotate when tapped.
 
-When the commander is on the battlefield, clicking its command-zone panel during
-a main phase opens or uses its active ability. Adaptive Bloom's Might, Insight,
-and Renewal buttons show their exact normal and enhanced effects when hovered.
-Display settings offer 75%, 100%, and 125% sizes, fullscreen, and reduced animations.
+When the commander is on the battlefield, click its ability badge during a main
+phase with an empty stack to use its sorcery-speed active. Adaptive Bloom's Might,
+Insight, and Renewal buttons show their exact normal and enhanced effects when hovered.
+Display settings offer 75%, 100%, and 125% sizes, fullscreen, four animation speeds,
+and a configurable card-inspection modifier key.
 On smaller desktops the initial window fits the available screen.
 F11 toggles fullscreen from any screen, and the passive/active builder also has
 a visible fullscreen button. Letterboxed space uses a dimmed scene background
@@ -92,15 +93,16 @@ Enemy health increases in later areas.
 
 - **Combat / Elite / Boss:** gain 20 / 35 / 60 gold, then choose a three-card synergy booster. Packs use concrete labels such as Token Generation, Creature Buffing, Direct Damage, Blink & ETB, Graveyard Recovery, Mana Ramp, or Morphing, and every card shown belongs to that theme.
   matching your commander colors, or skip. Rewards cannot be collected twice.
-- **Merchant:** buy matching-color cards and use one service per visit: remove a
-  card for 40 gold or upgrade one for 30. Review the selected card before confirming.
+- **Merchant:** buy matching-color cards and use services as often as your gold allows:
+  remove a card for 40 gold or upgrade one for 30. Review the selected card before confirming.
   Removal preserves at least 10 cards and two lands of each existing color.
 - **Rest:** heal up to 10 HP **or** upgrade a card for free.
 - **Treasure:** choose one of up to three unowned relics. Relic choices remain
   exclusive to Treasure nodes. Owning all relics yields 25 gold instead.
 
-Creature upgrades give permanent +1/+1. Spell upgrades improve their numerical
-effects by one; upgraded Null Sigil also draws a card when it counters. Lands cannot
+Cards can be upgraded repeatedly. Every level follows a card-specific track: ETB,
+death, attack, spell, mana, and combat abilities scale differently, with +1/+1 added
+where appropriate. Upgraded Prism Larva repeats its morphed enter ability. Lands cannot
 be upgraded. Upgrades survive battles, death, bounce, and reshuffles; combat buffs
 are not written into the run deck.
 
@@ -144,13 +146,17 @@ pile empties. If both are empty, failed draws cause increasing fatigue damage.
 
 ### Phases, responses, and combat
 
-1. **First main phase:** play lands, creatures, spells, or the once-per-battle
-   commander active. Select ready creatures and declare attacks (or none).
-2. **Attack response window:** the enemy declares blockers. Review the damage
+1. **Upkeep:** untap, draw, and resolve upkeep effects, then enter First Main.
+2. **First main phase:** play lands, creatures, sorceries, or the once-per-battle
+   commander active. Enter Combat when ready; attackers cannot be chosen here.
+3. **Combat:** select ready creatures and attack (or choose no attackers). Instants
+   may be cast before attackers are declared.
+4. **Attack response window:** the enemy declares blockers. Review the damage
    preview, reorder enemy blockers by clicking one to move it last, and cast instants.
    Resolve combat when ready.
-3. **Second main phase:** play more cards before ending your turn.
-4. **Enemy turn:** enemy card casts pause on the spell stack for your responses.
+5. **Second main phase:** play more lands, creatures, and sorceries.
+6. **End step:** until-end-of-turn effects and marked damage are cleared, then end the turn.
+7. **Enemy turn:** enemy card casts pause on the spell stack for your responses.
    When it attacks, assign your blockers, lock them, respond, then resolve damage.
 
 All nonland cards are cast onto a **last-in, first-out spell stack**. Cast an instant
@@ -197,7 +203,7 @@ land-tapping UI, and there are no upkeep/end-step priority windows or sideboards
 
 ## Trigger-card expansion and Mirror Legion
 
-The pool now has **150 cards: 30 each in Token, Blink, Graveyard, Spells, and Ramp**.
+The pool now has **300 cards: 50 each in Token, Blink, Graveyard, Spells, Ramp, and Morph**.
 The unlocked Card Advantage commander uses the blue Blink pool. Starting decks stay
 at 16 cards; new cards appear in matching-color rewards and shops. The complete
 card list and rules text are in [CARD_CATALOG.md](CARD_CATALOG.md).
@@ -237,8 +243,8 @@ if its chosen target leaves play. Death triggers resolve before combat advances.
 | Right-click | Clear targeting/selections; clear unlocked block assignments |
 | Escape | Cancel a selection, return from an inspection panel, or pause |
 
-The hand fans across the bottom. Hover lifts and enlarges a card with a cyan glow
-and a separate readable preview. Holding left mouse picks it up and hides the
+The hand fans across the bottom. Hover raises a card above the fan; holding the
+configured inspection key opens its large readable preview. Holding left mouse picks it up and hides the
 preview; release over the battlefield to cast, or over a highlighted creature,
 hero, or stack spell for targeted cards. Invalid drops return the card without
 spending mana. Escape/right-click cancels a drag. Mouse coordinates respect scaling.

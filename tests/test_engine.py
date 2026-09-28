@@ -38,7 +38,7 @@ class RulesTests(unittest.TestCase):
         return card
 
     def test_pool_starters_and_preview_are_stable(self):
-        self.assertEqual(len(self.pool['cards']), 161)
+        self.assertEqual(len(self.pool['cards']), 300)
         first = color_starters(self.pool, 'R', 'Spells')
         self.assertEqual([c.name for c in first], [c.name for c in color_starters(self.pool, 'R', 'Spells')])
         self.assertIn('Spellweaver Pyromancer', [c.name for c in first])
@@ -49,7 +49,7 @@ class RulesTests(unittest.TestCase):
 
     def test_opening_conserves_all_lands_and_cards(self):
         player = self.b.player
-        cards = player.deck + player.hand + player.lands
+        cards = player.deck + player.hand + player.lands + player.land_reserve
         self.assertEqual(len(cards), len(self.run.deck))
         self.assertEqual(sum(c.card_type == 'Land' for c in cards), 8)
         self.assertEqual(len(player.lands), 2)
@@ -267,15 +267,17 @@ class RulesTests(unittest.TestCase):
         sprite = self.play('Grove Sprite')
         self.assertFalse(self.b.tap_sprite(sprite))
         self.play('Titan Overseer')
+        reserve_before = len(self.b.player.land_reserve)
         self.b.start_turn(self.b.player)
-        self.assertEqual(self.b.player.colored_mana['G'], 2)
+        self.assertEqual(self.b.player.land_plays_remaining, 1 + min(1, reserve_before))
         self.assertTrue(self.b.tap_sprite(sprite))
         self.assertFalse(self.b.tap_sprite(sprite))
-        self.assertEqual(self.b.player.colored_mana['G'], 3)
-        before = sum(c.card_type == 'Land' for c in self.b.player.hand)
-        available = sum(c.card_type == 'Land' for c in self.b.player.deck)
+        self.assertEqual(self.b.player.colored_mana['G'], 1)
+        before = self.b.player.land_plays_remaining
+        available = len(self.b.player.land_reserve)
         self.play("Nature's Bounty")
-        self.assertEqual(sum(c.card_type == 'Land' for c in self.b.player.hand), before + min(2, available))
+        self.assertEqual(self.b.player.land_plays_remaining, before + min(2, available))
+        self.assertFalse(any(c.card_type == 'Land' for c in self.b.player.deck))
 
     def test_all_actives_once_per_battle(self):
         b = self.b
@@ -284,14 +286,31 @@ class RulesTests(unittest.TestCase):
                 b.active, b.active_used = name, False
                 enemy = self.card('Citadel Recruit')
                 b.enemy.board = [enemy]
+                friendly = self.card('Citadel Recruit')
+                friendly.sick = False
+                b.player.board = [friendly]
                 b.player.hp = 20
-                target = b.player if name == 'Holy Light' else enemy
+                target = (b.player if name == 'Holy Light' else
+                          friendly if name in ('Time Reversal', 'Soul Reaper') else enemy)
                 self.assertTrue(b.use_active(target))
                 self.assertFalse(b.use_active(target))
                 if name == 'Holy Light':
                     self.assertEqual(b.player.hp, 23)
-                elif name in ('Soul Reaper', 'Time Reversal', 'Flame Burst'):
+                    self.assertTrue(any(card.token for card in b.player.board))
+                elif name == 'Time Reversal':
+                    self.assertEqual(len(b.player.board), 1)
+                    self.assertIsNot(b.player.board[0], friendly)
+                elif name == 'Soul Reaper':
+                    self.assertTrue(any(card.name == friendly.name for card in b.player.board))
+                elif name == 'Flame Burst':
                     self.assertNotIn(enemy, b.enemy.board)
+
+    def test_flame_burst_scales_with_spells_cast_this_turn(self):
+        self.b.active = 'Flame Burst'
+        self.b.player.spells_this_turn = 2
+        before = self.b.enemy.hp
+        self.assertTrue(self.b.use_active(self.b.enemy))
+        self.assertEqual(self.b.enemy.hp, before - 5)
 
     def test_invalid_active_does_not_consume_use(self):
         self.b.active = 'Soul Reaper'
@@ -307,11 +326,11 @@ class RulesTests(unittest.TestCase):
         b.keep_hand()
         self.assertEqual(b.player.hp, 23)
         self.assertEqual(b.player.armor, 5)
-        self.assertEqual(b.available_mana(b.player), 3)
+        self.assertEqual(b.available_mana(b.player), 5)
         self.assertEqual(b.cost(b.player, self.card('Titan Overseer')), 2)
         b.passive = 'Overcharge Core'
         spell = Card('Test', 'Instant Spell', 'R', 3)
-        self.assertEqual(b.cost(b.player, spell), 2)
+        self.assertEqual(b.cost(b.player, spell), 1)
         enemy = self.card('Citadel Recruit')
         b.summon(b.enemy, enemy)
         self.assertEqual(enemy.attack, 0)
@@ -391,6 +410,28 @@ class RulesTests(unittest.TestCase):
         fresh = Run(self.cmd, self.pool)
         self.assertEqual((fresh.hp, fresh.gold, len(fresh.deck), fresh.relics), (30, 35, 16, []))
 
+    def test_boss_adds_one_land_for_each_commander_color(self):
+        self.run.node.node_type = 'Boss'
+        before = {color: sum(card.card_type == 'Land' and card.color_code == color
+                             for card in self.run.deck)
+                  for color in set(self.run.commander.colors)}
+        self.assertTrue(self.run.finish())
+        for color, count in before.items():
+            self.assertEqual(sum(card.card_type == 'Land' and card.color_code == color
+                                 for card in self.run.deck), count + 1)
+        self.assertEqual(self.run.stats['bosses_defeated'], 1)
+
+    def test_two_passive_commander_applies_both_effects(self):
+        _, meta, pool = load_game_data()
+        first = next(value for value in meta['passives'] if value['name'] == 'Valkyrie Grace')
+        second = next(value for value in meta['passives'] if value['name'] == 'Mirror Legion')
+        commander = generate_procedural_commander(meta, [], [], first, forced_second_passive=second)
+        run = Run(commander, pool); run.enter(run.grid[0][0])
+        battle = Battle(run)
+        battle.tokens(battle.player, 1)
+        self.assertEqual(len([card for card in battle.player.board if card.token]), 4)
+        self.assertIsNone(battle.active)
+
     def test_achievement_persistence_and_bad_save(self):
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / 'save.json'
@@ -405,6 +446,45 @@ class RulesTests(unittest.TestCase):
             self.assertEqual(Progress(path).unlocked, {u['name'] for u in UNLOCKS})
             path.write_text('broken', encoding='utf-8')
             self.assertTrue(Progress(path).error)
+
+    def test_damage_persists_until_end_step_and_actives_are_main_phase_only(self):
+        creature = self.play('Citadel Recruit')
+        creature.current_health -= 1
+        damaged = creature.current_health
+        self.b.phase = 'COMBAT'
+        self.assertFalse(self.b.use_active(self.b.player))
+        self.assertEqual(creature.current_health, damaged)
+        self.b.phase = 'MAIN2'
+        self.assertEqual(creature.current_health, damaged)
+        self.assertTrue(self.b.begin_end_step())
+        self.assertNotEqual(self.b.phase, 'END')
+        self.assertEqual(creature.current_health, creature.max_health)
+
+    def test_end_step_requires_discarding_to_seven_then_advances(self):
+        while len(self.b.player.hand) < 9:
+            self.b.player.hand.append(self.card('Citadel Recruit'))
+        self.b.phase = 'MAIN2'
+        self.assertTrue(self.b.begin_end_step())
+        self.assertEqual(self.b.phase, 'DISCARD')
+        self.assertEqual(self.b.required_discards(), 2)
+        selected = self.b.player.hand[:2]
+        self.assertFalse(self.b.discard_to_hand_limit(selected[:1]))
+        self.assertTrue(self.b.discard_to_hand_limit(selected))
+        self.assertTrue(all(card in self.b.player.discard for card in selected))
+        self.assertNotEqual(self.b.phase, 'DISCARD')
+
+    def test_no_maximum_hand_size_skips_discard(self):
+        self.b.player.hand.extend(self.card('Citadel Recruit') for _ in range(10))
+        self.b.passive = 'Endless Insight'
+        self.assertIsNone(self.b.maximum_hand_size())
+        self.b.phase = 'MAIN2'
+        self.assertTrue(self.b.begin_end_step())
+        self.assertNotEqual(self.b.phase, 'DISCARD')
+
+    def test_player_upkeep_advances_automatically(self):
+        self.b.phase = 'AFTER_ENEMY_COMBAT'
+        self.b.begin_player_turn()
+        self.assertEqual(self.b.phase, 'MAIN')
 
 
 if __name__ == '__main__':

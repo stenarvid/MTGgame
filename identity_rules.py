@@ -51,7 +51,7 @@ class IdentityRules:
             token.keywords = list(template.get('keywords', []))
             token.token = True
             self.summon(side, token)
-        if side is self.player and self.passive == 'Valkyrie Grace':
+        if side is self.player and self.has_passive('Valkyrie Grace'):
             # One extra Recruit per creation event, including specialized tokens.
             self.tokens(side, 0)
 
@@ -115,8 +115,12 @@ class IdentityRules:
                 target.current_health = 0
                 self.cleanup_deaths()
         elif kind == 'power_damage':
-            if target in side.board:
-                self.spell_damage(side, foe, max(0, target.attack) + bonus)
+            damage_source = target if target in side.board else source
+            if damage_source in side.board:
+                self.spell_damage(side, foe, max(0, damage_source.attack) + bonus)
+        elif kind == 'morph_self':
+            if source in side.board:
+                self.morph(side, source, effect['mutation'], amount)
         else:
             return False
         return True

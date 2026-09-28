@@ -24,6 +24,7 @@ class Card:
         self.token = False
         self.keywords = []
         self.upgraded = False
+        self.upgrade_level = 0
         self.temp_attack = self.temp_health = 0
         self.perpetual = {}
         self.plus_one_counters = 0
@@ -56,6 +57,7 @@ class Card:
                     self.attack - self.temp_attack, self.max_health - self.temp_health, self.text)
         card.keywords = list(getattr(self, 'keywords', []))
         card.upgraded = self.upgraded
+        card.upgrade_level = getattr(self, 'upgrade_level', int(self.upgraded))
         card.pips = self.pips.copy()
         card.flashback_cost = getattr(self, 'flashback_cost', None)
         card.perpetual = dict(getattr(self, 'perpetual', {}))
@@ -63,15 +65,39 @@ class Card:
         return card
 
     def upgrade(self):
-        if self.upgraded or self.card_type == 'Land':
+        if self.card_type == 'Land':
             return False
         self.upgraded = True
+        self.upgrade_level = getattr(self, 'upgrade_level', 0) + 1
         if self.is_creature:
             self.attack += 1
             self.max_health += 1
             self.current_health += 1
-        self.text += ' [Upgrade: +1/+1.]' if self.is_creature else ' [Upgrade: +1 to numerical effects; counters also draw 1.]'
+        self.text += f' [Upgrade {self.upgrade_level}: {self.upgrade_description(self.upgrade_level)}]'
         return True
+
+    def upgrade_description(self, level=None):
+        level = getattr(self, 'upgrade_level', 0) + 1 if level is None else level
+        special = {
+            'Prism Larva': 'repeat its enter-the-battlefield and Morph abilities; +1/+1',
+            'Phase Shifter': 'draw 1 card after returning its target; +1/+1',
+            'Grove Sprite': 'produces +1 additional green mana when tapped; +1/+1',
+            'Crypt Shambler': 'its death drain increases by 1; +1/+1',
+            'Citadel Recruit': 'Guard prevents 1 additional combat damage; +1/+1',
+            'Spellweaver Pyromancer': 'its spell-cast damage increases by 1; +1/+1',
+            'Null Sigil': 'draw 1 additional card after countering',
+            'Grand Reassembly': 'blink each creature one additional time',
+        }
+        if self.name in special:
+            return special[self.name]
+        lower = self.text.lower()
+        if self.is_creature and ('when this enters' in lower or 'etb:' in lower):
+            return 'repeat its enter-the-battlefield ability; +1/+1'
+        if self.is_creature and ('whenever' in lower or 'when this attacks' in lower or 'deathrattle' in lower):
+            return 'increase its triggered effect by 1; +1/+1'
+        if self.is_creature:
+            return '+1/+1 and strengthen its signature combat ability'
+        return 'increase every numerical spell effect by 1'
 
     def mana_label(self, total=None):
         total = self.mana_cost if total is None else total
@@ -90,13 +116,14 @@ class Commander(Card):
         self.unlocked = unlocked
 
 
-def generate_procedural_commander(cmd_meta, passives_pool, actives_pool, forced_passive=None, forced_active=None):
+def generate_procedural_commander(cmd_meta, passives_pool, actives_pool, forced_passive=None, forced_active=None,
+                                  forced_second_passive=None):
     prefix = random.choice(cmd_meta['prefixes'])
     suffix = random.choice(cmd_meta['suffixes'])
     name = f"{prefix} {suffix}"
     
     pass_obj = forced_passive if forced_passive else random.choice(passives_pool)
-    act_obj = forced_active if forced_active else random.choice(actives_pool)
+    act_obj = forced_second_passive or (forced_active if forced_active else random.choice(actives_pool))
     
     colors = [pass_obj["color"], act_obj["color"]]
     archetypes = [pass_obj["archetype"], act_obj["archetype"]]
@@ -111,7 +138,14 @@ def generate_procedural_commander(cmd_meta, passives_pool, actives_pool, forced_
         unlocked=False
     )
     commander.passive_name = pass_obj['name']
+    commander.passive_names = [pass_obj['name']]
     commander.active_name = act_obj['name']
+    if forced_second_passive:
+        commander.passive_names.append(act_obj['name'])
+        commander.passive = pass_obj['desc'] + ' | ' + act_obj['desc']
+        commander.active = 'Two-passive commander: no active ability.'
+        commander.active_name = None
+        commander.text = f"Passives: {pass_obj['name']} + {act_obj['name']}"
     return commander
 
 

@@ -32,6 +32,8 @@ def autoplay(battle):
                 b.play(counter, targets[-1])
             else:
                 b.pass_priority()
+        elif b.phase == 'UPKEEP':
+            b.finish_upkeep()
         elif b.phase in ('MAIN', 'MAIN2'):
             if not b.active_used:
                 targets = b.targets(b.active)
@@ -48,9 +50,16 @@ def autoplay(battle):
                     break
             if not played:
                 if b.phase == 'MAIN':
-                    b.attack([c for c in b.player.board if not c.sick and not c.tapped])
+                    b.begin_combat()
                 else:
-                    b.end_turn()
+                    b.begin_end_step()
+        elif b.phase == 'COMBAT':
+            b.attack([c for c in b.player.board if not c.sick and not c.tapped])
+        elif b.phase == 'END':
+            b.end_turn()
+        elif b.phase == 'DISCARD':
+            excess = b.required_discards()
+            b.discard_to_hand_limit(sorted(b.player.hand, key=lambda c: c.mana_cost)[:excess])
         elif b.phase == 'ATTACK_RESPONSE':
             b.finish_attack()
         elif b.phase == 'BLOCK':
@@ -77,7 +86,7 @@ class FlowTests(unittest.TestCase):
     def map_game(self):
         game = Game(save_path=self.save_dir / 'run.json', progress_path=self.save_dir / 'unlocks.json')
         self.addCleanup(pygame.quit)
-        game.start_builder()
+        game.begin_builder()
         game.choose(game.choices[0])
         game.choose(game.choices[0])
         return game
@@ -96,10 +105,35 @@ class FlowTests(unittest.TestCase):
         card.pips = {'U': 2, 'P': 1}
         self.assertEqual(game.card_painter.mana_symbols(card, 6), ['3', 'U', 'U', 'P'])
 
-    def test_builder_fullscreen_toggle_and_scene_filled_letterbox(self):
+    def test_run_setup_controls_boss_count(self):
         game = Game(save_path=self.save_dir / 'run.json', progress_path=self.save_dir / 'unlocks.json')
         self.addCleanup(pygame.quit)
         game.start_builder()
+        self.assertEqual(game.state, 'RUN_SETUP')
+        game.run_bosses = 7
+        game.begin_builder()
+        game.choose(game.choices[0]); game.choose(game.choices[0])
+        self.assertEqual(game.run.total_areas, 7)
+
+    def test_builder_reroll_and_two_passive_mode(self):
+        game = Game(save_path=self.save_dir / 'run.json', progress_path=self.save_dir / 'unlocks.json')
+        self.addCleanup(pygame.quit)
+        game.builder_mode = 'two_passives'
+        game.begin_builder()
+        before = [choice['name'] for choice in game.choices]
+        game.reroll_builder()
+        self.assertEqual(len(game.choices), 4)
+        game.choose(game.choices[0])
+        self.assertEqual(game.state, 'SECOND_PASSIVE')
+        self.assertTrue(all(choice['name'] != game.passive['name'] for choice in game.choices))
+        game.choose(game.choices[0])
+        self.assertEqual(len(game.run.commander.passive_names), 2)
+        self.assertIsNone(game.run.commander.active_name)
+
+    def test_builder_fullscreen_toggle_and_scene_filled_letterbox(self):
+        game = Game(save_path=self.save_dir / 'run.json', progress_path=self.save_dir / 'unlocks.json')
+        self.addCleanup(pygame.quit)
+        game.begin_builder()
         game.window = pygame.display.set_mode((1000, 500), pygame.RESIZABLE)
         game.windowed_size = (1000, 500)
         game.draw(); game.present()
@@ -193,6 +227,9 @@ class FlowTests(unittest.TestCase):
         self.assertEqual(game.artwork.missing, [])
         game.draw()
         game.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(200, 390)))
+        self.assertEqual(game.state, 'RUN_SETUP')
+        game.draw()
+        game.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(640, 584)))
         self.assertEqual(game.state, 'PASSIVE')
         game.draw()
         game.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(100, 770)))
@@ -200,7 +237,7 @@ class FlowTests(unittest.TestCase):
         game.draw()
         game.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(100, 770)))
         self.assertEqual(game.state, 'MAP')
-        for state in ['MAP', 'DECK', 'DETAILS', 'ACHIEVEMENTS', 'COLLECTION', 'HELP', 'ABANDON', 'WIN', 'LOSS']:
+        for state in ['MAP', 'DECK', 'DETAILS', 'ACHIEVEMENTS', 'COLLECTION', 'HELP', 'TUTORIAL', 'ABANDON', 'WIN', 'LOSS']:
             game.state = state
             game.draw()
         node = game.run.grid[0][0]
@@ -229,6 +266,7 @@ class FlowTests(unittest.TestCase):
         _, meta, pool = load_game_data()
         results = {'VICTORY': 0, 'DEFEAT': 0}
         boss_wins = 0
+        boss_encounters = 0
         for index, passive in enumerate(meta['passives'] + UNLOCKS):
             for j, active in enumerate(meta['actives']):
                 with self.subTest(passive=passive['name'], active=active['name']):
@@ -237,10 +275,13 @@ class FlowTests(unittest.TestCase):
                     run = Run(cmd, pool)
                     run.total_areas = 1
                     for _ in range(6):
+                        if run.won:
+                            break
                         choices = [n for row in run.grid for n in row if n.available]
                         node = random.choice(choices)
                         self.assertTrue(run.enter(node))
                         if node.node_type in ('Combat', 'Elite', 'Boss'):
+                            boss_encounters += node.node_type == 'Boss'
                             battle = Battle(run)
                             result = autoplay(battle)
                             results[result] += 1
@@ -260,7 +301,7 @@ class FlowTests(unittest.TestCase):
                         boss_wins += 1
         self.assertGreater(results['VICTORY'], 0)
         self.assertGreater(results['DEFEAT'], 0)
-        self.assertGreater(boss_wins, 0)
+        self.assertGreater(boss_encounters, 0)
 
 
 if __name__ == '__main__':

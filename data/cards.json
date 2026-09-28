@@ -48,7 +48,7 @@
         "cost": 2,
         "atk": 2,
         "hp": 2,
-        "text": "Deathrattle: Return random creature from discard."
+        "text": "When this dies, return your highest-cost creature from your graveyard to your hand."
       },
       {
         "name": "Siphon Life",
@@ -88,7 +88,7 @@
         "cost": 3,
         "atk": 3,
         "hp": 3,
-        "text": "At start of turn, add 2 green energy."
+        "text": "At your upkeep, you may play 1 additional land from your reserve this turn."
       },
       {
         "name": "Nature's Bounty",
@@ -97,7 +97,7 @@
         "cost": 1,
         "atk": 0,
         "hp": 0,
-        "text": "Search your deck for 2 basic land cards."
+        "text": "Play 2 additional lands from your reserve this turn."
       }
     ],
     "Morph": [
@@ -109,7 +109,16 @@
         "atk": 0,
         "hp": 0,
         "text": "Morph target friendly creature perpetually. It gets +1/+1 and gains 'When this enters, draw a card.'",
-        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "insight", "amount": 1}]}
+        "spell": {
+          "target": "friendly",
+          "effects": [
+            {
+              "effect": "morph",
+              "mutation": "insight",
+              "amount": 1
+            }
+          ]
+        }
       },
       {
         "name": "Chorus Seed",
@@ -119,7 +128,16 @@
         "atk": 0,
         "hp": 0,
         "text": "Morph target friendly creature perpetually. At your upkeep, gain 1 life for each chorus effect you control.",
-        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "chorus", "amount": 1}]}
+        "spell": {
+          "target": "friendly",
+          "effects": [
+            {
+              "effect": "morph",
+              "mutation": "chorus",
+              "amount": 1
+            }
+          ]
+        }
       },
       {
         "name": "Welcoming Shape",
@@ -129,7 +147,16 @@
         "atk": 0,
         "hp": 0,
         "text": "Morph target friendly creature perpetually. It gets +1/+1 and gains 'Whenever another friendly creature enters, gain 1 life.'",
-        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "hospitality", "amount": 1}]}
+        "spell": {
+          "target": "friendly",
+          "effects": [
+            {
+              "effect": "morph",
+              "mutation": "hospitality",
+              "amount": 1
+            }
+          ]
+        }
       },
       {
         "name": "Cinder Shape",
@@ -139,7 +166,16 @@
         "atk": 0,
         "hp": 0,
         "text": "Morph target friendly creature perpetually. It gets +1/+1 and gains 'Whenever you cast a noncreature spell, deal 1 damage to the enemy hero.'",
-        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "spellflame", "amount": 1}]}
+        "spell": {
+          "target": "friendly",
+          "effects": [
+            {
+              "effect": "morph",
+              "mutation": "spellflame",
+              "amount": 1
+            }
+          ]
+        }
       },
       {
         "name": "Rooted Shape",
@@ -149,7 +185,16 @@
         "atk": 0,
         "hp": 0,
         "text": "Morph target friendly creature perpetually. It gets +1/+1 and gains 'Whenever you play a land, this gets +1/+1 perpetually.'",
-        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "landgrowth", "amount": 1}]}
+        "spell": {
+          "target": "friendly",
+          "effects": [
+            {
+              "effect": "morph",
+              "mutation": "landgrowth",
+              "amount": 1
+            }
+          ]
+        }
       },
       {
         "name": "Mourning Shape",
@@ -159,7 +204,16 @@
         "atk": 0,
         "hp": 0,
         "text": "Morph target friendly creature perpetually. It gets +1/+1 and gains 'Whenever another friendly creature dies, gain 1 life.'",
-        "spell": {"target": "friendly", "effects": [{"effect": "morph", "mutation": "mourning", "amount": 1}]}
+        "spell": {
+          "target": "friendly",
+          "effects": [
+            {
+              "effect": "morph",
+              "mutation": "mourning",
+              "amount": 1
+            }
+          ]
+        }
       },
       {
         "name": "Hostile Rewrite",
@@ -169,7 +223,16 @@
         "atk": 0,
         "hp": 0,
         "text": "Morph every enemy creature on the battlefield, in their deck, and in their graveyard perpetually. Whenever one dies, its controller loses 1 life.",
-        "spell": {"effects": [{"effect": "morph_board", "selection": "enemy", "mutation": "death_curse", "amount": 1}]}
+        "spell": {
+          "effects": [
+            {
+              "effect": "morph_board",
+              "selection": "enemy",
+              "mutation": "death_curse",
+              "amount": 1
+            }
+          ]
+        }
       },
       {
         "name": "Chorus Evolution",
@@ -179,7 +242,16 @@
         "atk": 0,
         "hp": 0,
         "text": "Morph every friendly creature on the battlefield, in your deck, and in your graveyard perpetually. At your upkeep, gain 1 life for each chorus effect you control.",
-        "spell": {"effects": [{"effect": "morph_board", "selection": "friendly", "mutation": "chorus", "amount": 1}]}
+        "spell": {
+          "effects": [
+            {
+              "effect": "morph_board",
+              "selection": "friendly",
+              "mutation": "chorus",
+              "amount": 1
+            }
+          ]
+        }
       },
       {
         "name": "Memory Migration",
@@ -189,7 +261,16 @@
         "atk": 0,
         "hp": 0,
         "text": "Morph every friendly creature on the battlefield, in your deck, and in your graveyard perpetually. Each gains 'When this enters, draw a card.'",
-        "spell": {"effects": [{"effect": "morph_board", "selection": "friendly", "mutation": "insight", "amount": 1}]}
+        "spell": {
+          "effects": [
+            {
+              "effect": "morph_board",
+              "selection": "friendly",
+              "mutation": "insight",
+              "amount": 1
+            }
+          ]
+        }
       },
       {
         "name": "Grand Reassembly",
@@ -199,7 +280,14 @@
         "atk": 0,
         "hp": 0,
         "text": "Blink every friendly nontoken creature. Their perpetual morphs and ETB abilities trigger again.",
-        "spell": {"effects": [{"effect": "blink_board", "amount": 1}]}
+        "spell": {
+          "effects": [
+            {
+              "effect": "blink_board",
+              "amount": 1
+            }
+          ]
+        }
       }
     ]
   },
@@ -751,7 +839,7 @@
         "effect": "land",
         "amount": 1
       },
-      "text": "When this enters, search 1 land from your deck into play tapped."
+      "text": "When this enters, play 1 additional land from your reserve this turn."
     },
     {
       "name": "Canopy Stalker",
@@ -802,7 +890,7 @@
         "effect": "land",
         "amount": 1
       },
-      "text": "Vigilance. When this attacks, search 1 land from your deck into play tapped.",
+      "text": "Vigilance. When this attacks, play 1 additional land from your reserve this turn.",
       "keywords": [
         "vigilance"
       ]
@@ -1409,7 +1497,7 @@
       "atk": 1,
       "hp": 4,
       "archetype": "Blink",
-      "text": "When this enters, search 1 land from your deck into hand. Then untap 1 of your tapped lands.",
+      "text": "When this enters, play 1 additional land from your reserve this turn. Then untap 1 of your tapped lands.",
       "trigger": {
         "event": "enter",
         "effect": "search",
@@ -1445,7 +1533,7 @@
       "atk": 3,
       "hp": 5,
       "archetype": "Blink",
-      "text": "When this attacks, if you control at least six lands, draw 1 + 1 per friendly attacker (up to +2) card(s).",
+      "text": "When this attacks, if you control at least six lands, draw 1 + 1 per friendly attacker (up to +2) cards.",
       "trigger": {
         "event": "attack",
         "effect": "draw",
@@ -2549,7 +2637,7 @@
       "atk": 1,
       "hp": 1,
       "archetype": "Ramp",
-      "text": "When this enters, search 1 land from your deck into hand.",
+      "text": "When this enters, play 1 additional land from your reserve this turn.",
       "trigger": {
         "event": "enter",
         "effect": "search",
@@ -2581,7 +2669,7 @@
       "atk": 2,
       "hp": 4,
       "archetype": "Ramp",
-      "text": "When this enters, search 1 land from your deck into play tapped. Then if you control at least six lands, draw 1 card.",
+      "text": "When this enters, play 1 additional land from your reserve this turn. Then if you control at least six lands, draw 1 card.",
       "trigger": {
         "event": "enter",
         "effect": "land",
@@ -2681,7 +2769,7 @@
       "atk": 5,
       "hp": 6,
       "archetype": "Ramp",
-      "text": "Trample. When this attacks, if this attacks alone, search 2 lands from your deck into play tapped.",
+      "text": "Trample. When this attacks, if this attacks alone, play 2 additional lands from your reserve this turn.",
       "trigger": {
         "event": "attack",
         "effect": "land",
@@ -2700,7 +2788,7 @@
       "atk": 3,
       "hp": 4,
       "archetype": "Ramp",
-      "text": "When this dies, return 1 highest-cost creature from your discard to hand. Then search 1 land from your deck into hand.",
+      "text": "When this dies, return 1 highest-cost creature from your discard to hand. Then play 1 additional land from your reserve this turn.",
       "trigger": {
         "event": "dies",
         "effect": "recall",
@@ -2738,7 +2826,7 @@
       "atk": 0,
       "hp": 0,
       "archetype": "Ramp",
-      "text": "Search 1 land from your deck into hand. Untap 1 of your tapped lands.",
+      "text": "Play 1 additional land from your reserve this turn. Untap 1 of your tapped lands.",
       "spell": {
         "target": null,
         "effects": [
@@ -2761,7 +2849,7 @@
       "atk": 0,
       "hp": 0,
       "archetype": "Ramp",
-      "text": "Search 1 land from your deck into play tapped.",
+      "text": "Play 1 additional land from your reserve this turn.",
       "spell": {
         "target": null,
         "effects": [
@@ -2780,7 +2868,7 @@
       "atk": 0,
       "hp": 0,
       "archetype": "Ramp",
-      "text": "Search 1 land from your deck into play tapped. If you control a creature with 4+ attack, search 1 land from your deck into play tapped.",
+      "text": "Play 1 additional land from your reserve this turn. If you control a creature with 4+ attack, play 1 additional land from your reserve this turn.",
       "spell": {
         "target": null,
         "effects": [
@@ -2804,7 +2892,7 @@
       "atk": 0,
       "hp": 0,
       "archetype": "Ramp",
-      "text": "Search 1 land from your deck into play tapped. If you control at least six lands, draw 1 card.",
+      "text": "Play 1 additional land from your reserve this turn. If you control at least six lands, draw 1 card.",
       "spell": {
         "target": null,
         "effects": [
@@ -2878,7 +2966,7 @@
       "atk": 0,
       "hp": 0,
       "archetype": "Ramp",
-      "text": "Draw 1 + 1 per land you control (up to +3) card(s). Heal your hero for 2.",
+      "text": "Draw 1 + 1 per land you control (up to +3) cards. Heal your hero for 2.",
       "spell": {
         "target": null,
         "effects": [
@@ -2903,7 +2991,7 @@
       "atk": 0,
       "hp": 0,
       "archetype": "Ramp",
-      "text": "Search 1 land from your deck into play tapped. Create a 0/2 wildseed plant token.",
+      "text": "Play 1 additional land from your reserve this turn. Create a 0/2 wildseed plant token.",
       "spell": {
         "target": null,
         "effects": [
@@ -2958,7 +3046,7 @@
       "atk": 0,
       "hp": 0,
       "archetype": "Ramp",
-      "text": "Search 2 lands from your deck into play tapped. Heal your hero for 0 + 1 per land you control (up to +10).",
+      "text": "Play 2 additional lands from your reserve this turn. Heal your hero for 0 + 1 per land you control (up to +10).",
       "spell": {
         "target": null,
         "effects": [
@@ -2974,6 +3062,2995 @@
           }
         ]
       }
+    },
+    {
+      "name": "Gilded Standard",
+      "type": "Cyber Fighter",
+      "color": "W",
+      "cost": 1,
+      "atk": 1,
+      "hp": 2,
+      "archetype": "Token",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "tokens",
+        "amount": 1
+      },
+      "text": "When this enters, create 1 1/1 Recruit token."
+    },
+    {
+      "name": "Dawnline Captain",
+      "type": "Cyber Fighter",
+      "color": "W",
+      "cost": 2,
+      "atk": 2,
+      "hp": 2,
+      "archetype": "Token",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "custom_tokens",
+        "amount": 1,
+        "token": {
+          "name": "Dawn Shieldbearer",
+          "color": "W",
+          "attack": 0,
+          "health": 3,
+          "keywords": [
+            "guard"
+          ]
+        }
+      },
+      "text": "When this attacks, create 1 Dawn Shieldbearer token."
+    },
+    {
+      "name": "Oathhall Squire",
+      "type": "Cyber Fighter",
+      "color": "W",
+      "cost": 2,
+      "atk": 1,
+      "hp": 3,
+      "archetype": "Token",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_enters",
+        "effect": "heal",
+        "amount": 2
+      },
+      "text": "Whenever another nontoken creature enters under your control, gain 2 life."
+    },
+    {
+      "name": "Procession Angel",
+      "type": "Cyber Fighter",
+      "color": "W",
+      "cost": 3,
+      "atk": 3,
+      "hp": 2,
+      "archetype": "Token",
+      "set": "Convergence",
+      "trigger": {
+        "event": "spell_cast",
+        "effect": "buff_group",
+        "amount": 1,
+        "selection": "tokens",
+        "permanent": true
+      },
+      "text": "Whenever you cast a noncreature spell, your tokens get +1/+1 permanently."
+    },
+    {
+      "name": "Bastion Choir",
+      "type": "Cyber Fighter",
+      "color": "W",
+      "cost": 3,
+      "atk": 2,
+      "hp": 4,
+      "archetype": "Token",
+      "set": "Convergence",
+      "trigger": {
+        "event": "land",
+        "effect": "armor",
+        "amount": 2,
+        "condition": "wide_board"
+      },
+      "text": "Whenever you play a land, if you control at least four creatures, gain 2 armor."
+    },
+    {
+      "name": "Sunwall Tactician",
+      "type": "Cyber Fighter",
+      "color": "W",
+      "cost": 4,
+      "atk": 4,
+      "hp": 3,
+      "archetype": "Token",
+      "set": "Convergence",
+      "trigger": {
+        "event": "dies",
+        "effect": "draw",
+        "amount": 1
+      },
+      "text": "When this dies, draw 1 card."
+    },
+    {
+      "name": "Bannerwing Scout",
+      "type": "Cyber Fighter",
+      "color": "W",
+      "cost": 4,
+      "atk": 3,
+      "hp": 5,
+      "archetype": "Token",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_dies",
+        "effect": "grant_keyword",
+        "amount": 0,
+        "keyword": "vigilance",
+        "selection": "tokens",
+        "once_per_turn": true
+      },
+      "text": "Whenever another friendly creature dies, grant vigilance permanently. Triggers once each turn."
+    },
+    {
+      "name": "Citadel Matron",
+      "type": "Cyber Fighter",
+      "color": "W",
+      "cost": 5,
+      "atk": 5,
+      "hp": 4,
+      "archetype": "Token",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enemy_dies",
+        "effect": "tokens",
+        "amount": 2
+      },
+      "text": "Whenever an enemy creature dies, create 2 1/1 Recruit tokens."
+    },
+    {
+      "name": "Radiant Twin",
+      "type": "Cyber Fighter",
+      "color": "W",
+      "cost": 5,
+      "atk": 4,
+      "hp": 6,
+      "archetype": "Token",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "buff_group",
+        "amount": 1,
+        "selection": "all",
+        "condition": "wide_board"
+      },
+      "text": "When this enters, if you control at least four creatures, your creatures get +1/+1 this turn."
+    },
+    {
+      "name": "Lastlight Marshal",
+      "type": "Cyber Fighter",
+      "color": "W",
+      "cost": 6,
+      "atk": 6,
+      "hp": 6,
+      "archetype": "Token",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "custom_tokens",
+        "amount": 1,
+        "token": {
+          "name": "Sunlit Spirit",
+          "color": "W",
+          "attack": 1,
+          "health": 1,
+          "keywords": [
+            "haste"
+          ]
+        },
+        "once_per_turn": true
+      },
+      "text": "When this attacks, create 1 Sunlit Spirit token. Triggers once each turn."
+    },
+    {
+      "name": "Muster the Meek",
+      "type": "Instant Spell",
+      "color": "W",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Token",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "tokens",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Create 2 1/1 recruit tokens."
+    },
+    {
+      "name": "March of Shields",
+      "type": "Instant Spell",
+      "color": "W",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Token",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "custom_tokens",
+            "amount": 1,
+            "token": {
+              "name": "Dawn Shieldbearer",
+              "color": "W",
+              "attack": 0,
+              "health": 3,
+              "keywords": [
+                "guard"
+              ]
+            }
+          }
+        ]
+      },
+      "text": "Create 1 dawn shieldbearer token."
+    },
+    {
+      "name": "Oath of Fellowship",
+      "type": "Instant Spell",
+      "color": "W",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Token",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "tokens",
+            "amount": 1
+          },
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Create 1 1/1 recruit token. Then Draw 1 card."
+    },
+    {
+      "name": "Dawnfront Formation",
+      "type": "Instant Spell",
+      "color": "W",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Token",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "buff_group",
+            "amount": 1,
+            "selection": "tokens",
+            "permanent": true
+          },
+          {
+            "effect": "armor",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Your tokens get +1/+1 permanently. Then Gain 1 armor."
+    },
+    {
+      "name": "Call the Seraphs",
+      "type": "Instant Spell",
+      "color": "W",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Token",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "custom_tokens",
+            "amount": 2,
+            "token": {
+              "name": "Sunlit Spirit",
+              "color": "W",
+              "attack": 1,
+              "health": 1,
+              "keywords": [
+                "haste"
+              ]
+            }
+          }
+        ]
+      },
+      "text": "Create 2 sunlit spirit tokens."
+    },
+    {
+      "name": "Hold the Line",
+      "type": "Instant Spell",
+      "color": "W",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Token",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "armor",
+            "amount": 4
+          },
+          {
+            "effect": "tokens",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Gain 4 armor. Then Create 1 1/1 recruit token."
+    },
+    {
+      "name": "Shared Triumph",
+      "type": "Instant Spell",
+      "color": "W",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Token",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "grant_keyword",
+            "amount": 0,
+            "keyword": "guard",
+            "selection": "all"
+          }
+        ]
+      },
+      "text": "Grant guard permanently."
+    },
+    {
+      "name": "Sanctuary Muster",
+      "type": "Instant Spell",
+      "color": "W",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Token",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "heal",
+            "amount": 2,
+            "scale": "tokens",
+            "cap": 5
+          }
+        ]
+      },
+      "text": "Gain 2 life."
+    },
+    {
+      "name": "Banner of Resolve",
+      "type": "Instant Spell",
+      "color": "W",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Token",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "buff_group",
+            "amount": 2,
+            "selection": "attacking"
+          }
+        ]
+      },
+      "text": "Your attacking creatures get +2/+2 this turn."
+    },
+    {
+      "name": "Final Procession",
+      "type": "Instant Spell",
+      "color": "W",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Token",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "tokens",
+            "amount": 3
+          },
+          {
+            "effect": "buff_group",
+            "amount": 1,
+            "selection": "tokens"
+          }
+        ]
+      },
+      "text": "Create 3 1/1 recruit tokens. Then Your tokens get +1/+1 this turn."
+    },
+    {
+      "name": "Riftglass Seer",
+      "type": "Cyber Fighter",
+      "color": "U",
+      "cost": 1,
+      "atk": 1,
+      "hp": 2,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "draw",
+        "amount": 1
+      },
+      "text": "When this enters, draw 1 card."
+    },
+    {
+      "name": "Mistway Courier",
+      "type": "Cyber Fighter",
+      "color": "U",
+      "cost": 2,
+      "atk": 2,
+      "hp": 2,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "loot",
+        "amount": 2,
+        "then": [
+          {
+            "effect": "armor",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "When this attacks, draw 2 cards, then discard your highest-cost card. Then gain 1 armor."
+    },
+    {
+      "name": "Echo Chamberlain",
+      "type": "Cyber Fighter",
+      "color": "U",
+      "cost": 2,
+      "atk": 1,
+      "hp": 3,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_enters",
+        "effect": "freeze",
+        "amount": 1
+      },
+      "text": "Whenever another nontoken creature enters under your control, tap 1 enemy creature; they skip their next untap."
+    },
+    {
+      "name": "Tidefold Adept",
+      "type": "Cyber Fighter",
+      "color": "U",
+      "cost": 3,
+      "atk": 3,
+      "hp": 2,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "trigger": {
+        "event": "spell_cast",
+        "effect": "recover_spell",
+        "amount": 1
+      },
+      "text": "Whenever you cast a noncreature spell, return 1 spell from your graveyard to hand."
+    },
+    {
+      "name": "Vanishing Oracle",
+      "type": "Cyber Fighter",
+      "color": "U",
+      "cost": 3,
+      "atk": 2,
+      "hp": 4,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "trigger": {
+        "event": "land",
+        "effect": "armor",
+        "amount": 2,
+        "condition": "empty_hand"
+      },
+      "text": "Whenever you play a land, if you have one or fewer cards in hand, gain 2 armor."
+    },
+    {
+      "name": "Aether Cartographer",
+      "type": "Cyber Fighter",
+      "color": "U",
+      "cost": 4,
+      "atk": 4,
+      "hp": 3,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "trigger": {
+        "event": "dies",
+        "effect": "untap_lands",
+        "amount": 1
+      },
+      "text": "When this dies, untap 1 land."
+    },
+    {
+      "name": "Moonwake Familiar",
+      "type": "Cyber Fighter",
+      "color": "U",
+      "cost": 4,
+      "atk": 3,
+      "hp": 5,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_dies",
+        "effect": "draw",
+        "amount": 1,
+        "once_per_turn": true
+      },
+      "text": "Whenever another friendly creature dies, draw 1 card. Triggers once each turn."
+    },
+    {
+      "name": "Loopbound Scholar",
+      "type": "Cyber Fighter",
+      "color": "U",
+      "cost": 5,
+      "atk": 5,
+      "hp": 4,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enemy_dies",
+        "effect": "heal",
+        "amount": 3
+      },
+      "text": "Whenever an enemy creature dies, gain 3 life."
+    },
+    {
+      "name": "Stillwater Guide",
+      "type": "Cyber Fighter",
+      "color": "U",
+      "cost": 5,
+      "atk": 4,
+      "hp": 6,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "draw",
+        "amount": 2,
+        "condition": "empty_hand"
+      },
+      "text": "When this enters, if you have one or fewer cards in hand, draw 2 cards."
+    },
+    {
+      "name": "Chronicle Diver",
+      "type": "Cyber Fighter",
+      "color": "U",
+      "cost": 6,
+      "atk": 6,
+      "hp": 6,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "self_buff",
+        "amount": 1,
+        "once_per_turn": true
+      },
+      "text": "When this attacks, this gets +1/+1 permanently. Triggers once each turn."
+    },
+    {
+      "name": "Momentary Passage",
+      "type": "Instant Spell",
+      "color": "U",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "blink",
+            "amount": 0
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Blink a friendly creature."
+    },
+    {
+      "name": "Fold into Mist",
+      "type": "Instant Spell",
+      "color": "U",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "blink",
+            "amount": 0
+          },
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Blink a friendly creature. Then Draw 1 card."
+    },
+    {
+      "name": "Echoed Arrival",
+      "type": "Instant Spell",
+      "color": "U",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "spell": {
+        "target": "enemy",
+        "effects": [
+          {
+            "effect": "bounce",
+            "amount": 0
+          },
+          {
+            "effect": "armor",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Choose an enemy creature. Return an enemy creature to its owner\u00e2\u20ac\u2122s hand. Then Gain 2 armor."
+    },
+    {
+      "name": "Riftglass Denial",
+      "type": "Instant Spell",
+      "color": "U",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "freeze",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Tap 2 enemy creatures; they skip their next untap."
+    },
+    {
+      "name": "Borrowed Tomorrow",
+      "type": "Instant Spell",
+      "color": "U",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "loot",
+            "amount": 3
+          }
+        ]
+      },
+      "text": "Draw 3 cards, then discard your highest-cost card."
+    },
+    {
+      "name": "Tidal Repetition",
+      "type": "Instant Spell",
+      "color": "U",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "recover_spell",
+            "amount": 1
+          },
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Return 1 spell from your graveyard to hand. Then Draw 1 card."
+    },
+    {
+      "name": "Memory Loop",
+      "type": "Instant Spell",
+      "color": "U",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "blink",
+            "amount": 0
+          },
+          {
+            "effect": "armor",
+            "amount": 3
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Blink a friendly creature. Then Gain 3 armor."
+    },
+    {
+      "name": "Aether Evacuation",
+      "type": "Instant Spell",
+      "color": "U",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "spell": {
+        "target": "enemy",
+        "effects": [
+          {
+            "effect": "bounce",
+            "amount": 0
+          },
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Choose an enemy creature. Return an enemy creature to its owner\u00e2\u20ac\u2122s hand. Then Draw 1 card."
+    },
+    {
+      "name": "Second Arrival",
+      "type": "Instant Spell",
+      "color": "U",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "untap_lands",
+            "amount": 3
+          },
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Untap 3 lands. Then Draw 1 card."
+    },
+    {
+      "name": "Endless Corridor",
+      "type": "Instant Spell",
+      "color": "U",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Blink",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "blink_board",
+            "amount": 1
+          },
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Blink all friendly nontoken creatures. Then Draw 1 card."
+    },
+    {
+      "name": "Ossuary Ferryman",
+      "type": "Cyber Fighter",
+      "color": "B",
+      "cost": 1,
+      "atk": 1,
+      "hp": 2,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "mill",
+        "amount": 2
+      },
+      "text": "When this enters, put the top 2 cards of your deck into your graveyard."
+    },
+    {
+      "name": "Gravesoil Tender",
+      "type": "Cyber Fighter",
+      "color": "B",
+      "cost": 2,
+      "atk": 2,
+      "hp": 2,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "recall",
+        "amount": 1
+      },
+      "text": "When this attacks, return 1 creature from your graveyard to hand."
+    },
+    {
+      "name": "Bloodledger Adept",
+      "type": "Cyber Fighter",
+      "color": "B",
+      "cost": 2,
+      "atk": 1,
+      "hp": 3,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_enters",
+        "effect": "drain",
+        "amount": 1
+      },
+      "text": "Whenever another nontoken creature enters under your control, drain 1 life from the enemy hero."
+    },
+    {
+      "name": "Mourning Revenant",
+      "type": "Cyber Fighter",
+      "color": "B",
+      "cost": 3,
+      "atk": 3,
+      "hp": 2,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "trigger": {
+        "event": "spell_cast",
+        "effect": "armor",
+        "amount": 2
+      },
+      "text": "Whenever you cast a noncreature spell, gain 2 armor."
+    },
+    {
+      "name": "Cryptwake Seer",
+      "type": "Cyber Fighter",
+      "color": "B",
+      "cost": 3,
+      "atk": 2,
+      "hp": 4,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "trigger": {
+        "event": "land",
+        "effect": "reanimate",
+        "amount": 1,
+        "max_cost": 2,
+        "condition": "graveyard_full"
+      },
+      "text": "Whenever you play a land, if your graveyard contains at least three creatures, return 1 creature costing 2 or less from your graveyard to play."
+    },
+    {
+      "name": "Bone Taxer",
+      "type": "Cyber Fighter",
+      "color": "B",
+      "cost": 4,
+      "atk": 4,
+      "hp": 3,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "trigger": {
+        "event": "dies",
+        "effect": "loot",
+        "amount": 2
+      },
+      "text": "When this dies, draw 2 cards, then discard your highest-cost card."
+    },
+    {
+      "name": "Last-Breath Scribe",
+      "type": "Cyber Fighter",
+      "color": "B",
+      "cost": 4,
+      "atk": 3,
+      "hp": 5,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_dies",
+        "effect": "custom_tokens",
+        "amount": 1,
+        "token": {
+          "name": "Bone Thrall",
+          "color": "B",
+          "attack": 2,
+          "health": 1
+        },
+        "once_per_turn": true
+      },
+      "text": "Whenever another friendly creature dies, create 1 Bone Thrall token. Triggers once each turn."
+    },
+    {
+      "name": "Dusk Reclaimer",
+      "type": "Cyber Fighter",
+      "color": "B",
+      "cost": 5,
+      "atk": 5,
+      "hp": 4,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enemy_dies",
+        "effect": "recover_spell",
+        "amount": 1
+      },
+      "text": "Whenever an enemy creature dies, return 1 spell from your graveyard to hand."
+    },
+    {
+      "name": "Ashen Celebrant",
+      "type": "Cyber Fighter",
+      "color": "B",
+      "cost": 5,
+      "atk": 4,
+      "hp": 6,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "draw",
+        "amount": 1,
+        "condition": "graveyard_full"
+      },
+      "text": "When this enters, if your graveyard contains at least three creatures, draw 1 card."
+    },
+    {
+      "name": "Sepulcher Regent",
+      "type": "Cyber Fighter",
+      "color": "B",
+      "cost": 6,
+      "atk": 6,
+      "hp": 6,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "drain",
+        "amount": 2,
+        "once_per_turn": true
+      },
+      "text": "When this attacks, drain 2 life from the enemy hero. Triggers once each turn."
+    },
+    {
+      "name": "Feed the Crypt",
+      "type": "Instant Spell",
+      "color": "B",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "mill",
+            "amount": 3
+          },
+          {
+            "effect": "recall",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Put the top 3 cards of your deck into your graveyard. Then Return 1 creature from your graveyard to hand."
+    },
+    {
+      "name": "Price of Memory",
+      "type": "Instant Spell",
+      "color": "B",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "sacrifice",
+            "amount": 0
+          },
+          {
+            "effect": "draw",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Sacrifice a friendly creature. Then Draw 2 cards."
+    },
+    {
+      "name": "Requiem Bargain",
+      "type": "Instant Spell",
+      "color": "B",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "drain",
+            "amount": 2,
+            "scale": "graveyard",
+            "cap": 3
+          }
+        ]
+      },
+      "text": "Drain 2 life from the enemy hero."
+    },
+    {
+      "name": "Open the Ossuary",
+      "type": "Instant Spell",
+      "color": "B",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "reanimate",
+            "amount": 1,
+            "max_cost": 3
+          }
+        ]
+      },
+      "text": "Return 1 creature costing 3 or less from your graveyard to play."
+    },
+    {
+      "name": "Blood for Knowledge",
+      "type": "Instant Spell",
+      "color": "B",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "spell": {
+        "target": "enemy",
+        "effects": [
+          {
+            "effect": "destroy",
+            "amount": 0
+          },
+          {
+            "effect": "mill",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Choose an enemy creature. Destroy an enemy creature. Then Put the top 2 cards of your deck into your graveyard."
+    },
+    {
+      "name": "Graveborn Host",
+      "type": "Instant Spell",
+      "color": "B",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "pay_life",
+            "amount": 2
+          },
+          {
+            "effect": "draw",
+            "amount": 3
+          }
+        ]
+      },
+      "text": "Lose 2 life. Then Draw 3 cards."
+    },
+    {
+      "name": "Final Testament",
+      "type": "Instant Spell",
+      "color": "B",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "custom_tokens",
+            "amount": 2,
+            "token": {
+              "name": "Bone Thrall",
+              "color": "B",
+              "attack": 2,
+              "health": 1
+            }
+          }
+        ]
+      },
+      "text": "Create 2 bone thrall tokens."
+    },
+    {
+      "name": "Harvest the Fallen",
+      "type": "Instant Spell",
+      "color": "B",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "recover_spell",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Return 2 spells from your graveyard to hand."
+    },
+    {
+      "name": "Debt to the Dead",
+      "type": "Instant Spell",
+      "color": "B",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "sacrifice",
+            "amount": 0
+          },
+          {
+            "effect": "reanimate",
+            "amount": 1,
+            "max_cost": 4
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Sacrifice a friendly creature. Then Return 1 creature costing 4 or less from your graveyard to play."
+    },
+    {
+      "name": "Midnight Resurrection",
+      "type": "Instant Spell",
+      "color": "B",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Graveyard",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "reanimate",
+            "amount": 2,
+            "max_cost": 3
+          },
+          {
+            "effect": "pay_life",
+            "amount": 3
+          }
+        ]
+      },
+      "text": "Return 2 creatures costing 3 or less from your graveyard to play. Then Lose 3 life."
+    },
+    {
+      "name": "Runespark Prodigy",
+      "type": "Cyber Fighter",
+      "color": "R",
+      "cost": 1,
+      "atk": 1,
+      "hp": 2,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "damage",
+        "amount": 1
+      },
+      "text": "When this enters, deal 1 damage."
+    },
+    {
+      "name": "Cinderchain Mage",
+      "type": "Cyber Fighter",
+      "color": "R",
+      "cost": 2,
+      "atk": 2,
+      "hp": 2,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "loot",
+        "amount": 1
+      },
+      "text": "When this attacks, draw 1 card, then discard your highest-cost card."
+    },
+    {
+      "name": "Emberline Savant",
+      "type": "Cyber Fighter",
+      "color": "R",
+      "cost": 2,
+      "atk": 1,
+      "hp": 3,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_enters",
+        "effect": "custom_tokens",
+        "amount": 1,
+        "token": {
+          "name": "Cinder Spark",
+          "color": "R",
+          "attack": 1,
+          "health": 1,
+          "keywords": [
+            "haste"
+          ]
+        }
+      },
+      "text": "Whenever another nontoken creature enters under your control, create 1 Cinder Spark token."
+    },
+    {
+      "name": "Flarewing Adept",
+      "type": "Cyber Fighter",
+      "color": "R",
+      "cost": 3,
+      "atk": 3,
+      "hp": 2,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "trigger": {
+        "event": "spell_cast",
+        "effect": "self_buff",
+        "amount": 1,
+        "then": [
+          {
+            "effect": "damage",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Whenever you cast a noncreature spell, this gets +1/+1 permanently. Then deal 1 damage."
+    },
+    {
+      "name": "Ashstorm Caller",
+      "type": "Cyber Fighter",
+      "color": "R",
+      "cost": 3,
+      "atk": 2,
+      "hp": 4,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "trigger": {
+        "event": "land",
+        "effect": "draw",
+        "amount": 1,
+        "condition": "second_spell"
+      },
+      "text": "Whenever you play a land, if this is your second noncreature spell this turn, draw 1 card."
+    },
+    {
+      "name": "Voltaic Duelist",
+      "type": "Cyber Fighter",
+      "color": "R",
+      "cost": 4,
+      "atk": 4,
+      "hp": 3,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "trigger": {
+        "event": "dies",
+        "effect": "armor",
+        "amount": 2
+      },
+      "text": "When this dies, gain 2 armor."
+    },
+    {
+      "name": "Pyre Archivist",
+      "type": "Cyber Fighter",
+      "color": "R",
+      "cost": 4,
+      "atk": 3,
+      "hp": 5,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_dies",
+        "effect": "recover_spell",
+        "amount": 1,
+        "once_per_turn": true
+      },
+      "text": "Whenever another friendly creature dies, return 1 spell from your graveyard to hand. Triggers once each turn."
+    },
+    {
+      "name": "Spellscar Phoenix",
+      "type": "Cyber Fighter",
+      "color": "R",
+      "cost": 5,
+      "atk": 5,
+      "hp": 4,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enemy_dies",
+        "effect": "damage",
+        "amount": 2
+      },
+      "text": "Whenever an enemy creature dies, deal 2 damage."
+    },
+    {
+      "name": "Inferno Conductor",
+      "type": "Cyber Fighter",
+      "color": "R",
+      "cost": 5,
+      "atk": 4,
+      "hp": 6,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "buff_group",
+        "amount": 1,
+        "selection": "attacking",
+        "condition": "second_spell"
+      },
+      "text": "When this enters, if this is your second noncreature spell this turn, your attacking creatures get +1/+1 this turn."
+    },
+    {
+      "name": "Lastspark Oracle",
+      "type": "Cyber Fighter",
+      "color": "R",
+      "cost": 6,
+      "atk": 6,
+      "hp": 6,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "power_damage",
+        "amount": 0,
+        "once_per_turn": true
+      },
+      "text": "When this attacks, deal this creature's power to the enemy hero. Triggers once each turn."
+    },
+    {
+      "name": "Kindle the Chain",
+      "type": "Instant Spell",
+      "color": "R",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "spell": {
+        "target": "any",
+        "effects": [
+          {
+            "effect": "damage",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Choose a creature or hero. Deal 2 damage."
+    },
+    {
+      "name": "Forked Cinder",
+      "type": "Instant Spell",
+      "color": "R",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "spell": {
+        "target": "any",
+        "effects": [
+          {
+            "effect": "damage",
+            "amount": 1
+          },
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Choose a creature or hero. Deal 1 damage. Then Draw 1 card."
+    },
+    {
+      "name": "Runic Detonation",
+      "type": "Instant Spell",
+      "color": "R",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "area_damage",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Deal 2 damage to each enemy creature."
+    },
+    {
+      "name": "Storm of Embers",
+      "type": "Instant Spell",
+      "color": "R",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "spell": {
+        "target": "any",
+        "effects": [
+          {
+            "effect": "damage",
+            "amount": 3,
+            "scale": "spells",
+            "cap": 3
+          }
+        ]
+      },
+      "text": "Choose a creature or hero. Deal 3 damage."
+    },
+    {
+      "name": "Reckless Research",
+      "type": "Instant Spell",
+      "color": "R",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "spell": {
+        "target": "any",
+        "effects": [
+          {
+            "effect": "loot",
+            "amount": 2
+          },
+          {
+            "effect": "damage",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Choose a creature or hero. Draw 2 cards, then discard your highest-cost card. Then Deal 2 damage."
+    },
+    {
+      "name": "Flashfire Volley",
+      "type": "Instant Spell",
+      "color": "R",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "custom_tokens",
+            "amount": 2,
+            "token": {
+              "name": "Cinder Spark",
+              "color": "R",
+              "attack": 1,
+              "health": 1,
+              "keywords": [
+                "haste"
+              ]
+            }
+          }
+        ]
+      },
+      "text": "Create 2 cinder spark tokens."
+    },
+    {
+      "name": "Arc of Ruin",
+      "type": "Instant Spell",
+      "color": "R",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "buff",
+            "amount": 0,
+            "power": 5
+          },
+          {
+            "effect": "grant_keyword",
+            "amount": 0,
+            "keyword": "haste"
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. A friendly creature gets +5/+0 this turn. Then Grant haste permanently."
+    },
+    {
+      "name": "Pyromancer\u00e2\u20ac\u2122s Encore",
+      "type": "Instant Spell",
+      "color": "R",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "spell": {
+        "target": "any",
+        "effects": [
+          {
+            "effect": "damage",
+            "amount": 2
+          },
+          {
+            "effect": "recover_spell",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Choose a creature or hero. Deal 2 damage. Then Return 1 spell from your graveyard to hand."
+    },
+    {
+      "name": "Combustive Insight",
+      "type": "Instant Spell",
+      "color": "R",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "spell": {
+        "target": "any",
+        "effects": [
+          {
+            "effect": "draw",
+            "amount": 2
+          },
+          {
+            "effect": "damage",
+            "amount": 2,
+            "condition": "second_spell"
+          }
+        ]
+      },
+      "text": "Choose a creature or hero. Draw 2 cards. Then Deal 2 damage."
+    },
+    {
+      "name": "Worldfire Equation",
+      "type": "Instant Spell",
+      "color": "R",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Spells",
+      "set": "Convergence",
+      "spell": {
+        "target": "any",
+        "effects": [
+          {
+            "effect": "area_damage",
+            "amount": 3
+          },
+          {
+            "effect": "damage",
+            "amount": 4
+          }
+        ]
+      },
+      "text": "Choose a creature or hero. Deal 3 damage to each enemy creature. Then Deal 4 damage."
+    },
+    {
+      "name": "Seedpath Initiate",
+      "type": "Cyber Fighter",
+      "color": "G",
+      "cost": 1,
+      "atk": 1,
+      "hp": 2,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "search",
+        "amount": 1,
+        "then": [
+          {
+            "effect": "heal",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "When this enters, play 1 additional land from your reserve this turn. Then gain 1 life."
+    },
+    {
+      "name": "Rootmap Druid",
+      "type": "Cyber Fighter",
+      "color": "G",
+      "cost": 2,
+      "atk": 2,
+      "hp": 2,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "self_buff",
+        "amount": 1
+      },
+      "text": "When this attacks, this gets +1/+1 permanently."
+    },
+    {
+      "name": "Canopy Grazer",
+      "type": "Cyber Fighter",
+      "color": "G",
+      "cost": 2,
+      "atk": 1,
+      "hp": 3,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_enters",
+        "effect": "draw",
+        "amount": 1,
+        "then": [
+          {
+            "effect": "heal",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Whenever another nontoken creature enters under your control, draw 1 card. Then gain 1 life."
+    },
+    {
+      "name": "Loamheart Sage",
+      "type": "Cyber Fighter",
+      "color": "G",
+      "cost": 3,
+      "atk": 3,
+      "hp": 2,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "trigger": {
+        "event": "spell_cast",
+        "effect": "heal",
+        "amount": 2
+      },
+      "text": "Whenever you cast a noncreature spell, gain 2 life."
+    },
+    {
+      "name": "Wildland Envoy",
+      "type": "Cyber Fighter",
+      "color": "G",
+      "cost": 3,
+      "atk": 2,
+      "hp": 4,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "trigger": {
+        "event": "land",
+        "effect": "custom_tokens",
+        "amount": 1,
+        "token": {
+          "name": "Wildseed Plant",
+          "color": "G",
+          "attack": 0,
+          "health": 2
+        },
+        "condition": "six_lands"
+      },
+      "text": "Whenever you play a land, if you control at least six lands, create 1 Wildseed Plant token."
+    },
+    {
+      "name": "Barkcrown Warden",
+      "type": "Cyber Fighter",
+      "color": "G",
+      "cost": 4,
+      "atk": 4,
+      "hp": 3,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "trigger": {
+        "event": "dies",
+        "effect": "untap_lands",
+        "amount": 1,
+        "then": [
+          {
+            "effect": "armor",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "When this dies, untap 1 land. Then gain 2 armor."
+    },
+    {
+      "name": "Trailborn Giant",
+      "type": "Cyber Fighter",
+      "color": "G",
+      "cost": 4,
+      "atk": 3,
+      "hp": 5,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_dies",
+        "effect": "grant_keyword",
+        "amount": 0,
+        "keyword": "trample",
+        "selection": "all",
+        "once_per_turn": true
+      },
+      "text": "Whenever another friendly creature dies, grant trample permanently. Triggers once each turn."
+    },
+    {
+      "name": "Verdant Behemoth",
+      "type": "Cyber Fighter",
+      "color": "G",
+      "cost": 5,
+      "atk": 5,
+      "hp": 4,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enemy_dies",
+        "effect": "buff_group",
+        "amount": 1,
+        "selection": "all",
+        "permanent": true
+      },
+      "text": "Whenever an enemy creature dies, your creatures get +1/+1 permanently."
+    },
+    {
+      "name": "Worldroot Keeper",
+      "type": "Cyber Fighter",
+      "color": "G",
+      "cost": 5,
+      "atk": 4,
+      "hp": 6,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "armor",
+        "amount": 3,
+        "condition": "six_lands"
+      },
+      "text": "When this enters, if you control at least six lands, gain 3 armor."
+    },
+    {
+      "name": "Primeval Wayfinder",
+      "type": "Cyber Fighter",
+      "color": "G",
+      "cost": 6,
+      "atk": 6,
+      "hp": 6,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "custom_tokens",
+        "amount": 1,
+        "token": {
+          "name": "Thicket Beast",
+          "color": "G",
+          "attack": 3,
+          "health": 3,
+          "keywords": [
+            "trample"
+          ]
+        },
+        "once_per_turn": true
+      },
+      "text": "When this attacks, create 1 Thicket Beast token. Triggers once each turn."
+    },
+    {
+      "name": "Open the Trail",
+      "type": "Instant Spell",
+      "color": "G",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "search",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Play 1 additional land from your reserve this turn."
+    },
+    {
+      "name": "Season of Plenty",
+      "type": "Instant Spell",
+      "color": "G",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "search",
+            "amount": 1
+          },
+          {
+            "effect": "untap_lands",
+            "amount": 1
+          },
+          {
+            "effect": "armor",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Play 1 additional land from your reserve this turn. Then Untap 1 land. Then Gain 1 armor."
+    },
+    {
+      "name": "Canopy\u00e2\u20ac\u2122s Gift",
+      "type": "Instant Spell",
+      "color": "G",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "draw",
+            "amount": 1,
+            "scale": "lands",
+            "cap": 3
+          }
+        ]
+      },
+      "text": "Draw 1 card."
+    },
+    {
+      "name": "Roots Remember",
+      "type": "Instant Spell",
+      "color": "G",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "buff",
+            "amount": 4,
+            "power": 4
+          },
+          {
+            "effect": "grant_keyword",
+            "amount": 0,
+            "keyword": "trample"
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. A friendly creature gets +4/+4 this turn. Then Grant trample permanently."
+    },
+    {
+      "name": "Titanic Emergence",
+      "type": "Instant Spell",
+      "color": "G",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "custom_tokens",
+            "amount": 1,
+            "token": {
+              "name": "Thicket Beast",
+              "color": "G",
+              "attack": 3,
+              "health": 3,
+              "keywords": [
+                "trample"
+              ]
+            }
+          }
+        ]
+      },
+      "text": "Create 1 thicket beast token."
+    },
+    {
+      "name": "Verdant Stampede",
+      "type": "Instant Spell",
+      "color": "G",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "buff_group",
+            "amount": 2,
+            "selection": "all"
+          }
+        ]
+      },
+      "text": "Your creatures get +2/+2 this turn."
+    },
+    {
+      "name": "Living Landscape",
+      "type": "Instant Spell",
+      "color": "G",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "search",
+            "amount": 2
+          },
+          {
+            "effect": "heal",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Play 2 additional lands from your reserve this turn. Then Gain 2 life."
+    },
+    {
+      "name": "Ancient Provisions",
+      "type": "Instant Spell",
+      "color": "G",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "grant_keyword",
+            "amount": 0,
+            "keyword": "vigilance",
+            "selection": "all"
+          },
+          {
+            "effect": "untap_lands",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Grant vigilance permanently. Then Untap 2 lands."
+    },
+    {
+      "name": "Worldseed Awakening",
+      "type": "Instant Spell",
+      "color": "G",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "custom_tokens",
+            "amount": 2,
+            "token": {
+              "name": "Wildseed Plant",
+              "color": "G",
+              "attack": 0,
+              "health": 2
+            }
+          },
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Create 2 wildseed plant tokens. Then Draw 1 card."
+    },
+    {
+      "name": "Endless Wilds",
+      "type": "Instant Spell",
+      "color": "G",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Ramp",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "search",
+            "amount": 3
+          },
+          {
+            "effect": "buff_group",
+            "amount": 1,
+            "selection": "all",
+            "permanent": true
+          }
+        ]
+      },
+      "text": "Play 3 additional lands from your reserve this turn. Then Your creatures get +1/+1 permanently."
+    },
+    {
+      "name": "Prismatic Mite",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 1,
+      "atk": 1,
+      "hp": 1,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "insight"
+      },
+      "text": "When this enters, this perpetually gains Insight."
+    },
+    {
+      "name": "Memory-Skin Adept",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 2,
+      "atk": 1,
+      "hp": 3,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "chorus"
+      },
+      "text": "When this attacks, this perpetually gains Chorus."
+    },
+    {
+      "name": "Chorus Familiar",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 2,
+      "atk": 2,
+      "hp": 2,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_enters",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "hospitality"
+      },
+      "text": "Whenever another nontoken creature enters under your control, this perpetually gains Welcoming."
+    },
+    {
+      "name": "Cinder Mimic",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 3,
+      "atk": 3,
+      "hp": 2,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "spell_cast",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "spellflame"
+      },
+      "text": "Whenever you cast a noncreature spell, this perpetually gains Spellflame."
+    },
+    {
+      "name": "Rootglass Larva",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 3,
+      "atk": 2,
+      "hp": 4,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "land",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "landgrowth"
+      },
+      "text": "Whenever you play a land, this perpetually gains Rootgrowth."
+    },
+    {
+      "name": "Mourning Chrysalis",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 3,
+      "atk": 1,
+      "hp": 5,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_dies",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "mourning"
+      },
+      "text": "Whenever another friendly creature dies, this perpetually gains Mourning."
+    },
+    {
+      "name": "Welcoming Doppel",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 4,
+      "atk": 4,
+      "hp": 3,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_dies",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "death_curse"
+      },
+      "text": "Whenever another friendly creature dies, this perpetually gains Death Curse."
+    },
+    {
+      "name": "Adaptive Witness",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 4,
+      "atk": 3,
+      "hp": 5,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enemy_dies",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "insight",
+        "then": [
+          {
+            "effect": "self_buff",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Whenever an enemy creature dies, this perpetually gains Insight. Then this gets +1/+1 permanently."
+    },
+    {
+      "name": "Mosaic Shepherd",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 4,
+      "atk": 2,
+      "hp": 6,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "chorus",
+        "then": [
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "When this enters, this perpetually gains Chorus. Then draw 1 card."
+    },
+    {
+      "name": "Rewritten Guardian",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 5,
+      "atk": 5,
+      "hp": 4,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "hospitality",
+        "then": [
+          {
+            "effect": "heal",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "When this attacks, this perpetually gains Welcoming. Then gain 1 life."
+    },
+    {
+      "name": "Prismwake Oracle",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 5,
+      "atk": 4,
+      "hp": 6,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_enters",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "spellflame",
+        "then": [
+          {
+            "effect": "armor",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Whenever another nontoken creature enters under your control, this perpetually gains Spellflame. Then gain 1 armor."
+    },
+    {
+      "name": "Formless Attendant",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 2,
+      "atk": 2,
+      "hp": 3,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "spell_cast",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "landgrowth",
+        "then": [
+          {
+            "effect": "self_buff",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Whenever you cast a noncreature spell, this perpetually gains Rootgrowth. Then this gets +1/+1 permanently."
+    },
+    {
+      "name": "Blooming Replica",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 3,
+      "atk": 3,
+      "hp": 3,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "land",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "mourning",
+        "then": [
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ],
+        "once_per_turn": true
+      },
+      "text": "Whenever you play a land, this perpetually gains Mourning. Then draw 1 card. Triggers once each turn."
+    },
+    {
+      "name": "Echo-Skin Savant",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 4,
+      "atk": 3,
+      "hp": 4,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_dies",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "death_curse",
+        "then": [
+          {
+            "effect": "heal",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Whenever another friendly creature dies, this perpetually gains Death Curse. Then gain 1 life."
+    },
+    {
+      "name": "Manyfold Keeper",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 5,
+      "atk": 5,
+      "hp": 5,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_dies",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "insight",
+        "then": [
+          {
+            "effect": "armor",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Whenever another friendly creature dies, this perpetually gains Insight. Then gain 1 armor."
+    },
+    {
+      "name": "Transfigured Herald",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 2,
+      "atk": 1,
+      "hp": 4,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enemy_dies",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "chorus",
+        "then": [
+          {
+            "effect": "self_buff",
+            "amount": 1
+          }
+        ],
+        "once_per_turn": true
+      },
+      "text": "Whenever an enemy creature dies, this perpetually gains Chorus. Then this gets +1/+1 permanently. Triggers once each turn."
+    },
+    {
+      "name": "Living Palimpsest",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 3,
+      "atk": 2,
+      "hp": 5,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "enter",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "hospitality",
+        "then": [
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "When this enters, this perpetually gains Welcoming. Then draw 1 card."
+    },
+    {
+      "name": "Perfected Mimic",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 5,
+      "atk": 4,
+      "hp": 5,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "attack",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "spellflame",
+        "then": [
+          {
+            "effect": "heal",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "When this attacks, this perpetually gains Spellflame. Then gain 1 life."
+    },
+    {
+      "name": "Mosaic Sovereign",
+      "type": "Cyber Fighter",
+      "color": "P",
+      "cost": 6,
+      "atk": 6,
+      "hp": 6,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "trigger": {
+        "event": "ally_enters",
+        "effect": "morph_self",
+        "amount": 1,
+        "mutation": "landgrowth",
+        "then": [
+          {
+            "effect": "armor",
+            "amount": 1
+          }
+        ],
+        "once_per_turn": true
+      },
+      "text": "Whenever another nontoken creature enters under your control, this perpetually gains Rootgrowth. Then gain 1 armor. Triggers once each turn."
+    },
+    {
+      "name": "Borrowed Shape",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "insight"
+          },
+          {
+            "effect": "blink",
+            "amount": 0
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with insight. Then Blink a friendly creature."
+    },
+    {
+      "name": "Prismatic Graft",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "chorus"
+          },
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with chorus. Then Draw 1 card."
+    },
+    {
+      "name": "Memory Imprint",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "hospitality"
+          },
+          {
+            "effect": "heal",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with welcoming. Then Gain 2 life."
+    },
+    {
+      "name": "Chorus Rewrite",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 1,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "spellflame"
+          },
+          {
+            "effect": "blink",
+            "amount": 0
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with spellflame. Then Blink a friendly creature."
+    },
+    {
+      "name": "Cinder Mutation",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "landgrowth"
+          },
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with rootgrowth. Then Draw 1 card."
+    },
+    {
+      "name": "Rooted Mutation",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "mourning"
+          },
+          {
+            "effect": "heal",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with mourning. Then Gain 2 life."
+    },
+    {
+      "name": "Mourning Mutation",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "death_curse"
+          },
+          {
+            "effect": "blink",
+            "amount": 0
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with death curse. Then Blink a friendly creature."
+    },
+    {
+      "name": "Welcoming Mutation",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 2,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "morph_board",
+            "amount": 1,
+            "selection": "enemy",
+            "mutation": "death_curse"
+          }
+        ]
+      },
+      "text": "Morph creatures across battlefield, deck, and graveyard with death curse."
+    },
+    {
+      "name": "Hostile Reflection",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "morph_board",
+            "amount": 1,
+            "selection": "friendly",
+            "mutation": "chorus"
+          }
+        ]
+      },
+      "text": "Morph creatures across battlefield, deck, and graveyard with chorus."
+    },
+    {
+      "name": "Selective Evolution",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "hospitality"
+          },
+          {
+            "effect": "blink",
+            "amount": 0
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with welcoming. Then Blink a friendly creature."
+    },
+    {
+      "name": "Mosaic Cascade",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "blink_board",
+            "amount": 1
+          },
+          {
+            "effect": "heal",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Blink all friendly nontoken creatures. Then Gain 2 life."
+    },
+    {
+      "name": "Blink the Many",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 3,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "landgrowth"
+          },
+          {
+            "effect": "heal",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with rootgrowth. Then Gain 2 life."
+    },
+    {
+      "name": "Rewrite the Fallen",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "mourning"
+          },
+          {
+            "effect": "blink",
+            "amount": 0
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with mourning. Then Blink a friendly creature."
+    },
+    {
+      "name": "Shape the Future",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "morph_board",
+            "amount": 1,
+            "selection": "friendly",
+            "mutation": "death_curse"
+          }
+        ]
+      },
+      "text": "Morph creatures across battlefield, deck, and graveyard with death curse."
+    },
+    {
+      "name": "Prismatic Rebirth",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "insight"
+          },
+          {
+            "effect": "heal",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with insight. Then Gain 2 life."
+    },
+    {
+      "name": "Convergent Bloom",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 4,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "morph_board",
+            "amount": 1,
+            "selection": "enemy",
+            "mutation": "death_curse"
+          },
+          {
+            "effect": "armor",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Morph creatures across battlefield, deck, and graveyard with death curse. Then Gain 2 armor."
+    },
+    {
+      "name": "Unmake Identity",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "hospitality"
+          },
+          {
+            "effect": "draw",
+            "amount": 1
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with welcoming. Then Draw 1 card."
+    },
+    {
+      "name": "Shared Adaptation",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": "friendly",
+        "effects": [
+          {
+            "effect": "morph",
+            "amount": 1,
+            "mutation": "spellflame"
+          },
+          {
+            "effect": "heal",
+            "amount": 2
+          }
+        ]
+      },
+      "text": "Choose a friendly creature. Morph a friendly creature with spellflame. Then Gain 2 life."
+    },
+    {
+      "name": "Grand Metamorphosis",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "morph_board",
+            "amount": 1,
+            "selection": "friendly",
+            "mutation": "landgrowth"
+          }
+        ]
+      },
+      "text": "Morph creatures across battlefield, deck, and graveyard with rootgrowth."
+    },
+    {
+      "name": "Perfect Reassembly",
+      "type": "Instant Spell",
+      "color": "P",
+      "cost": 5,
+      "atk": 0,
+      "hp": 0,
+      "archetype": "Morph",
+      "set": "Convergence",
+      "spell": {
+        "target": null,
+        "effects": [
+          {
+            "effect": "blink_board",
+            "amount": 1
+          },
+          {
+            "effect": "armor",
+            "amount": 3
+          }
+        ]
+      },
+      "text": "Blink all friendly nontoken creatures. Then Gain 3 armor."
     }
   ]
 }

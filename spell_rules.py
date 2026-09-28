@@ -18,7 +18,7 @@ class SpellRules:
 
     def resolve_structured_spell(self, card, side, target, definition):
         foe = self.opponent(side)
-        bonus = int(card.upgraded)
+        bonus = getattr(card, 'upgrade_level', int(card.upgraded))
         enemy_bonus = self.damage_spell_bonus(side) if any(e['effect'] in ('damage', 'area_damage') for e in definition['effects']) else 0
         for effect in definition['effects']:
             kind = effect['effect']
@@ -70,8 +70,7 @@ class SpellRules:
             elif kind == 'search':
                 self.search_lands(side, amount)
             elif kind == 'ramp':
-                for land in [c for c in side.deck if c.card_type == 'Land'][:amount]:
-                    side.deck.remove(land); land.tapped = True; side.lands.append(land)
+                self.search_lands(side, amount)
             elif kind == 'morph':
                 self.morph(side, target, effect['mutation'], amount)
             elif kind == 'morph_board':

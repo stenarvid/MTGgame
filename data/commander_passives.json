@@ -40,5 +40,11 @@
     "archetype": "Morph",
     "name": "Living Mosaic",
     "desc": "Whenever you permanently morph a creature, it gets an additional perpetual +1/+1."
+  },
+  {
+    "color": "U",
+    "archetype": "Blink",
+    "name": "Endless Insight",
+    "desc": "You have no maximum hand size."
   }
 ]

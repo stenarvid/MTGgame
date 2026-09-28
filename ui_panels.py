@@ -15,20 +15,28 @@ class QolPanels:
             size = preferences.get('window_size', [1280, 900])
             if len(size) == 2 and all(isinstance(n, int) for n in size):
                 self.windowed_size = (max(640, min(3840, size[0])), max(450, min(2160, size[1])))
-            self.animations = preferences.get('animations', True) is not False
+            self.animation_speed = preferences.get('animation_speed',
+                                                   'normal' if preferences.get('animations', True) else 'off')
+            if self.animation_speed not in ('off', 'fast', 'normal', 'cinematic'):
+                self.animation_speed = 'normal'
+            self.animations = self.animation_speed != 'off'
+            self.inspect_key = {'Left Alt': pygame.K_LALT, 'Left Ctrl': pygame.K_LCTRL,
+                                'Left Shift': pygame.K_LSHIFT}.get(preferences.get('inspect_key'), pygame.K_LALT)
         except (OSError, ValueError, TypeError, AttributeError):
             pass
 
     def save_preferences(self):
         try:
             temp = self.preferences_path.with_suffix('.tmp')
-            temp.write_text(json.dumps(dict(window_size=self.windowed_size, animations=self.animations)), encoding='utf-8')
+            temp.write_text(json.dumps(dict(window_size=self.windowed_size, animations=self.animations,
+                                            animation_speed=self.animation_speed,
+                                            inspect_key=self.inspect_key_name())), encoding='utf-8')
             temp.replace(self.preferences_path)
         except OSError:
             self.message = 'Display settings apply for this session; preferences could not be saved.'
 
     def save_run(self, announce=False):
-        if not self.run or self.state in ('MENU', 'PASSIVE', 'ACTIVE', 'ACHIEVEMENTS', 'COLLECTION', 'HELP', 'NEW_RUN_CONFIRM'):
+        if not self.run or self.state in ('MENU', 'RUN_SETUP', 'PASSIVE', 'ACTIVE', 'SECOND_PASSIVE', 'ACHIEVEMENTS', 'COLLECTION', 'HELP', 'TUTORIAL', 'NEW_RUN_CONFIRM'):
             return True
         state = self.state
         if state in ('PAUSE', 'SETTINGS'):
@@ -85,6 +93,11 @@ class QolPanels:
         self.page = 0
         self.last_event = self.battle.event_serial if self.battle else 0
         self.effects = []
+        self.turn_banner_key = None
+        if self.battle and self.battle.phase == 'UPKEEP':
+            self.battle.finish_upkeep()
+        elif self.battle and self.battle.phase == 'END':
+            self.battle.end_turn()
         self.message = 'Run resumed at your last decision.'
 
     def request_new_run(self):
@@ -131,8 +144,9 @@ class QolPanels:
             self.button((180 + i * 310, 210, 280, 55), f'Interface size: {int(scale * 100)}%',
                         lambda value=scale: self.set_window_scale(value))
         self.button((180, 300, 360, 55), 'Toggle fullscreen (F11)', self.toggle_fullscreen)
-        self.button((180, 385, 550, 55), 'Animations: ' + ('on' if self.animations else 'reduced'), self.toggle_animations)
-        self.text('Shortcuts: Space advance | 1-9 cards | A attack all | D draw pile | G discard | L log | P pause', 50, 495)
+        self.button((180, 385, 550, 55), f'Animation speed: {self.animation_speed.title()}', self.cycle_animation_speed)
+        self.button((180, 460, 550, 55), f'Inspect card key: {self.inspect_key_name()}', self.cycle_inspect_key)
+        self.text('Shortcuts: Enter/Space advance | 1-9 cards | A attack all | B blockers | Ctrl+Z undo | D/G/L/P', 50, 550)
         self.button((180, 600, 280, 55), 'Back', lambda: self.set_state('PAUSE' if self.resume_state != 'MENU' else 'MENU'))
 
     def open_settings(self):
@@ -140,8 +154,25 @@ class QolPanels:
         self.state = 'SETTINGS'
 
     def toggle_animations(self):
-        self.animations = not self.animations
+        self.animation_speed = 'off' if self.animations else 'normal'
+        self.animations = self.animation_speed != 'off'
         self.effects.clear()
+        self.save_preferences()
+
+    def cycle_animation_speed(self):
+        speeds = ('off', 'fast', 'normal', 'cinematic')
+        self.animation_speed = speeds[(speeds.index(self.animation_speed) + 1) % len(speeds)]
+        self.animations = self.animation_speed != 'off'
+        self.effects.clear()
+        self.save_preferences()
+
+    def inspect_key_name(self):
+        return {pygame.K_LALT: 'Left Alt', pygame.K_LCTRL: 'Left Ctrl',
+                pygame.K_LSHIFT: 'Left Shift'}.get(self.inspect_key, 'Left Alt')
+
+    def cycle_inspect_key(self):
+        keys = (pygame.K_LALT, pygame.K_LCTRL, pygame.K_LSHIFT)
+        self.inspect_key = keys[(keys.index(self.inspect_key) + 1) % len(keys)]
         self.save_preferences()
 
     def set_window_scale(self, scale):
@@ -203,14 +234,20 @@ class QolPanels:
             pygame.draw.rect(self.screen, (25, 29, 38), (x, 115, 390, 535), border_radius=12)
             pygame.draw.rect(self.screen, (192, 164, 108), (x, 115, 390, 535), 2, border_radius=12)
             self.text(f'{archetype} booster', x + 18, 132, (245, 206, 105))
-            self.text('All 3 cards are added', x + 18, 164, (159, 155, 178), self.small)
+            copies = sum(sum(existing.name == data['name'] for existing in self.run.deck) for data in pack)
+            colors = sorted({data.get('color', '?') for data in pack})
+            self.text(f'Adds all 3 | {copies} existing copies | Colors {"/".join(colors)}',
+                      x + 18, 164, (159, 155, 178), self.small)
             for j, data in enumerate(pack):
-                self.card(Card.from_dict(data), (x + 10 + j * 125, 200, 120, 285))
+                card = Card.from_dict(data)
+                self.card(card, (x + 10 + j * 125, 200, 120, 285))
+                owned = sum(existing.name == card.name for existing in self.run.deck)
+                self.text(f'Owned: {owned}', x + 14 + j * 125, 493, (159, 155, 178), self.small)
             self.button((x + 25, 545, 340, 50), 'Take all 3 cards', lambda index=i: self.take_reward(index))
         self.button((500, 705, 280, 50), 'Skip booster reward', self.take_reward)
 
     def mulligan_screen(self):
-        self.title('Opening hand', 'Select cards to replace once for free. Your two starting lands stay in play.')
+        self.title('Opening hand', 'Select cards to replace once for free. Two lands start in play; the rest stay in your reserve.')
         for i, card in enumerate(self.battle.player.hand):
             self.card(card, (50 + 240 * i, 180, 220, 330), lambda c=card: self.play_card(c), selected=card in self.chosen)
         self.button((320, 570, 300, 55), 'Replace selected cards', self.replace_hand,
@@ -234,9 +271,13 @@ class QolPanels:
 
     def inspect_screen(self):
         side = self.battle.player
-        cards = sorted(getattr(side, self.inspect_zone), key=lambda c: (c.card_type == 'Land', c.mana_cost, c.name))
+        cards = self.filtered_cards(getattr(side, self.inspect_zone))
         self.title('Your ' + ('draw pile' if self.inspect_zone == 'deck' else 'discard pile'),
                    f'{len(cards)} cards. Sorted for inspection; draw order is hidden.')
+        self.button((30, 78, 180, 30), f'Filter: {self.deck_filter}', self.cycle_deck_filter)
+        self.button((220, 78, 180, 30), f'Sort: {self.deck_sort}', self.cycle_deck_sort)
+        self.button((410, 78, 390, 30), 'Search: ' + (self.deck_search or 'click, then type'), self.start_search,
+                    selected=self.search_active)
         for i, card in enumerate(cards[self.page * 12:self.page * 12 + 12]):
             self.card(card, (30 + i % 6 * 207, 115 + i // 6 * 335, 190, 290))
         self.panel_paging(len(cards), 12)
@@ -283,7 +324,8 @@ class QolPanels:
 
     def finish_service(self):
         if self.run.service(self.service_card, self.service_action):
-            self.message = 'Card upgraded.' if self.service_action == 'upgrade' else 'Card removed.'
+            self.message = (f'Card upgraded to level {self.service_card.upgrade_level}.'
+                            if self.service_action == 'upgrade' else 'Card removed.')
             self.state = 'MERCHANT' if self.run.node else 'MAP'
         else:
             self.message = 'Service unavailable: check gold, upgrade status, or minimum deck/land counts.'
@@ -292,7 +334,7 @@ class QolPanels:
         merchant = self.run.node.node_type == 'Merchant'
         price = (40 if self.service_action == 'remove' else 30) if merchant else 0
         self.title(self.service_action.title() + ' a card',
-                   f'Cost: {price} gold. One service per node. Removal keeps at least 10 cards and 2 lands of each existing color.')
+                   f'Cost: {price} gold. Merchant services are repeatable. Removal keeps at least 10 cards and 2 lands of each existing color.')
         if self.state == 'SERVICE_CONFIRM':
             original = self.service_card
             self.card(original, (300, 170, 280, 420))
@@ -301,12 +343,13 @@ class QolPanels:
                 upgraded.upgrade()
                 self.card(upgraded, (700, 170, 280, 420))
                 self.text('Before', 300, 125)
-                self.text('After', 700, 125)
+                self.text(f'Next: level {upgraded.upgrade_level}', 700, 125)
+                self.wrap(original.upgrade_description(), 700, 605, 360)
             self.button((490, 650, 300, 55), 'Confirm ' + self.service_action, self.finish_service)
             self.button((30, 810, 260, 45), 'Choose another card', lambda: self.set_state('SERVICE'))
             return
         for i, card in enumerate(self.run.deck[self.page * 12:self.page * 12 + 12]):
-            eligible = self.service_action == 'remove' or (not card.upgraded and card.card_type != 'Land')
+            eligible = self.service_action == 'remove' or card.card_type != 'Land'
             self.card(card, (30 + i % 6 * 207, 115 + i // 6 * 335, 190, 290),
                       lambda c=card: self.select_service_card(c), enabled=eligible)
         destination = 'MERCHANT' if merchant else 'REST'
@@ -332,15 +375,19 @@ class QolPanels:
                 x, y = 640, 375
             self.effects.append(dict(x=x, y=y, label=event['label'], kind=event['kind'], born=now))
             self.last_event = event['serial']
-        self.effects = [e for e in self.effects if now - e['born'] < 1400][-12:]
+        duration = {'fast': 700, 'normal': 1400, 'cinematic': 2200}.get(self.animation_speed, 1)
+        self.effects = [e for e in self.effects if now - e['born'] < duration][-12:]
         if self.animations:
             for i, effect in enumerate(self.effects):
-                elapsed = (now - effect['born']) / 1400
+                elapsed = min(1, (now - effect['born']) / duration)
                 color = (115, 255, 166) if effect['kind'] == 'heal' else (250, 211, 135) if effect['kind'] == 'cast' else (175, 130, 255) if effect['kind'] == 'blink' else (100, 205, 255) if effect['kind'] == 'return' else (255, 130, 130)
                 if effect['kind'] == 'blink':
                     radius = int(18 + elapsed * 65)
                     pygame.draw.circle(self.screen, color, (effect['x'], effect['y']), radius,
                                        max(1, int(5 * (1 - elapsed))))
+                    ghost = pygame.Surface((90, 120), pygame.SRCALPHA)
+                    pygame.draw.rect(ghost, (*color, int(70 * (1 - elapsed))), ghost.get_rect(), 3, border_radius=9)
+                    self.screen.blit(ghost, ghost.get_rect(center=(effect['x'], effect['y'] - int(18 * math.sin(elapsed * math.pi)))))
                 elif effect['kind'] == 'return':
                     for trail in range(4):
                         offset = int(elapsed * 90 + trail * 13)
@@ -354,5 +401,35 @@ class QolPanels:
                                  int(effect['y'] + math.sin(angle) * distance + elapsed * elapsed * 35))
                         pygame.draw.circle(self.screen, (150 + drop % 3 * 22, 18, 35), point,
                                            max(2, int(7 * (1 - elapsed))))
+                elif effect['kind'] == 'cast':
+                    travel = min(1, elapsed / .42)
+                    start, finish = pygame.Vector2(640, 820), pygame.Vector2(1135, 255)
+                    pos = start.lerp(finish, 1 - (1 - travel) ** 3)
+                    lift = math.sin(travel * math.pi) * 85
+                    card_rect = pygame.Rect(0, 0, 62, 88)
+                    card_rect.center = (round(pos.x), round(pos.y - lift))
+                    pygame.draw.rect(self.screen, (15, 22, 35), card_rect, border_radius=7)
+                    pygame.draw.rect(self.screen, color, card_rect, 2, border_radius=7)
+                    self.screen.blit(fitted(effect['label'], 54, 9, color), (card_rect.x + 4, card_rect.y + 8))
+                    for spark in range(10):
+                        angle = spark * math.tau / 10 + elapsed * 2
+                        distance = 12 + elapsed * 55
+                        point = (int(effect['x'] + math.cos(angle) * distance),
+                                 int(effect['y'] + math.sin(angle) * distance))
+                        pygame.draw.circle(self.screen, color, point, max(1, int(5 * (1 - elapsed))))
+                    pygame.draw.circle(self.screen, color, (effect['x'], effect['y']), int(12 + elapsed * 38), 2)
+                elif effect['kind'] in ('damage', 'hit'):
+                    for slash in (-1, 1):
+                        reach = int(38 * (1 - elapsed))
+                        pygame.draw.line(self.screen, color,
+                                         (effect['x'] - reach, effect['y'] - slash * reach),
+                                         (effect['x'] + reach, effect['y'] + slash * reach), 4)
+                elif effect['kind'] == 'heal':
+                    for mote in range(8):
+                        angle = mote * math.tau / 8
+                        radius = 12 + elapsed * 34
+                        point = (int(effect['x'] + math.cos(angle) * radius),
+                                 int(effect['y'] + math.sin(angle) * radius - elapsed * 25))
+                        pygame.draw.circle(self.screen, color, point, max(1, int(5 * (1 - elapsed))))
                 label = fitted(effect['label'], 350, 24, color)
                 self.screen.blit(label, (effect['x'] - label.get_width() // 2, effect['y'] - elapsed * 48 - i % 3 * 16))

@@ -14,7 +14,7 @@ from models import Card, Commander, MapNode
 
 TYPES = {cls.__name__: cls for cls in (Run, Battle, Side, StackItem, Card, Commander, MapNode)}
 STATES = {'MAP', 'BATTLE', 'MERCHANT', 'REST', 'TREASURE', 'REWARD', 'WIN', 'LOSS'}
-PHASES = {'AFTER_PLAYER_COMBAT', 'AFTER_ENEMY_COMBAT', 'ATTACK_TARGET', 'DECLARE_BLOCKS', 'MULLIGAN', 'MAIN', 'MAIN2', 'RESPONSE', 'ENEMY_MAIN', 'BLOCK', 'ATTACK_RESPONSE', 'DEFEND_RESPONSE', 'FINISHED'}
+PHASES = {'UPKEEP', 'MAIN', 'COMBAT', 'MAIN2', 'END', 'DISCARD', 'AFTER_PLAYER_COMBAT', 'AFTER_ENEMY_COMBAT', 'ATTACK_TARGET', 'DECLARE_BLOCKS', 'MULLIGAN', 'RESPONSE', 'ENEMY_MAIN', 'BLOCK', 'ATTACK_RESPONSE', 'DEFEND_RESPONSE', 'FINISHED'}
 REQUIRED = {
     'Card': 'name card_type color_code mana_cost attack max_health current_health text tapped sick token upgraded temp_attack temp_health pips width height',
     'Commander': 'name cmd_id colors archetypes passive active passive_name active_name width height',
@@ -86,16 +86,21 @@ def decode_graph(data, pool):
                 obj.plus_one_counters = (sum(perpetual.get(key, 0) for key in
                                              ('chorus', 'insight', 'death_curse', 'hospitality',
                                               'spellflame', 'landgrowth', 'mourning'))
-                                         + perpetual.get('mosaic', 0) + perpetual.get('growth_bonus', 0))
+                                         + perpetual.get('mosaic', 0) + perpetual.get('growth_bonus', 0)
+                                         + perpetual.get('relic_morph', 0))
+            if not hasattr(obj, 'upgrade_level'):
+                obj.upgrade_level = int(getattr(obj, 'upgraded', False))
             definition = next((c for c in pool['cards'] if c['name'] == obj.name), None)
             if definition and not isinstance(obj, Commander):
                 obj.flashback_cost = definition.get('flashback_cost')
                 obj.text = definition.get('text', '')
-                if obj.upgraded:
-                    obj.text += ' [Upgrade: +1/+1.]' if obj.is_creature else ' [Upgrade: +1 to numerical effects; counters also draw 1.]'
+                for level in range(1, getattr(obj, 'upgrade_level', int(obj.upgraded)) + 1):
+                    obj.text += f' [Upgrade {level}: {obj.upgrade_description(level)}]'
                 obj.keywords = sorted(set(getattr(obj, 'keywords', [])) | set(definition.get('keywords', [])))
             if not isinstance(obj.name, str) or not isinstance(obj.mana_cost, int) or obj.mana_cost < 0:
                 raise ValueError('Invalid card properties')
+            if isinstance(obj, Commander) and not hasattr(obj, 'passive_names'):
+                obj.passive_names = [obj.passive_name]
         elif isinstance(obj, MapNode):
             obj.rect = pygame.Rect(obj.x - 18, obj.y - 18, 36, 36)
         elif isinstance(obj, Run):
@@ -116,7 +121,11 @@ def decode_graph(data, pool):
                 raise ValueError('Invalid combatant')
             if not hasattr(side, 'exile'):
                 side.exile = []
-            for zone in ('deck', 'hand', 'board', 'lands', 'discard', 'exile'):
+            if not hasattr(side, 'land_reserve'):
+                side.land_reserve = []
+            if not hasattr(side, 'land_plays_remaining'):
+                side.land_plays_remaining = int(not side.land_played)
+            for zone in ('deck', 'hand', 'board', 'lands', 'land_reserve', 'discard', 'exile'):
                 if any(not isinstance(c, Card) for c in getattr(side, zone)):
                     raise ValueError('Invalid combat zone')
         if any(not isinstance(item, StackItem) for item in battle.stack):

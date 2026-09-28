@@ -285,12 +285,18 @@ class ExpansionRules(unittest.TestCase):
         self.assertTrue(self.run.service(card, 'upgrade'))
         self.assertEqual(card.attack, base_attack + 1)
         self.assertEqual(self.run.gold, 70)
-        self.assertFalse(self.run.service(card, 'remove'))
+        self.assertTrue(self.run.service(card, 'upgrade'))
+        self.assertEqual(card.attack, base_attack + 2)
+        self.assertEqual(card.upgrade_level, 2)
+        self.assertEqual(self.run.gold, 40)
         copy = self.b.base_card(card)
         self.assertTrue(copy.upgraded)
         self.assertEqual(copy.attack, card.attack)
         copy.attack += 10
         self.assertEqual(self.b.base_card(copy).attack, card.attack)
+        removable = next(c for c in self.run.deck if c is not card and c.card_type != 'Land')
+        self.assertTrue(self.run.service(removable, 'remove'))
+        self.assertEqual(self.run.gold, 0)
 
     def test_rest_upgrade_replaces_healing_and_removal_limits(self):
         self.run.node.node_type = 'Rest'
@@ -378,12 +384,13 @@ class ExpandedScreens(unittest.TestCase):
     def test_reward_service_stack_save_resume_scaling_and_shortcuts(self):
         with tempfile.TemporaryDirectory() as directory:
             game = Game(save_path=Path(directory) / 'run.json', progress_path=Path(directory) / 'unlocks.json')
-            game.start_builder()
+            game.begin_builder()
             game.choose(game.commanders['passives'][1])
             game.choose(game.commanders['actives'][3])
             game.enter_node(game.run.grid[0][0])
             game.draw()
             game.keep_hand()
+            game.advance_combat()
             game.battle.player.colored_mana = dict.fromkeys('WUBRG', 10)
             game.battle.enemy.hand.clear()
             bolt = Card.from_dict(next(c for c in game.pool['cards'] if c['name'] == 'Magma Bolt'))
@@ -404,7 +411,7 @@ class ExpandedScreens(unittest.TestCase):
             game.resume_run()
             self.assertEqual(game.battle.phase, 'RESPONSE')
             game.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_SPACE))
-            self.assertEqual(game.battle.phase, 'MAIN')
+            self.assertIn(game.battle.phase, ('MAIN', 'COMBAT'))
             game.handle_event(pygame.event.Event(pygame.VIDEORESIZE, w=800, h=600))
             viewport = game.viewport()
             pos = (viewport.x + viewport.w // 2, viewport.y + viewport.h // 2)

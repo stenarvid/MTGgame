@@ -73,6 +73,17 @@ class MorphRules(unittest.TestCase):
         self.assertGreaterEqual(len(self.b.player.hand), before + 2)
         self.assertTrue(all(card.perpetual.get('insight') for card in self.b.player.board))
 
+    def test_upgraded_prism_larva_repeats_its_morphed_enter_effect(self):
+        larva = self.card('Prism Larva')
+        self.b.player.deck.append(larva)
+        self.b.morph(self.b.player, larva, 'insight')
+        larva.upgrade()
+        self.b.player.deck.remove(larva)
+        self.b.player.deck = [self.card('Magma Bolt') for _ in range(4)]
+        before = len(self.b.player.hand)
+        self.b.summon(self.b.player, larva)
+        self.assertEqual(len(self.b.player.hand), before + 2)
+
     def test_board_morph_rewrites_battlefield_deck_and_graveyard(self):
         battlefield = self.card('Citadel Recruit')
         library = self.card('Thorn Sentinel')

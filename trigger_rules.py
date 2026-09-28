@@ -98,7 +98,9 @@ class TriggerRules:
         source, side, target = item.card, item.side, item.target
         if not self.condition_met(ability.get('condition'), side, source):
             return
-        effect = ability['effect']; amount = self.effect_amount(ability, side, source)
+        effect = ability['effect']
+        amount = self.effect_amount(ability, side, source,
+                                    getattr(source, 'upgrade_level', int(source.upgraded)))
         if self.identity_effect(ability, side, source, target):
             return
         foe = self.opponent(side)
@@ -135,10 +137,7 @@ class TriggerRules:
         elif effect == 'search':
             self.search_lands(side, amount)
         elif effect == 'land':
-            for card in [c for c in side.deck if c.card_type == 'Land'][:amount]:
-                side.deck.remove(card)
-                card.tapped = True
-                side.lands.append(card)
+            self.search_lands(side, amount)
         elif effect == 'team_buff':
             for card in side.board:
                 card.attack += amount; card.max_health += amount; card.current_health += amount

@@ -131,6 +131,7 @@ class ArenaInputTests(unittest.TestCase):
     event = arena_fixture.DragTests.event
     def test_attack_selection_and_declaration(self):
         b = self.game.battle
+        b.phase = 'COMBAT'
         card = self.card('Thorn Sentinel'); card.sick = False
         b.player.board = [card]; b.enemy.board = []
         self.game.draw()
@@ -146,13 +147,14 @@ class ArenaInputTests(unittest.TestCase):
         self.assertEqual(b.enemy.hp, before - card.attack)
         self.assertGreater(card.attack_animation_started, 0)
 
-    def test_tapped_lands_render_sideways(self):
+    def test_tapped_lands_render_with_a_subtle_tilt(self):
         lands = self.game.battle.player.lands
         lands[0].tapped = False; lands[1].tapped = True
         self.game.draw()
         rects = {card: rect for card, rect in self.game.land_hits[True]}
         self.assertGreater(rects[lands[0]].w, rects[lands[0]].h)
-        self.assertLess(rects[lands[1]].w, rects[lands[1]].h)
+        self.assertGreater(rects[lands[1]].w, rects[lands[1]].h)
+        self.assertGreater(rects[lands[1]].h, rects[lands[0]].h)
 
     def test_alternate_tray_click_and_hero_target_geometry(self):
         b = self.game.battle
@@ -177,8 +179,7 @@ class ArenaInputTests(unittest.TestCase):
         b.active = 'Adaptive Bloom'
         b.phase = 'MAIN'
         self.game.draw()
-        commander_rect = next(rect for card, rect in self.game.board_hits if card is b.commander)
-        self.event(pygame.MOUSEBUTTONDOWN, button=1, pos=commander_rect.center)
+        self.event(pygame.MOUSEBUTTONDOWN, button=1, pos=self.game.commander_active_rect.center)
         self.assertEqual(self.game.pending, 'ACTIVE')
         self.assertIn('+3/+3', self.game.adaptive_bloom_description('might'))
         self.assertIn('Draw 2', self.game.adaptive_bloom_description('insight'))

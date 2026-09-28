@@ -157,6 +157,19 @@ class Artwork:
             shade = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
             shade.fill((8, 12, 23, 70 if mode == 'MENU' else 85 if mode == 'BATTLE' else 195))
             result.blit(shade, (0, 0))
+            # Soft cinematic vignette keeps attention on the play space without
+            # adding bitmap UI assets that blur at unusual resolutions.
+            vignette = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+            w, h = surface.get_size()
+            for i in range(48):
+                alpha = int(2 + i * 1.35)
+                pygame.draw.rect(vignette, (2, 4, 10, alpha),
+                                 (i, i, w - i * 2, h - i * 2), 2, border_radius=max(0, 34 - i // 2))
+            for i in range(70):
+                alpha = int(72 * (1 - i / 70) ** 2)
+                pygame.draw.line(vignette, (3, 6, 13, alpha), (0, i), (w, i))
+                pygame.draw.line(vignette, (3, 6, 13, alpha), (0, h - i - 1), (w, h - i - 1))
+            result.blit(vignette, (0, 0))
             self.backgrounds[key] = result
         surface.blit(self.backgrounds[key], (0, 0))
         if mode == 'BATTLE':
@@ -200,13 +213,21 @@ class CardPainter:
         x, y, w, h = rect
         accent = PALETTES.get(card.color_code, GOLD)
         # Layered midnight leather, metallic trim, illustrated window, parchment rules.
-        pygame.draw.rect(surface, (5, 8, 14), rect.move(3, 5), border_radius=10)
+        pygame.draw.rect(surface, (2, 4, 8), rect.move(4, 7), border_radius=11)
         if selected or playable:
-            glow = (116, 237, 198) if selected else (75, 132, 145)
-            pygame.draw.rect(surface, glow, rect.inflate(6, 6), 2, border_radius=11)
+            glow = (116, 237, 198) if selected else (82, 190, 210)
+            pygame.draw.rect(surface, tuple(max(0, c // 3) for c in glow), rect.inflate(9, 9), 3, border_radius=13)
+            pygame.draw.rect(surface, glow, rect.inflate(5, 5), 2, border_radius=11)
         pygame.draw.rect(surface, (16, 23, 36), rect, border_radius=9)
         pygame.draw.rect(surface, accent if selected else GOLD, rect, 2, border_radius=9)
         pygame.draw.rect(surface, tuple(max(0, c // 3) for c in accent), rect.inflate(-8, -8), 1, border_radius=6)
+        # Small metallic corner brackets give the frame definition after rotation.
+        corner = 12 if w >= 150 else 8
+        for sx, sy in ((1, 1), (-1, 1), (1, -1), (-1, -1)):
+            cx = rect.left + 5 if sx > 0 else rect.right - 5
+            cy = rect.top + 5 if sy > 0 else rect.bottom - 5
+            pygame.draw.line(surface, (248, 224, 158), (cx, cy), (cx + sx * corner, cy), 1)
+            pygame.draw.line(surface, (248, 224, 158), (cx, cy), (cx, cy + sy * corner), 1)
 
         compact = w < 175
         title_h = 35 if compact else 32
@@ -215,7 +236,8 @@ class CardPainter:
         counter_space = 30 if counters else 0
         title_rect = pygame.Rect(x + 9 + counter_space, y + 7,
                                  max(20, w - mana_width - 16 - counter_space), title_h)
-        paragraph(surface, card.name + (' +' if card.upgraded else ''), title_rect, 12 if compact else 15, (248, 238, 209))
+        level = getattr(card, 'upgrade_level', int(card.upgraded))
+        paragraph(surface, card.name + (f' +{level}' if level else ''), title_rect, 12 if compact else 15, (248, 238, 209))
         if counters:
             badge_center = (x + 17, y + 18)
             pygame.draw.circle(surface, (12, 16, 20), badge_center, 13)

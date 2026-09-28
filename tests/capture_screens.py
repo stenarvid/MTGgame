@@ -31,7 +31,7 @@ def main():
         pygame.image.save(game.screen, str(output / f'{name}.png'))
 
     save('menu')
-    game.start_builder()
+    game.begin_builder()
     save('builder')
     game.choose(game.commanders['passives'][0])
     game.choose(game.commanders['actives'][3])
