@@ -1,0 +1,38 @@
+[
+  {
+    "key": "commander_wu",
+    "name": "Elya, Formation Weaver",
+    "prompt": "Original high fantasy anime illustration. Clearly CARTOONY 2D anime, clean confident dark outlines, bold graphic shapes, flat cel shading with two or three shadow tones, expressive stylized anime features and exaggerated dramatic poses. Softly painted simplified background and luminous magic effects. No photorealism, realistic skin textures, 3D render, intricate armor filigree, text, lettering, card border or UI. One dominant focal action, strong silhouette readable at small card size. Portrait composition. Adult female white/blue commander, memorable expressive face, short windswept blue hair, ivory and azure angular armor, distinctive wing-shaped silver shoulder guard. She dramatically directs levitating shields and flowing sky ribbons with her signature baton on a coastal citadel. Both white coordination/protection and blue tempo/water visibly present. Strong confident silhouette, upper face comfortably inside framing. Flamboyant heroic fantasy.",
+    "file": "anime/commander-wu-f350093715.png"
+  },
+  {
+    "key": "r_duelist",
+    "name": "Ember Duelist",
+    "prompt": "Original high fantasy anime illustration. Clearly CARTOONY 2D anime, clean confident dark outlines, bold graphic shapes, flat cel shading with two or three shadow tones, expressive stylized anime features and exaggerated dramatic poses. Softly painted simplified background and luminous magic effects. No photorealism, realistic skin textures, 3D render, intricate armor filigree, text, lettering, card border or UI. One dominant focal action, strong silhouette readable at small card size. Portrait composition. Adult red-haired duelist in lightweight crimson battle clothing, oversized expressive determined anime eyes, twin short ember blades, explosive forward dash with a fiery speed trail. Fast and fragile, nimble rather than heavily armored. Clear aggressive silhouette, one character, simple volcanic arena background. Red, copper and orange with a cool contrasting accent.",
+    "file": "anime/r-duelist-d72828a094.png"
+  },
+  {
+    "key": "w_shield",
+    "name": "Hold Formation",
+    "prompt": "Original high fantasy anime illustration. Clearly CARTOONY 2D anime, clean confident dark outlines, bold graphic shapes, flat cel shading with two or three shadow tones, expressive stylized anime features and exaggerated dramatic poses. Softly painted simplified background and luminous magic effects. No photorealism, realistic skin textures, 3D render, intricate armor filigree, text, lettering, card border or UI. One dominant focal action, strong silhouette readable at small card size. Portrait composition. Focus on the ACTION: a single ivory-clad knight braces a broad shield as a translucent gold protective barrier visibly STOPS an incoming purple magical strike. Impact bursts and deflected sparks make damage prevention unmistakable. Barrier and stopped strike dominate, knight supports the action rather than posing for a portrait. Simplified citadel background, ivory/gold light, dynamic graphic composition.",
+    "file": "anime/w-shield-e231309cdd.png"
+  },
+  {
+    "key": "r_wipe",
+    "name": "Cinder Rain",
+    "prompt": "Original high fantasy anime illustration. Clearly CARTOONY 2D anime, clean confident dark outlines, bold graphic shapes, flat cel shading with two or three shadow tones, expressive stylized anime features and exaggerated dramatic poses. Softly painted simplified background and luminous magic effects. No photorealism, realistic skin textures, 3D render, intricate armor filigree, text, lettering, card border or UI. One dominant focal action, strong silhouette readable at small card size. Portrait composition. Focus on the ACTION: burning cinders fall across TWO opposing groups of small fantasy creatures on opposite sides of one battlefield. Both sides visibly caught in the same fiery rain; neither side is safely casting it from outside. Scattered silhouettes flinch and shields glow under impacts, no gore. Dominant descending orange ember shower, broad graphic shapes, simplified volcanic scenery, symmetrical area damage unmistakable.",
+    "file": "anime/r-wipe-450422cdbb.png"
+  },
+  {
+    "key": "relic_lens",
+    "name": "Focused Lens",
+    "prompt": "Original high fantasy anime illustration. Clearly CARTOONY 2D anime, clean confident dark outlines, bold graphic shapes, flat cel shading with two or three shadow tones, expressive stylized anime features and exaggerated dramatic poses. Softly painted simplified background and luminous magic effects. No photorealism, realistic skin textures, 3D render, intricate armor filigree, text, lettering, card border or UI. One dominant focal action, strong silhouette readable at small card size. Portrait composition. A single bold silver-and-blue arcane magnifying lens on a simple brass stand. THREE distinct colored magical rays converge through the lens into one brilliant focused point, implying accumulated spellcasting and insight. The object is the main subject, no character, uncluttered dark azure study background. Chunky readable design, whimsical high fantasy, crisp cel-shaded object and softly painted luminous light.",
+    "file": "anime/relic-lens-6392bb2219.png"
+  },
+  {
+    "key": "environment",
+    "name": "Menu environment",
+    "prompt": "Wide LANDSCAPE high fantasy anime environment, clearly cartoony 2D animation background, bold readable architectural shapes, clean linework, stylized cel-shaded floating citadels and softly painted sunset sky. Flamboyant magical towers, forests and ocean; subtle ivory, azure, violet, red and emerald magical accents. Large quiet low-detail area across center and left for interface text. Rich imaginative scenery at edges, no characters, photorealism, 3D, intricate filigree, lettering, text, borders or UI.",
+    "file": "anime/environment-ba5285161b.png"
+  }
+]

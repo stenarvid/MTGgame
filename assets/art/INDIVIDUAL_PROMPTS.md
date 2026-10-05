@@ -1,3 +1,5 @@
+> Historical prompt archive. Current artwork and exact prompts are documented in [the anime catalog](anime/README.md) and [manifest](anime/manifest.json).
+
 # Individual card illustrations
 
 Generated with the built-in image_gen tool. Each named nonland card now has its own illustration.

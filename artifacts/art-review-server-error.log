@@ -1,0 +1,17 @@
+127.0.0.1 - - [05/Oct/2026 14:13:52] "GET /assets/art/direction-v3/size.html HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:14:10] "GET /assets/art/direction-v3/size.html HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:14:10] "GET /assets/art/direction-v3/commander_wu.png HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:14:10] "GET /assets/art/direction-v3/w_recruit.png HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:14:11] "GET /assets/art/direction-v3/u_apprentice.png HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:14:11] "GET /assets/art/direction-v3/w_shield.png HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:14:11] "GET /assets/art/direction-v3/r_bolt.png HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:14:11] "GET /assets/art/direction-v3/relic_lens.png HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:14:11] "GET /assets/art/direction-v3/r_wipe.png HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:14:11] code 404, message File not found
+127.0.0.1 - - [05/Oct/2026 14:14:11] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [05/Oct/2026 14:24:26] "GET /assets/art/direction-v3/game.html HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:34:51] "GET /assets/art/direction-v3/game.html HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:34:51] "GET /tactical/web/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:34:51] "GET /tactical/web/cards.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:34:51] "GET /tactical/web/card-hover.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Oct/2026 14:34:51] "GET /assets/art/direction-v3/commander_wu.png HTTP/1.1" 304 -

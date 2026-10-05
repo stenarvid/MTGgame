@@ -1,8 +1,0 @@
-[
-    {"color": "W", "archetype": "Token", "name": "Holy Light", "desc": "Active — Restore 3 health to your hero or a friendly creature, then create a 1/1 Recruit."},
-    {"color": "U", "archetype": "Blink", "name": "Time Reversal", "desc": "Active — Blink a friendly creature. Its enter effects trigger again."},
-    {"color": "B", "archetype": "Graveyard", "name": "Soul Reaper", "desc": "Active — Sacrifice a non-Commander creature, then return a creature costing up to 1 more from your graveyard to play."},
-    {"color": "R", "archetype": "Spells", "name": "Flame Burst", "desc": "Active — Deal 3 damage to any target, plus 1 for each noncreature spell cast this turn (maximum +3)."},
-    {"color": "G", "archetype": "Ramp", "name": "Wild Growth", "desc": "Active — Play up to 2 additional lands from your reserve this turn, then untap up to 2 lands."},
-    {"color": "P", "archetype": "Morph", "name": "Adaptive Bloom", "desc": "Active — Give a friendly creature Warform, Mindform, or Lifebloom this turn. Already-morphed creatures receive the stronger form."}
-  ]

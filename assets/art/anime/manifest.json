@@ -1,0 +1,645 @@
+{
+  "w_recruit": {
+    "name": "Citadel Recruit",
+    "kind": "creature",
+    "colors": [
+      "W"
+    ],
+    "text": "An early defensive body.",
+    "file": "anime/w-recruit-2600fd3ecd.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Citadel Recruit. Design type: creature. Exact gameplay concept: An early defensive body.. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 1, \"health\": 3, \"effect\": \"\"}. Ivory, gold, protective light, coordinated formations and sunlit citadels."
+  },
+  "w_patrol": {
+    "name": "Dawn Patrol",
+    "kind": "creature",
+    "colors": [
+      "W"
+    ],
+    "text": "Guard",
+    "file": "anime/w-patrol-c0ee244147.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Dawn Patrol. Design type: creature. Exact gameplay concept: Guard. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 2, \"health\": 2, \"effect\": \"\"}. Ivory, gold, protective light, coordinated formations and sunlit citadels."
+  },
+  "w_medic": {
+    "name": "Dawn Medic",
+    "kind": "creature",
+    "colors": [
+      "W"
+    ],
+    "text": "Lifesteal",
+    "file": "anime/w-medic-b434600906.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Dawn Medic. Design type: creature. Exact gameplay concept: Lifesteal. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 2, \"health\": 3, \"effect\": \"\"}. Ivory, gold, protective light, coordinated formations and sunlit citadels."
+  },
+  "w_captain": {
+    "name": "Formation Captain",
+    "kind": "creature",
+    "colors": [
+      "W"
+    ],
+    "text": "Your other creatures get +1 attack.",
+    "file": "anime/w-captain-22b7729c88.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Formation Captain. Design type: creature. Exact gameplay concept: Your other creatures get +1 attack.. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 2, \"health\": 4, \"effect\": \"formation\"}. Ivory, gold, protective light, coordinated formations and sunlit citadels."
+  },
+  "w_muster": {
+    "name": "Muster",
+    "kind": "spell",
+    "colors": [
+      "W"
+    ],
+    "text": "Create two 1/1 Recruits.",
+    "file": "anime/w-muster-b712a75187.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Muster. Design type: spell. Exact gameplay concept: Create two 1/1 Recruits.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"tokens\"}. Ivory, gold, protective light, coordinated formations and sunlit citadels."
+  },
+  "w_shield": {
+    "name": "Hold Formation",
+    "kind": "response",
+    "colors": [
+      "W"
+    ],
+    "text": "Prevent damage to a friendly creature this turn.",
+    "file": "anime/w-shield-e231309cdd.png",
+    "prompt": "Original high fantasy anime illustration. Clearly CARTOONY 2D anime, clean confident dark outlines, bold graphic shapes, flat cel shading with two or three shadow tones, expressive stylized anime features and exaggerated dramatic poses. Softly painted simplified background and luminous magic effects. No photorealism, realistic skin textures, 3D render, intricate armor filigree, text, lettering, card border or UI. One dominant focal action, strong silhouette readable at small card size. Portrait composition. Focus on the ACTION: a single ivory-clad knight braces a broad shield as a translucent gold protective barrier visibly STOPS an incoming purple magical strike. Impact bursts and deflected sparks make damage prevention unmistakable. Barrier and stopped strike dominate, knight supports the action rather than posing for a portrait. Simplified citadel background, ivory/gold light, dynamic graphic composition."
+  },
+  "w_exile": {
+    "name": "Equal Judgment",
+    "kind": "response",
+    "colors": [
+      "W"
+    ],
+    "text": "Exile a creature with attack 3 or greater.",
+    "file": "anime/w-exile-19497e1cfd.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Equal Judgment. Design type: response. Exact gameplay concept: Exile a creature with attack 3 or greater.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"exile\"}. Ivory, gold, protective light, coordinated formations and sunlit citadels."
+  },
+  "w_rally": {
+    "name": "United Front",
+    "kind": "spell",
+    "colors": [
+      "W"
+    ],
+    "text": "Your creatures get +1/+1 until your next turn.",
+    "file": "anime/w-rally-b4e2dde601.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: United Front. Design type: spell. Exact gameplay concept: Your creatures get +1/+1 until your next turn.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"team_buff\"}. Ivory, gold, protective light, coordinated formations and sunlit citadels."
+  },
+  "u_apprentice": {
+    "name": "Tide Apprentice",
+    "kind": "creature",
+    "colors": [
+      "U"
+    ],
+    "text": "",
+    "file": "anime/u-apprentice-80e31956b4.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Tide Apprentice. Design type: creature. Exact gameplay concept: . Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 1, \"health\": 2, \"effect\": \"\"}. Azure and silver, water, reflections, arcane knowledge and coastal architecture."
+  },
+  "u_glider": {
+    "name": "Mist Glider",
+    "kind": "creature",
+    "colors": [
+      "U"
+    ],
+    "text": "Flying",
+    "file": "anime/u-glider-f751149be0.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Mist Glider. Design type: creature. Exact gameplay concept: Flying. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 1, \"health\": 3, \"effect\": \"\"}. Azure and silver, water, reflections, arcane knowledge and coastal architecture."
+  },
+  "u_scholar": {
+    "name": "Tide Scholar",
+    "kind": "creature",
+    "colors": [
+      "U"
+    ],
+    "text": "On entry, draw one card.",
+    "file": "anime/u-scholar-1c5d75a2ef.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Tide Scholar. Design type: creature. Exact gameplay concept: On entry, draw one card.. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 1, \"health\": 3, \"effect\": \"draw\"}. Azure and silver, water, reflections, arcane knowledge and coastal architecture."
+  },
+  "u_echo": {
+    "name": "Echo Savant",
+    "kind": "creature",
+    "colors": [
+      "U"
+    ],
+    "text": "Your second noncreature spell each turn draws one card.",
+    "file": "anime/u-echo-31e85c9568.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Echo Savant. Design type: creature. Exact gameplay concept: Your second noncreature spell each turn draws one card.. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 2, \"health\": 4, \"effect\": \"spell_draw\"}. Azure and silver, water, reflections, arcane knowledge and coastal architecture."
+  },
+  "u_return": {
+    "name": "Turn Aside",
+    "kind": "response",
+    "colors": [
+      "U"
+    ],
+    "text": "Return a creature to its owner’s hand.",
+    "file": "anime/u-return-7a76625a88.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Turn Aside. Design type: response. Exact gameplay concept: Return a creature to its owner’s hand.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"bounce\"}. Azure and silver, water, reflections, arcane knowledge and coastal architecture."
+  },
+  "u_counter": {
+    "name": "Null Sigil",
+    "kind": "response",
+    "colors": [
+      "U"
+    ],
+    "text": "Counter a pending spell or ability.",
+    "file": "anime/u-counter-0eaceeca09.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Null Sigil. Design type: response. Exact gameplay concept: Counter a pending spell or ability.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"counter\"}. Azure and silver, water, reflections, arcane knowledge and coastal architecture."
+  },
+  "u_insight": {
+    "name": "Measured Insight",
+    "kind": "spell",
+    "colors": [
+      "U"
+    ],
+    "text": "Draw three cards, then choose one to discard.",
+    "file": "anime/u-insight-4178b3f074.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Measured Insight. Design type: spell. Exact gameplay concept: Draw three cards, then choose one to discard.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"filter\"}. Azure and silver, water, reflections, arcane knowledge and coastal architecture."
+  },
+  "u_ready": {
+    "name": "Second Wind",
+    "kind": "response",
+    "colors": [
+      "U"
+    ],
+    "text": "Ready a friendly creature.",
+    "file": "anime/u-ready-7a5dcee4c5.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Second Wind. Design type: response. Exact gameplay concept: Ready a friendly creature.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"ready\"}. Azure and silver, water, reflections, arcane knowledge and coastal architecture."
+  },
+  "b_shambler": {
+    "name": "Crypt Shambler",
+    "kind": "creature",
+    "colors": [
+      "B"
+    ],
+    "text": "On death, each opponent loses 1 health; you gain 1.",
+    "file": "anime/b-shambler-39cc6b4553.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Crypt Shambler. Design type: creature. Exact gameplay concept: On death, each opponent loses 1 health; you gain 1.. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 1, \"health\": 2, \"effect\": \"death_drain\"}. Violet, obsidian and spectral teal, sacrifice, resurrection and gothic ruins; no gore."
+  },
+  "b_broker": {
+    "name": "Bone Broker",
+    "kind": "creature",
+    "colors": [
+      "B"
+    ],
+    "text": "Exhaust, pay 1 mana and sacrifice another creature: draw one card.",
+    "file": "anime/b-broker-176c00b0d2.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Bone Broker. Design type: creature. Exact gameplay concept: Exhaust, pay 1 mana and sacrifice another creature: draw one card.. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 2, \"health\": 2, \"effect\": \"sacrifice\"}. Violet, obsidian and spectral teal, sacrifice, resurrection and gothic ruins; no gore."
+  },
+  "b_collector": {
+    "name": "Soul Collector",
+    "kind": "creature",
+    "colors": [
+      "B"
+    ],
+    "text": "Whenever another friendly creature dies, deal 1 damage to each opponent.",
+    "file": "anime/b-collector-ac934508e7.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Soul Collector. Design type: creature. Exact gameplay concept: Whenever another friendly creature dies, deal 1 damage to each opponent.. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 2, \"health\": 3, \"effect\": \"death_ping\"}. Violet, obsidian and spectral teal, sacrifice, resurrection and gothic ruins; no gore."
+  },
+  "b_heir": {
+    "name": "Grave Heir",
+    "kind": "creature",
+    "colors": [
+      "B"
+    ],
+    "text": "Whenever another friendly creature dies, gain +1/+1.",
+    "file": "anime/b-heir-f86f9c0890.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Grave Heir. Design type: creature. Exact gameplay concept: Whenever another friendly creature dies, gain +1/+1.. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 3, \"health\": 4, \"effect\": \"death_grow\"}. Violet, obsidian and spectral teal, sacrifice, resurrection and gothic ruins; no gore."
+  },
+  "b_recall": {
+    "name": "Grave Recall",
+    "kind": "spell",
+    "colors": [
+      "B"
+    ],
+    "text": "Return a creature from your graveyard to hand.",
+    "file": "anime/b-recall-a328f956c3.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Grave Recall. Design type: spell. Exact gameplay concept: Return a creature from your graveyard to hand.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"recall\"}. Violet, obsidian and spectral teal, sacrifice, resurrection and gothic ruins; no gore."
+  },
+  "b_kill": {
+    "name": "Cruel Exchange",
+    "kind": "response",
+    "colors": [
+      "B"
+    ],
+    "text": "Pay 2 health as a cost. Destroy a creature.",
+    "file": "anime/b-kill-fe7cef8d7f.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Cruel Exchange. Design type: response. Exact gameplay concept: Pay 2 health as a cost. Destroy a creature.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"destroy\"}. Violet, obsidian and spectral teal, sacrifice, resurrection and gothic ruins; no gore."
+  },
+  "b_bargain": {
+    "name": "Dark Bargain",
+    "kind": "spell",
+    "colors": [
+      "B"
+    ],
+    "text": "Pay 2 health as a cost. Draw two cards.",
+    "file": "anime/b-bargain-1309591d3b.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Dark Bargain. Design type: spell. Exact gameplay concept: Pay 2 health as a cost. Draw two cards.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"bargain\"}. Violet, obsidian and spectral teal, sacrifice, resurrection and gothic ruins; no gore."
+  },
+  "b_revive": {
+    "name": "Unearth",
+    "kind": "spell",
+    "colors": [
+      "B"
+    ],
+    "text": "Return a creature costing 3 or less from your graveyard to play.",
+    "file": "anime/b-revive-d0beb847b8.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Unearth. Design type: spell. Exact gameplay concept: Return a creature costing 3 or less from your graveyard to play.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"revive\"}. Violet, obsidian and spectral teal, sacrifice, resurrection and gothic ruins; no gore."
+  },
+  "r_duelist": {
+    "name": "Ember Duelist",
+    "kind": "creature",
+    "colors": [
+      "R"
+    ],
+    "text": "Haste",
+    "file": "anime/r-duelist-d72828a094.png",
+    "prompt": "Original high fantasy anime illustration. Clearly CARTOONY 2D anime, clean confident dark outlines, bold graphic shapes, flat cel shading with two or three shadow tones, expressive stylized anime features and exaggerated dramatic poses. Softly painted simplified background and luminous magic effects. No photorealism, realistic skin textures, 3D render, intricate armor filigree, text, lettering, card border or UI. One dominant focal action, strong silhouette readable at small card size. Portrait composition. Adult red-haired duelist in lightweight crimson battle clothing, oversized expressive determined anime eyes, twin short ember blades, explosive forward dash with a fiery speed trail. Fast and fragile, nimble rather than heavily armored. Clear aggressive silhouette, one character, simple volcanic arena background. Red, copper and orange with a cool contrasting accent."
+  },
+  "r_raider": {
+    "name": "Cinder Raider",
+    "kind": "creature",
+    "colors": [
+      "R"
+    ],
+    "text": "Haste",
+    "file": "anime/r-raider-5ffa09f74d.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Cinder Raider. Design type: creature. Exact gameplay concept: Haste. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 3, \"health\": 1, \"effect\": \"\"}. Crimson, copper and ember orange, speed, fragile aggression and explosive fire."
+  },
+  "r_weaver": {
+    "name": "Spellweaver",
+    "kind": "creature",
+    "colors": [
+      "R"
+    ],
+    "text": "Whenever you cast a noncreature spell, deal 1 damage to each opponent.",
+    "file": "anime/r-weaver-68a391e753.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Spellweaver. Design type: creature. Exact gameplay concept: Whenever you cast a noncreature spell, deal 1 damage to each opponent.. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 2, \"health\": 2, \"effect\": \"spell_damage\"}. Crimson, copper and ember orange, speed, fragile aggression and explosive fire."
+  },
+  "r_charger": {
+    "name": "Ash Charger",
+    "kind": "creature",
+    "colors": [
+      "R"
+    ],
+    "text": "Haste, Trample",
+    "file": "anime/r-charger-7acdbd562f.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Ash Charger. Design type: creature. Exact gameplay concept: Haste, Trample. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 5, \"health\": 2, \"effect\": \"\"}. Crimson, copper and ember orange, speed, fragile aggression and explosive fire."
+  },
+  "r_bolt": {
+    "name": "Magma Bolt",
+    "kind": "response",
+    "colors": [
+      "R"
+    ],
+    "text": "Deal 3 damage to a creature or player.",
+    "file": "anime/r-bolt-5542d28630.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Magma Bolt. Design type: response. Exact gameplay concept: Deal 3 damage to a creature or player.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"damage\"}. Crimson, copper and ember orange, speed, fragile aggression and explosive fire."
+  },
+  "r_loot": {
+    "name": "Reckless Study",
+    "kind": "spell",
+    "colors": [
+      "R"
+    ],
+    "text": "Discard a card as a cost. Draw two cards.",
+    "file": "anime/r-loot-0fa14251af.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Reckless Study. Design type: spell. Exact gameplay concept: Discard a card as a cost. Draw two cards.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"draw\"}. Crimson, copper and ember orange, speed, fragile aggression and explosive fire."
+  },
+  "r_wipe": {
+    "name": "Cinder Rain",
+    "kind": "spell",
+    "colors": [
+      "R"
+    ],
+    "text": "Deal 3 damage to every creature.",
+    "file": "anime/r-wipe-450422cdbb.png",
+    "prompt": "Original high fantasy anime illustration. Clearly CARTOONY 2D anime, clean confident dark outlines, bold graphic shapes, flat cel shading with two or three shadow tones, expressive stylized anime features and exaggerated dramatic poses. Softly painted simplified background and luminous magic effects. No photorealism, realistic skin textures, 3D render, intricate armor filigree, text, lettering, card border or UI. One dominant focal action, strong silhouette readable at small card size. Portrait composition. Focus on the ACTION: burning cinders fall across TWO opposing groups of small fantasy creatures on opposite sides of one battlefield. Both sides visibly caught in the same fiery rain; neither side is safely casting it from outside. Scattered silhouettes flinch and shields glow under impacts, no gore. Dominant descending orange ember shower, broad graphic shapes, simplified volcanic scenery, symmetrical area damage unmistakable."
+  },
+  "r_anthem": {
+    "name": "Uneven Fury",
+    "kind": "spell",
+    "colors": [
+      "R"
+    ],
+    "text": "All creatures gain attack equal to max(0, printed attack − printed health). All have Haste while this is in play.",
+    "file": "anime/r-anthem-529e24e797.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Uneven Fury. Design type: spell. Exact gameplay concept: All creatures gain attack equal to max(0, printed attack − printed health). All have Haste while this is in play.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"anthem\"}. Crimson, copper and ember orange, speed, fragile aggression and explosive fire."
+  },
+  "g_seed": {
+    "name": "Grove Tender",
+    "kind": "creature",
+    "colors": [
+      "G"
+    ],
+    "text": "Reach",
+    "file": "anime/g-seed-6f6763de26.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Grove Tender. Design type: creature. Exact gameplay concept: Reach. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 1, \"health\": 3, \"effect\": \"\"}. Emerald, moss and warm wood, durable beasts, growing resources and ancient forests."
+  },
+  "g_sprite": {
+    "name": "Grove Sprite",
+    "kind": "creature",
+    "colors": [
+      "G"
+    ],
+    "text": "Exhaust: gain one temporary green mana.",
+    "file": "anime/g-sprite-af015bb3f8.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Grove Sprite. Design type: creature. Exact gameplay concept: Exhaust: gain one temporary green mana.. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 1, \"health\": 3, \"effect\": \"mana\"}. Emerald, moss and warm wood, durable beasts, growing resources and ancient forests."
+  },
+  "g_sentinel": {
+    "name": "Thorn Sentinel",
+    "kind": "creature",
+    "colors": [
+      "G"
+    ],
+    "text": "Reach",
+    "file": "anime/g-sentinel-a5d6f17384.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Thorn Sentinel. Design type: creature. Exact gameplay concept: Reach. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 3, \"health\": 4, \"effect\": \"\"}. Emerald, moss and warm wood, durable beasts, growing resources and ancient forests."
+  },
+  "g_beast": {
+    "name": "Ancient Beast",
+    "kind": "creature",
+    "colors": [
+      "G"
+    ],
+    "text": "Trample, Ward",
+    "file": "anime/g-beast-90034a22da.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Ancient Beast. Design type: creature. Exact gameplay concept: Trample, Ward. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 6, \"health\": 7, \"effect\": \"\"}. Emerald, moss and warm wood, durable beasts, growing resources and ancient forests."
+  },
+  "g_ramp": {
+    "name": "Cultivate",
+    "kind": "spell",
+    "colors": [
+      "G"
+    ],
+    "text": "Gain one permanent green mana capacity, up to ten.",
+    "file": "anime/g-ramp-2664296d0c.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Cultivate. Design type: spell. Exact gameplay concept: Gain one permanent green mana capacity, up to ten.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"ramp\"}. Emerald, moss and warm wood, durable beasts, growing resources and ancient forests."
+  },
+  "g_growth": {
+    "name": "Verdant Surge",
+    "kind": "response",
+    "colors": [
+      "G"
+    ],
+    "text": "A friendly creature gets +2/+2 until your next turn.",
+    "file": "anime/g-growth-e837cb983a.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Verdant Surge. Design type: response. Exact gameplay concept: A friendly creature gets +2/+2 until your next turn.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"buff\"}. Emerald, moss and warm wood, durable beasts, growing resources and ancient forests."
+  },
+  "g_fight": {
+    "name": "Predator’s Challenge",
+    "kind": "spell",
+    "colors": [
+      "G"
+    ],
+    "text": "Your strongest ready creature and a target creature deal their attack to each other.",
+    "file": "anime/g-fight-d1c51cae83.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Predator’s Challenge. Design type: spell. Exact gameplay concept: Your strongest ready creature and a target creature deal their attack to each other.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"fight\"}. Emerald, moss and warm wood, durable beasts, growing resources and ancient forests."
+  },
+  "g_insight": {
+    "name": "Canopy Counsel",
+    "kind": "spell",
+    "colors": [
+      "G"
+    ],
+    "text": "Draw two cards.",
+    "file": "anime/g-insight-d8eda5de52.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Canopy Counsel. Design type: spell. Exact gameplay concept: Draw two cards.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"draw\"}. Emerald, moss and warm wood, durable beasts, growing resources and ancient forests."
+  },
+  "r_goad": {
+    "name": "Wild Provocation",
+    "kind": "spell",
+    "colors": [
+      "R"
+    ],
+    "text": "Goad every creature currently in play through its controller’s next turn.",
+    "file": "anime/r-goad-0ae5499004.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Wild Provocation. Design type: spell. Exact gameplay concept: Goad every creature currently in play through its controller’s next turn.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"goad\"}. Crimson, copper and ember orange, speed, fragile aggression and explosive fire."
+  },
+  "c_sentry": {
+    "name": "Prism Sentry",
+    "kind": "creature",
+    "colors": [
+      "C"
+    ],
+    "text": "Reach",
+    "file": "anime/c-sentry-cb85217244.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Prism Sentry. Design type: creature. Exact gameplay concept: Reach. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Mechanical context (illustrate its meaning, never print it): {\"attack\": 1, \"health\": 3, \"effect\": \"\"}. Pearl and weathered bronze with prismatic accents, readable magical artifacts and neutral utility."
+  },
+  "c_break": {
+    "name": "Disrupt Engine",
+    "kind": "response",
+    "colors": [
+      "C"
+    ],
+    "text": "Remove a noncreature engine (never a relic).",
+    "file": "anime/c-break-1e4ec5d190.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Disrupt Engine. Design type: response. Exact gameplay concept: Remove a noncreature engine (never a relic).. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"remove_engine\"}. Pearl and weathered bronze with prismatic accents, readable magical artifacts and neutral utility."
+  },
+  "c_chart": {
+    "name": "Chart a Course",
+    "kind": "spell",
+    "colors": [
+      "C"
+    ],
+    "text": "Draw two cards.",
+    "file": "anime/c-chart-f697a01a12.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Chart a Course. Design type: spell. Exact gameplay concept: Draw two cards.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"draw\"}. Pearl and weathered bronze with prismatic accents, readable magical artifacts and neutral utility."
+  },
+  "c_relay": {
+    "name": "Reclamation Relay",
+    "kind": "spell",
+    "colors": [
+      "C"
+    ],
+    "text": "Whenever a friendly token dies, ready your creatures and gain 1 temporary mana.",
+    "file": "anime/c-relay-a4b1320777.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Reclamation Relay. Design type: spell. Exact gameplay concept: Whenever a friendly token dies, ready your creatures and gain 1 temporary mana.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"relay\"}. Pearl and weathered bronze with prismatic accents, readable magical artifacts and neutral utility."
+  },
+  "c_nest": {
+    "name": "Recruit Foundry",
+    "kind": "spell",
+    "colors": [
+      "C"
+    ],
+    "text": "On entry, create a Recruit. Whenever a friendly token dies, create a Recruit.",
+    "file": "anime/c-nest-a0bb51d1e8.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Recruit Foundry. Design type: spell. Exact gameplay concept: On entry, create a Recruit. Whenever a friendly token dies, create a Recruit.. Depict the actual magical ACTION and its outcome, not a posed character portrait. Protection must stop a strike; sacrifice shows an exchange; recursion shows a return; resource growth shows expanding resources. Symmetrical effects visibly affect both opposing groups. Mechanical context (illustrate its meaning, never print it): {\"effect\": \"foundry\"}. Pearl and weathered bronze with prismatic accents, readable magical artifacts and neutral utility."
+  },
+  "commander_dawn": {
+    "name": "Aurelia, Dawn Marshal",
+    "kind": "commander",
+    "colors": [
+      "W"
+    ],
+    "text": "Wide boards strengthen your commander; exhaust to protect an ally. / Commander has Lifesteal; exhaust to create a Recruit.",
+    "file": "anime/commander-dawn-588a2ac087.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Aurelia, Dawn Marshal. Design type: commander. Exact gameplay concept: Wide boards strengthen your commander; exhaust to protect an ally. / Commander has Lifesteal; exhaust to create a Recruit.. An adult flamboyant commander with memorable face, signature equipment, role-appropriate costume and commanding dramatic pose. Combine BOTH identities visibly when two colors are present. Ivory, gold, protective light, coordinated formations and sunlit citadels."
+  },
+  "commander_tide": {
+    "name": "Neris, Tide Archivist",
+    "kind": "commander",
+    "colors": [
+      "U"
+    ],
+    "text": "Your second spell each turn draws a card; exhaust to draw. / Commander has Flying; exhaust to return a creature to hand.",
+    "file": "anime/commander-tide-e8dd7735f1.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Neris, Tide Archivist. Design type: commander. Exact gameplay concept: Your second spell each turn draws a card; exhaust to draw. / Commander has Flying; exhaust to return a creature to hand.. An adult flamboyant commander with memorable face, signature equipment, role-appropriate costume and commanding dramatic pose. Combine BOTH identities visibly when two colors are present. Azure and silver, water, reflections, arcane knowledge and coastal architecture."
+  },
+  "commander_crypt": {
+    "name": "Veyra, Crypt Matron",
+    "kind": "commander",
+    "colors": [
+      "B"
+    ],
+    "text": "Friendly deaths heal you; exhaust to recover a creature. / Commander has Lifesteal; exhaust and sacrifice an ally to draw two.",
+    "file": "anime/commander-crypt-c420e3f5ba.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Veyra, Crypt Matron. Design type: commander. Exact gameplay concept: Friendly deaths heal you; exhaust to recover a creature. / Commander has Lifesteal; exhaust and sacrifice an ally to draw two.. An adult flamboyant commander with memorable face, signature equipment, role-appropriate costume and commanding dramatic pose. Combine BOTH identities visibly when two colors are present. Violet, obsidian and spectral teal, sacrifice, resurrection and gothic ruins; no gore."
+  },
+  "commander_ember": {
+    "name": "Rakka, Ember Duelist",
+    "kind": "commander",
+    "colors": [
+      "R"
+    ],
+    "text": "Commander has Haste; exhaust to deal two damage. / Your second spell damages each opponent; exhaust and discard to draw two.",
+    "file": "anime/commander-ember-6c1891a59e.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Rakka, Ember Duelist. Design type: commander. Exact gameplay concept: Commander has Haste; exhaust to deal two damage. / Your second spell damages each opponent; exhaust and discard to draw two.. An adult flamboyant commander with memorable face, signature equipment, role-appropriate costume and commanding dramatic pose. Combine BOTH identities visibly when two colors are present. Crimson, copper and ember orange, speed, fragile aggression and explosive fire."
+  },
+  "commander_grove": {
+    "name": "Orun, Grove Warden",
+    "kind": "commander",
+    "colors": [
+      "G"
+    ],
+    "text": "Commander has Ward; exhaust to add green capacity. / Commander has Trample; exhaust to give an ally +2/+2.",
+    "file": "anime/commander-grove-55e9c75183.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Orun, Grove Warden. Design type: commander. Exact gameplay concept: Commander has Ward; exhaust to add green capacity. / Commander has Trample; exhaust to give an ally +2/+2.. An adult flamboyant commander with memorable face, signature equipment, role-appropriate costume and commanding dramatic pose. Combine BOTH identities visibly when two colors are present. Emerald, moss and warm wood, durable beasts, growing resources and ancient forests."
+  },
+  "commander_wu": {
+    "name": "Elya, Formation Weaver",
+    "kind": "commander",
+    "colors": [
+      "W",
+      "U"
+    ],
+    "text": "Flying commander and reinforcement support coordinated attacks. / Guard commander and protection reward reserved defenses.",
+    "file": "anime/commander-wu-f350093715.png",
+    "prompt": "Original high fantasy anime illustration. Clearly CARTOONY 2D anime, clean confident dark outlines, bold graphic shapes, flat cel shading with two or three shadow tones, expressive stylized anime features and exaggerated dramatic poses. Softly painted simplified background and luminous magic effects. No photorealism, realistic skin textures, 3D render, intricate armor filigree, text, lettering, card border or UI. One dominant focal action, strong silhouette readable at small card size. Portrait composition. Adult female white/blue commander, memorable expressive face, short windswept blue hair, ivory and azure angular armor, distinctive wing-shaped silver shoulder guard. She dramatically directs levitating shields and flowing sky ribbons with her signature baton on a coastal citadel. Both white coordination/protection and blue tempo/water visibly present. Strong confident silhouette, upper face comfortably inside framing. Flamboyant heroic fantasy."
+  },
+  "commander_ub": {
+    "name": "Seth, Memory Broker",
+    "kind": "commander",
+    "colors": [
+      "U",
+      "B"
+    ],
+    "text": "Chain spells for cards; return opposing threats. / Preserve health through sacrifice; recover lost pieces.",
+    "file": "anime/commander-ub-f4595caf7b.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Seth, Memory Broker. Design type: commander. Exact gameplay concept: Chain spells for cards; return opposing threats. / Preserve health through sacrifice; recover lost pieces.. An adult flamboyant commander with memorable face, signature equipment, role-appropriate costume and commanding dramatic pose. Combine BOTH identities visibly when two colors are present. Azure and silver, water, reflections, arcane knowledge and coastal architecture. Violet, obsidian and spectral teal, sacrifice, resurrection and gothic ruins; no gore."
+  },
+  "commander_br": {
+    "name": "Kora, Ash Reclaimer",
+    "kind": "commander",
+    "colors": [
+      "B",
+      "R"
+    ],
+    "text": "Haste pressure; sacrifice an ally to draw two. / Friendly deaths heal you; recover attackers for another push.",
+    "file": "anime/commander-br-e1505efb5a.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Kora, Ash Reclaimer. Design type: commander. Exact gameplay concept: Haste pressure; sacrifice an ally to draw two. / Friendly deaths heal you; recover attackers for another push.. An adult flamboyant commander with memorable face, signature equipment, role-appropriate costume and commanding dramatic pose. Combine BOTH identities visibly when two colors are present. Violet, obsidian and spectral teal, sacrifice, resurrection and gothic ruins; no gore. Crimson, copper and ember orange, speed, fragile aggression and explosive fire."
+  },
+  "commander_rg": {
+    "name": "Tarn, Wildfire Herald",
+    "kind": "commander",
+    "colors": [
+      "R",
+      "G"
+    ],
+    "text": "Haste commander; add attackers to a wide board. / Trample commander; ramp toward large threats.",
+    "file": "anime/commander-rg-21f61b762a.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Tarn, Wildfire Herald. Design type: commander. Exact gameplay concept: Haste commander; add attackers to a wide board. / Trample commander; ramp toward large threats.. An adult flamboyant commander with memorable face, signature equipment, role-appropriate costume and commanding dramatic pose. Combine BOTH identities visibly when two colors are present. Crimson, copper and ember orange, speed, fragile aggression and explosive fire. Emerald, moss and warm wood, durable beasts, growing resources and ancient forests."
+  },
+  "commander_gw": {
+    "name": "Iona, Living Bastion",
+    "kind": "commander",
+    "colors": [
+      "G",
+      "W"
+    ],
+    "text": "Wide boards strengthen your commander; grow an ally. / Ward commander; protect a key creature.",
+    "file": "anime/commander-gw-68b309612e.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Iona, Living Bastion. Design type: commander. Exact gameplay concept: Wide boards strengthen your commander; grow an ally. / Ward commander; protect a key creature.. An adult flamboyant commander with memorable face, signature equipment, role-appropriate costume and commanding dramatic pose. Combine BOTH identities visibly when two colors are present. Emerald, moss and warm wood, durable beasts, growing resources and ancient forests. Ivory, gold, protective light, coordinated formations and sunlit citadels."
+  },
+  "relic_reserves": {
+    "name": "Patient Reserves",
+    "kind": "relic",
+    "colors": [
+      "C"
+    ],
+    "text": "If you ended your turn with at least 2 unspent mana, heal 1.",
+    "file": "anime/relic-reserves-19e6ee9266.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Patient Reserves. Design type: relic. Exact gameplay concept: If you ended your turn with at least 2 unspent mana, heal 1.. The named object is the dominant subject; its shape and magical effect should suggest its function, without a character portrait. Pearl and weathered bronze with prismatic accents, readable magical artifacts and neutral utility."
+  },
+  "relic_ashes": {
+    "name": "Ash Ledger",
+    "kind": "relic",
+    "colors": [
+      "C"
+    ],
+    "text": "Your first friendly death each turn heals you 1.",
+    "file": "anime/relic-ashes-dffdfef7b1.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Ash Ledger. Design type: relic. Exact gameplay concept: Your first friendly death each turn heals you 1.. The named object is the dominant subject; its shape and magical effect should suggest its function, without a character portrait. Pearl and weathered bronze with prismatic accents, readable magical artifacts and neutral utility."
+  },
+  "relic_chorus": {
+    "name": "Chorus Stone",
+    "kind": "relic",
+    "colors": [
+      "C"
+    ],
+    "text": "At your turn start, if you have at least four creatures, gain 1 temporary mana.",
+    "file": "anime/relic-chorus-4db9644bf5.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Chorus Stone. Design type: relic. Exact gameplay concept: At your turn start, if you have at least four creatures, gain 1 temporary mana.. The named object is the dominant subject; its shape and magical effect should suggest its function, without a character portrait. Pearl and weathered bronze with prismatic accents, readable magical artifacts and neutral utility."
+  },
+  "relic_edge": {
+    "name": "Risky Edge",
+    "kind": "relic",
+    "colors": [
+      "C"
+    ],
+    "text": "Your creatures get +1 attack while you have 10 health or less.",
+    "file": "anime/relic-edge-210d68e869.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Risky Edge. Design type: relic. Exact gameplay concept: Your creatures get +1 attack while you have 10 health or less.. The named object is the dominant subject; its shape and magical effect should suggest its function, without a character portrait. Pearl and weathered bronze with prismatic accents, readable magical artifacts and neutral utility."
+  },
+  "relic_lens": {
+    "name": "Focused Lens",
+    "kind": "relic",
+    "colors": [
+      "C"
+    ],
+    "text": "After your third noncreature spell in a turn, draw one card.",
+    "file": "anime/relic-lens-6392bb2219.png",
+    "prompt": "Original high fantasy anime illustration. Clearly CARTOONY 2D anime, clean confident dark outlines, bold graphic shapes, flat cel shading with two or three shadow tones, expressive stylized anime features and exaggerated dramatic poses. Softly painted simplified background and luminous magic effects. No photorealism, realistic skin textures, 3D render, intricate armor filigree, text, lettering, card border or UI. One dominant focal action, strong silhouette readable at small card size. Portrait composition. A single bold silver-and-blue arcane magnifying lens on a simple brass stand. THREE distinct colored magical rays converge through the lens into one brilliant focused point, implying accumulated spellcasting and insight. The object is the main subject, no character, uncluttered dark azure study background. Chunky readable design, whimsical high fantasy, crisp cel-shaded object and softly painted luminous light."
+  },
+  "relic_roots": {
+    "name": "Root Pact",
+    "kind": "relic",
+    "colors": [
+      "C"
+    ],
+    "text": "When you gain capacity through ramp, heal 1.",
+    "file": "anime/relic-roots-0ed6a5efea.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Root Pact. Design type: relic. Exact gameplay concept: When you gain capacity through ramp, heal 1.. The named object is the dominant subject; its shape and magical effect should suggest its function, without a character portrait. Pearl and weathered bronze with prismatic accents, readable magical artifacts and neutral utility."
+  },
+  "token_recruit": {
+    "name": "Recruit",
+    "kind": "token",
+    "colors": [
+      "W"
+    ],
+    "text": "Modest 1/1 militia recruit with a small shield.",
+    "file": "anime/token-recruit-f12f058309.png",
+    "prompt": "Original high fantasy 2D ANIME illustration, clearly cartoony animation art. Clean confident outlines, bold graphic shapes, mostly flat cel shading with two or three shadow tones. Expressive stylized anime faces and dramatic poses; no realistic skin texture, photorealism, 3D render or intricate armor filigree. One dominant subject or action with a clear silhouette readable at small card size. Softly painted simplified background and luminous magical effects. Portrait composition, keep the focal subject in the central region and leave faces comfortably inside framing. No text, lettering, border, watermark or UI. Subject: Recruit. Design type: token. Exact gameplay concept: Modest 1/1 militia recruit with a small shield.. Create a distinct recognizable character or creature appropriate to the NAME and rules; varied species, anatomy, costumes and silhouettes. Fast fragile attackers look nimble; durable blockers look robust; scholars, healers and defenders have distinct equipment. Ivory, gold, protective light, coordinated formations and sunlit citadels."
+  },
+  "environment": {
+    "name": "environment",
+    "kind": "environment",
+    "colors": [],
+    "text": "Wide high fantasy anime floating citadels above a forest and ocean at sunset. Bold readable architectural shapes, clean linework, softly painted sky. Large quiet low-detail center and left for interface text; flamboyant magical towers at edges, subtle five-color magical accents.",
+    "file": "anime/environment-ba5285161b.png",
+    "prompt": "Wide LANDSCAPE high fantasy anime environment, clearly cartoony 2D animation background, bold readable architectural shapes, clean linework, stylized cel-shaded floating citadels and softly painted sunset sky. Flamboyant magical towers, forests and ocean; subtle ivory, azure, violet, red and emerald magical accents. Large quiet low-detail area across center and left for interface text. Rich imaginative scenery at edges, no characters, photorealism, 3D, intricate filigree, lettering, text, borders or UI."
+  }
+}

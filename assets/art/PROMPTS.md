@@ -1,3 +1,5 @@
+> Historical prompt archive. Current artwork and exact prompts are documented in [the anime catalog](anime/README.md) and [manifest](anime/manifest.json).
+
 # Anime card art
 
 Generated using the built-in image_gen tool. Original PNG outputs are bundled here.

@@ -1,0 +1,1 @@
+Historical card generators and captures for the removed Pygame mode. Retained as development reference, not active game tools. Current captures are tests/capture_tactical.py and tests/capture_anime_art.py.

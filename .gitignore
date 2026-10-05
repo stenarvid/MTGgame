@@ -7,4 +7,6 @@ run-save.json
 run-save.tmp
 settings.json
 settings.tmp
+tactical-save.json
+tactical-save.tmp
 .ollama-backups/

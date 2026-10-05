@@ -1,0 +1,1141 @@
+{
+  "applied": true,
+  "targets": [
+    {
+      "path": "assets\\art\\aether-spark.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\aether-warp.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\arena-board.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\astral-spire.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\black-necromancer.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\blue-shifter.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\cinder-volley.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\citadel-recruit.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\crypt-shambler.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\dawn-medic.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\ember-duelist.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\grave-recall.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\green-overseer.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\grove-sprite.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\magma-bolt.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\nature-s-bounty.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\null-sigil.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\overcharge-bolt.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\phalanx-barrier.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\radiant-aegis.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\red-pyromancer.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\siphon-life.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\soul-collector.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\thorn-sentinel.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\tide-scholar.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\verdant-surge.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\white-vanguard.png",
+      "reason": "Superseded illustration",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-aether-spark-7e2c5bf967.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-aether-warp-d3d8da7bad.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-ancient-trailblazer-2aab1dbd0a.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-ashwing-raider-876b45260e.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-astra-echo-conduit-f1e4995285.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-astral-cartographer-277c0f854d.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-banner-marshal-86350b7bc3.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-banner-scribe-b3f07b1794.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-bloodwake-rider-239a3054b9.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-bone-gardener-bf18c60640.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-borrowed-memories-2d08d478d6.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-call-the-watch-636340a816.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-canopy-stalker-49845dc999.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-chorus-evolution-bdb8a9e356.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-chorus-seed-bbe1a7eab8.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-cinder-artificer-a096d6508c.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-cinder-shape-2204899a3a.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-cinder-volley-e48e06c0c5.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-citadel-assembly-a87b3c3351.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-citadel-envoy-5d4674afc3.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-citadel-recruit-0eac4a1a21.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-crypt-ghoul-0b228b3b36.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-crypt-scribe-ee6f5be355.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-crypt-shambler-82adb35b90.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-dawn-medic-0d6450aab9.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-dawn-musterer-af732da459.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-dawn-procession-leader-10fc6a3925.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-dawnward-blessing-6149f801d5.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-deepwater-study-4480dc63ec.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-departing-scholar-d08d38c89a.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-dusk-acolyte-4225b1f204.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-echo-adept-9ad817dd68.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-echo-attendant-992f7eba2d.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-ember-captain-19edcd5ec9.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-ember-duelist-5704450f21.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-flame-cantor-937b74a3cf.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-fleeting-reflection-3e69f19d38.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-funeral-chronicler-ff7532870f.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-grand-reassembly-0b9acecd43.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-grave-herald-ebcc597354.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-grave-recall-8c7970678d.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-gravebell-keeper-f2bcc5ca0e.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-grove-sprite-c3007e1d2f.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-grove-tender-acb056c990.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-hostile-rewrite-fa99416581.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-last-light-rally-4a7ef2fefd.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-lastwatch-veteran-7a475c55e9.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-legion-vanguard-62d8960c2a.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-magma-bolt-2747362d44.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-memory-bloom-f6f519865a.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-memory-cascade-60179bc92a.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-memory-diver-ad87e8a50b.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-memory-migration-03e4dc9f5f.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-mirror-pathfinder-bc7501cce8.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-mist-courier-79e3a63622.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-mistveil-envoy-179f75b99a.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-moonlit-savant-b0765a21df.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-mourning-priest-9cde95d175.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-mourning-shape-babf86ecbf.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-nature-s-bounty-d9a6965aca.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-night-reclaimer-102685f465.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-null-sigil-e1f563ca77.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-oathbound-herald-21c16144fb.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-ossuary-warden-7f322da6d9.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-overcharge-bolt-e748999ca9.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-phalanx-barrier-ff2dd25545.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-phase-shifter-62d32a29fc.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-planar-surveyor-def0d9d073.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-prism-larva-bf4a2105af.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-prism-navigator-d7c80d681a.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-prismatic-journey-a7edce4817.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-radiant-aegis-2b2be5110c.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-radiant-quartermaster-10c07494d8.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-raise-the-ramparts-20c7fd99bd.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-recruitment-orders-35ac660cb9.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-return-to-stillwater-6df8ea0317.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-revenant-archivist-41923c5b82.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-rift-apprentice-63871376cd.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-rift-archivist-d84e4a62db.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-rift-rejection-956ecc2047.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-rootbound-sage-9400cea691.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-rooted-shape-d033038230.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-sanctuary-bells-efc445fcc7.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-sanctuary-keeper-205b1deca8.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-seraph-of-the-muster-a086ec3ca8.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-shared-resolve-cd0f860ef6.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-sheltered-passage-a3189c2811.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-sheltering-light-0b02e2edb3.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-shieldwall-captain-bcbc5b1361.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-silverwing-chaplain-2b81fa95ed.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-siphon-life-c95a07330b.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-slip-through-mist-5f88a34b9a.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-soul-collector-2cefe30076.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-spark-savant-da5e6f75d1.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-spellweaver-pyromancer-ac3488308b.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-sunforge-architect-09ab639079.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-sunlit-cadet-4be36737d7.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-temporal-shelter-4b836fe846.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-thorn-sentinel-7c5ee77877.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-tidal-guardian-dc57495253.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-tide-scholar-c846a27b22.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-tideglass-oracle-c694598ddc.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-titan-overseer-c2e356baaf.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-united-charge-41b985c2a3.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-verdant-surge-fe36558f9b.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-welcoming-shape-30454b435d.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\anime\\legacy-card-wildseed-keeper-48c0c69f3d.png",
+      "reason": "Retired legacy illustration; not in current catalog",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\cards.json",
+      "reason": "Superseded legacy artwork mapping",
+      "directory": false
+    },
+    {
+      "path": "assets\\art\\tactical",
+      "reason": "Superseded artwork package; approved images and prompts retained in anime/",
+      "directory": true
+    },
+    {
+      "path": "assets\\art\\direction-preview",
+      "reason": "Superseded artwork package; approved images and prompts retained in anime/",
+      "directory": true
+    },
+    {
+      "path": "anime_artwork.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "arena_ui.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "art.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "battlefield_piles.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "card_interaction.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "engine.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "identity_rules.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "models.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "persistence.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "rendering.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "spell_rules.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "trigger_rules.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "ui_panels.py",
+      "reason": "Explicitly removed Pygame game implementation",
+      "directory": false
+    },
+    {
+      "path": "data",
+      "reason": "Retired legacy card/commander/relic data; generators and documentation preserved separately",
+      "directory": true
+    },
+    {
+      "path": "tests\\capture_art_direction.py",
+      "reason": "Superseded preview-only tool; current artwork review tools retained",
+      "directory": false
+    },
+    {
+      "path": "tests\\art_direction_browser.mjs",
+      "reason": "Superseded preview-only tool; current artwork review tools retained",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\anime-review-01.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\anime-review-02.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\anime-review-03.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\anime-review-04.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\anime-review-05.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\anime-review-06.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\anime-review-07.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\arena-drag.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\arena-hand-stack.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\arena-hover.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\arena-token-piles.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\art-direction-cards.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\art-direction-gallery.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\art-direction-inspection.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\art-direction-menu.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\art-direction-mobile.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\battle.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\builder-companion.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\builder-review.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\builder.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\card-identities.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\card-preview.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\combat-log.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\combat-preview.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\deck.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\help.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\legacy-commander-first.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\legacy-commander-review.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\legacy-commander-second.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\map.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\menu.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\merchant.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\mulligan.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\new-unlocks.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\response.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\rewards.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\run-unlock-summary.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\scaled-window.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\stack.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-art-review-1.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-art-review-2.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-art-review-3.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-art-review-4.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-battle.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-build.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-commander-packages.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-commanders.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-draft.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-human-battle.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-human-draft.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-mobile.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-mulligan.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\tactical-rooms.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\upgrade.png",
+      "reason": "Outdated generated screenshot; fresh retained-game captures follow cleanup",
+      "directory": false
+    },
+    {
+      "path": "artifacts\\artwork-revisions.json",
+      "reason": "Generated revision jobs belonging to the retired card pool",
+      "directory": false
+    },
+    {
+      "path": "__pycache__",
+      "reason": "Regenerable Python bytecode cache",
+      "directory": true
+    },
+    {
+      "path": "data\\__pycache__",
+      "reason": "Regenerable Python bytecode cache",
+      "directory": true
+    },
+    {
+      "path": "tactical\\__pycache__",
+      "reason": "Regenerable Python bytecode cache",
+      "directory": true
+    },
+    {
+      "path": "tests\\__pycache__",
+      "reason": "Regenerable Python bytecode cache",
+      "directory": true
+    }
+  ],
+  "moved_history": [
+    {
+      "source": "tests/test_arena.py",
+      "destination": "tests/retired_legacy/test_arena.py"
+    },
+    {
+      "source": "tests/test_command_zone.py",
+      "destination": "tests/retired_legacy/test_command_zone.py"
+    },
+    {
+      "source": "tests/test_content.py",
+      "destination": "tests/retired_legacy/test_content.py"
+    },
+    {
+      "source": "tests/test_engine.py",
+      "destination": "tests/retired_legacy/test_engine.py"
+    },
+    {
+      "source": "tests/test_expansion.py",
+      "destination": "tests/retired_legacy/test_expansion.py"
+    },
+    {
+      "source": "tests/test_game.py",
+      "destination": "tests/retired_legacy/test_game.py"
+    },
+    {
+      "source": "tests/test_identity.py",
+      "destination": "tests/retired_legacy/test_identity.py"
+    },
+    {
+      "source": "tests/test_morph.py",
+      "destination": "tests/retired_legacy/test_morph.py"
+    },
+    {
+      "source": "tests/capture_screens.py",
+      "destination": "tools/retired_legacy/capture_screens.py"
+    },
+    {
+      "source": "tests/capture_arena.py",
+      "destination": "tools/retired_legacy/capture_arena.py"
+    },
+    {
+      "source": "data/expand_cards.py",
+      "destination": "tools/retired_legacy/expand_cards.py"
+    },
+    {
+      "source": "data/refine_cards.py",
+      "destination": "tools/retired_legacy/refine_cards.py"
+    },
+    {
+      "source": "data/fifty_card_sets.py",
+      "destination": "tools/retired_legacy/fifty_card_sets.py"
+    },
+    {
+      "source": "CARD_CATALOG.md",
+      "destination": "docs/retired_legacy/CARD_CATALOG.md"
+    },
+    {
+      "source": "data/CARD_RULES.md",
+      "destination": "docs/retired_legacy/CARD_RULES.md"
+    }
+  ],
+  "preserved_file_hashes": {
+    "run-save.json": "25927290bdca365f14ad92fb72d37a01268df25bfd4dfccebdeddba8d1c83248",
+    "save.json": "8d4a77271abc2404ba5904531b2347e4d1dd3c3f02dd94acf5d346aeab034ab9",
+    "tactical-save.json": "8607618477e472f46ed9292c3fe24ad5bcc324560a39d4876f0de858a8984244",
+    "settings.json": "3e12950e6cf4ac94b3030bec61e71be10077dc7a9aa78dc92028afecc45b9aa8"
+  },
+  "preserved": [
+    "saves",
+    "settings",
+    "historical tests",
+    "documentation",
+    "development references",
+    "current capture tools"
+  ]
+}

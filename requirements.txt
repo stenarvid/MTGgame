@@ -1,1 +1,1 @@
-pygame-ce>=2.5.8,<3
+# Commander Spire uses only the Python standard library; no pip packages required.

@@ -1,0 +1,21 @@
+"""Create a searchable, paged review of generated anime artwork and its rules."""
+import json
+from pathlib import Path
+from artwork_catalog import ROOT, ART_ROOT
+
+def build_review():
+    catalog=json.loads((ART_ROOT/'anime/manifest.json').read_text(encoding='utf-8'))
+    available=[dict(key=key,name=e['name'],kind=e['kind'],text=e['text'],file='../assets/art/'+e['file'])
+               for key,e in catalog.items() if (ART_ROOT/e['file']).is_file()]
+    template='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Anime artwork review</title><style>
+    *{box-sizing:border-box}body{margin:0;background:#0b1625;color:#eef5ff;font:14px system-ui;line-height:1.5}header{padding:20px;background:#14283a;position:sticky;top:0;z-index:2;border-bottom:2px solid #58748c}h1{margin:0 0 12px;color:#ffe0a0;font-size:26px}input,select,button{font:inherit;padding:9px;border:2px solid #648297;border-radius:7px;color:#eef5ff;background:#203d52}input{width:300px;max-width:100%}nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;padding:20px}article{background:#14283a;padding:12px;border:2px solid #536f89;border-radius:10px}article img{width:100%;height:220px;object-fit:contain;background:#091421}h2{font-size:16px;margin:10px 0 6px}p{font-size:12px;margin:5px 0;color:#cad9e7}a{color:#c8f2ee}article small{color:#a9bdcf}footer{padding:20px}@media(max-width:750px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    </style><header><h1>Anime artwork — __COUNT__ / __TOTAL__ designs</h1><nav><input id="search" placeholder="Search names and rules" aria-label="Search names and rules"><select id="category" aria-label="Artwork category"><option value="">All designs</option><option value="creature">Creatures</option><option value="spell">Spells and responses</option><option value="commander">Commanders</option><option value="relic">Relics</option><option value="other">Tokens and environments</option></select><button id="prev">Previous</button><span id="page"></span><button id="next">Next</button></nav></header><main class="grid" id="grid"></main><footer>Each distinct design has one dedicated illustration. Open an image to inspect it at full size. Rules are shown beside the subject for review.</footer><script>
+    const subjects=__DATA__;let page=0;const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));function render(){const query=document.querySelector('#search').value.toLowerCase(),category=document.querySelector('#category').value;const list=subjects.filter(s=>(s.name+' '+s.text).toLowerCase().includes(query)&&(!category||(category==='creature'?s.kind==='creature':category==='spell'?s.kind==='spell'||s.kind==='response'||s.kind==='engine':category==='commander'?s.kind==='commander':category==='relic'?s.kind==='relic':category==='other'?s.kind==='land'||s.kind==='token'||s.kind==='environment':s.key.startsWith(category))));const pages=Math.max(1,Math.ceil(list.length/24));page=Math.min(page,pages-1);document.querySelector('#page').textContent=(page+1)+' / '+pages+' · '+list.length+' designs';document.querySelector('#prev').disabled=page===0;document.querySelector('#next').disabled=page+1===pages;document.querySelector('#grid').innerHTML=list.slice(page*24,page*24+24).map(s=>'<article><a href="'+esc(s.file)+'"><img src="'+esc(s.file)+'" alt="'+esc(s.name)+'"></a><h2>'+esc(s.name)+'</h2><small>'+esc(s.kind)+'</small><p>'+esc(s.text)+'</p></article>').join('')}document.querySelector('#search').oninput=()=>{page=0;render()};document.querySelector('#category').onchange=()=>{page=0;render()};document.querySelector('#prev').onclick=()=>{page--;render()};document.querySelector('#next').onclick=()=>{page++;render()};render();
+    </script></html>'''
+    output=ROOT/'artifacts/anime-art-review.html'
+    output.parent.mkdir(exist_ok=True)
+    output.write_text(template.replace('__COUNT__',str(len(available))).replace('__TOTAL__',str(len(catalog))).replace('__DATA__',json.dumps(available,ensure_ascii=True)),encoding='utf-8')
+    return len(available),len(catalog)
+
+if __name__=='__main__':
+    print('Review generated:',*build_review())

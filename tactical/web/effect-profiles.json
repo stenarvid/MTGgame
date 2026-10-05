@@ -1,0 +1,380 @@
+{
+  "w_recruit": {
+    "family": "summon",
+    "color": "W",
+    "seed": 4937,
+    "name": "Citadel Recruit"
+  },
+  "w_patrol": {
+    "family": "summon",
+    "color": "W",
+    "seed": 3938,
+    "name": "Dawn Patrol"
+  },
+  "w_medic": {
+    "family": "summon",
+    "color": "W",
+    "seed": 2863,
+    "name": "Dawn Medic"
+  },
+  "w_captain": {
+    "family": "summon",
+    "color": "W",
+    "seed": 4759,
+    "name": "Formation Captain"
+  },
+  "w_muster": {
+    "family": "summon",
+    "color": "W",
+    "seed": 3994,
+    "name": "Muster"
+  },
+  "w_shield": {
+    "family": "shield",
+    "color": "W",
+    "seed": 3757,
+    "name": "Hold Formation"
+  },
+  "w_exile": {
+    "family": "banish",
+    "color": "W",
+    "seed": 2972,
+    "name": "Equal Judgment"
+  },
+  "w_rally": {
+    "family": "rally",
+    "color": "W",
+    "seed": 3074,
+    "name": "United Front"
+  },
+  "u_apprentice": {
+    "family": "summon",
+    "color": "U",
+    "seed": 8272,
+    "name": "Tide Apprentice"
+  },
+  "u_glider": {
+    "family": "summon",
+    "color": "U",
+    "seed": 3792,
+    "name": "Mist Glider"
+  },
+  "u_scholar": {
+    "family": "summon",
+    "color": "U",
+    "seed": 4792,
+    "name": "Tide Scholar"
+  },
+  "u_echo": {
+    "family": "summon",
+    "color": "U",
+    "seed": 2192,
+    "name": "Echo Savant"
+  },
+  "u_return": {
+    "family": "wave",
+    "color": "U",
+    "seed": 4013,
+    "name": "Turn Aside"
+  },
+  "u_counter": {
+    "family": "counter",
+    "color": "U",
+    "seed": 4939,
+    "name": "Null Sigil"
+  },
+  "u_insight": {
+    "family": "wisdom",
+    "color": "U",
+    "seed": 4864,
+    "name": "Measured Insight"
+  },
+  "u_ready": {
+    "family": "wind",
+    "color": "U",
+    "seed": 2985,
+    "name": "Second Wind"
+  },
+  "b_shambler": {
+    "family": "summon",
+    "color": "B",
+    "seed": 5787,
+    "name": "Crypt Shambler"
+  },
+  "b_broker": {
+    "family": "summon",
+    "color": "B",
+    "seed": 3854,
+    "name": "Bone Broker"
+  },
+  "b_collector": {
+    "family": "summon",
+    "color": "B",
+    "seed": 7124,
+    "name": "Soul Collector"
+  },
+  "b_heir": {
+    "family": "summon",
+    "color": "B",
+    "seed": 2213,
+    "name": "Grave Heir"
+  },
+  "b_recall": {
+    "family": "portal",
+    "color": "B",
+    "seed": 3731,
+    "name": "Grave Recall"
+  },
+  "b_kill": {
+    "family": "shadow",
+    "color": "B",
+    "seed": 2217,
+    "name": "Cruel Exchange"
+  },
+  "b_bargain": {
+    "family": "sacrifice",
+    "color": "B",
+    "seed": 4667,
+    "name": "Dark Bargain"
+  },
+  "b_revive": {
+    "family": "portal",
+    "color": "B",
+    "seed": 3888,
+    "name": "Unearth"
+  },
+  "r_duelist": {
+    "family": "summon",
+    "color": "R",
+    "seed": 4924,
+    "name": "Ember Duelist"
+  },
+  "r_raider": {
+    "family": "summon",
+    "color": "R",
+    "seed": 3778,
+    "name": "Cinder Raider"
+  },
+  "r_weaver": {
+    "family": "summon",
+    "color": "R",
+    "seed": 3877,
+    "name": "Spellweaver"
+  },
+  "r_charger": {
+    "family": "summon",
+    "color": "R",
+    "seed": 4741,
+    "name": "Ash Charger"
+  },
+  "r_bolt": {
+    "family": "fireball",
+    "color": "R",
+    "seed": 2278,
+    "name": "Magma Bolt"
+  },
+  "r_loot": {
+    "family": "wisdom",
+    "color": "R",
+    "seed": 2323,
+    "name": "Reckless Study"
+  },
+  "r_wipe": {
+    "family": "meteor",
+    "color": "R",
+    "seed": 2247,
+    "name": "Cinder Rain"
+  },
+  "r_anthem": {
+    "family": "rally",
+    "color": "R",
+    "seed": 3818,
+    "name": "Uneven Fury"
+  },
+  "g_seed": {
+    "family": "summon",
+    "color": "G",
+    "seed": 2147,
+    "name": "Grove Tender"
+  },
+  "g_sprite": {
+    "family": "summon",
+    "color": "G",
+    "seed": 3906,
+    "name": "Grove Sprite"
+  },
+  "g_sentinel": {
+    "family": "summon",
+    "color": "G",
+    "seed": 5892,
+    "name": "Thorn Sentinel"
+  },
+  "g_beast": {
+    "family": "summon",
+    "color": "G",
+    "seed": 2978,
+    "name": "Ancient Beast"
+  },
+  "g_ramp": {
+    "family": "roots",
+    "color": "G",
+    "seed": 2240,
+    "name": "Cultivate"
+  },
+  "g_growth": {
+    "family": "growth",
+    "color": "G",
+    "seed": 3971,
+    "name": "Verdant Surge"
+  },
+  "g_fight": {
+    "family": "clash",
+    "color": "G",
+    "seed": 2970,
+    "name": "Predator\u2019s Challenge"
+  },
+  "g_insight": {
+    "family": "wisdom",
+    "color": "G",
+    "seed": 4850,
+    "name": "Canopy Counsel"
+  },
+  "r_goad": {
+    "family": "provocation",
+    "color": "R",
+    "seed": 2142,
+    "name": "Wild Provocation"
+  },
+  "c_sentry": {
+    "family": "summon",
+    "color": "C",
+    "seed": 4050,
+    "name": "Prism Sentry"
+  },
+  "c_break": {
+    "family": "shatter",
+    "color": "C",
+    "seed": 2875,
+    "name": "Disrupt Engine"
+  },
+  "c_chart": {
+    "family": "wisdom",
+    "color": "C",
+    "seed": 2983,
+    "name": "Chart a Course"
+  },
+  "c_relay": {
+    "family": "sigil",
+    "color": "C",
+    "seed": 3004,
+    "name": "Reclamation Relay"
+  },
+  "c_nest": {
+    "family": "sigil",
+    "color": "C",
+    "seed": 2294,
+    "name": "Recruit Foundry"
+  },
+  "dawn": {
+    "family": "commander",
+    "color": "W",
+    "seed": 426,
+    "name": "Aurelia, Dawn Marshal"
+  },
+  "tide": {
+    "family": "commander",
+    "color": "U",
+    "seed": 422,
+    "name": "Neris, Tide Archivist"
+  },
+  "crypt": {
+    "family": "commander",
+    "color": "B",
+    "seed": 562,
+    "name": "Veyra, Crypt Matron"
+  },
+  "ember": {
+    "family": "commander",
+    "color": "R",
+    "seed": 523,
+    "name": "Rakka, Ember Duelist"
+  },
+  "grove": {
+    "family": "commander",
+    "color": "G",
+    "seed": 547,
+    "name": "Orun, Grove Warden"
+  },
+  "wu": {
+    "family": "commander",
+    "color": "W",
+    "seed": 236,
+    "name": "Elya, Formation Weaver"
+  },
+  "ub": {
+    "family": "commander",
+    "color": "U",
+    "seed": 215,
+    "name": "Seth, Memory Broker"
+  },
+  "br": {
+    "family": "commander",
+    "color": "B",
+    "seed": 212,
+    "name": "Kora, Ash Reclaimer"
+  },
+  "rg": {
+    "family": "commander",
+    "color": "R",
+    "seed": 217,
+    "name": "Tarn, Wildfire Herald"
+  },
+  "gw": {
+    "family": "commander",
+    "color": "G",
+    "seed": 222,
+    "name": "Iona, Living Bastion"
+  },
+  "relic_reserves": {
+    "family": "artifact",
+    "color": "C",
+    "seed": 879,
+    "name": "Patient Reserves"
+  },
+  "relic_ashes": {
+    "family": "artifact",
+    "color": "C",
+    "seed": 532,
+    "name": "Ash Ledger"
+  },
+  "relic_chorus": {
+    "family": "artifact",
+    "color": "C",
+    "seed": 660,
+    "name": "Chorus Stone"
+  },
+  "relic_edge": {
+    "family": "artifact",
+    "color": "C",
+    "seed": 405,
+    "name": "Risky Edge"
+  },
+  "relic_lens": {
+    "family": "artifact",
+    "color": "C",
+    "seed": 434,
+    "name": "Focused Lens"
+  },
+  "relic_roots": {
+    "family": "artifact",
+    "color": "C",
+    "seed": 567,
+    "name": "Root Pact"
+  },
+  "token_recruit": {
+    "family": "summon",
+    "color": "W",
+    "seed": 101,
+    "name": "Recruit"
+  }
+}

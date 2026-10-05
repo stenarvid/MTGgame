@@ -1,0 +1,1 @@
+Historical tests for the removed Pygame mode. Retained as reference; excluded from active test discovery because their implementation was retired. Current gameplay tests are tests/test_tactical.py and tests/test_artwork.py.
