@@ -31,16 +31,16 @@ or matchmaking. Use HTTPS when deploying to a public host.
   Multiplayer AI encounters use the same duel rules as human play. Victory packs,
   a limited-currency shop, free deck/reserve exchanges, optional boss relic
   replacement, one retry, and saving between encounters remain supported.
-- **Human groups:** two to four players, private hands, pick-and-pass drafting,
+- **Human groups:** two players, private hands, pick-and-pass drafting,
   elimination/survival victory points, personal reward packs and continuation votes.
   Groups can fill empty seats with AI.
 - **Decks:** fixed 30-card decks plus a commander, two packages per commander,
-  public conditional relics, and white/blue/black/red/green identities. Green can ramp.
+  public equipment/relic effects, and white/blue/black/red/green identities. Green can ramp.
 - **Duels:** renewable colored mana, commander tax, priority and a response stack,
   blocking, persistent creature damage, eight keywords, and finite loop declarations
   that preserve opponents' response opportunities.
 
-The current prototype has **46 deck-card designs, 10 commanders and 6 relics**.
+The current prototype has **46 deck-card designs, 10 commanders, 6 multiplayer relics and 7 solo equipment designs**.
 The 150-design launch pool is a future content milestone. Balance, draft diversity,
 credible counterplay and 20-30-minute battles still require human playtesting.
 
@@ -57,6 +57,13 @@ The desktop layout keeps hand, decision controls and pending actions together.
 Commander selection separates choosing a character from choosing its package.
 Card inspection explains full rules and keywords. Mobile has a fixed decision bar,
 collapsible opponents and a horizontally scrollable hand.
+
+Cards use detailed vector ornaments matched to their color identity, with blended
+frames for dual-color commanders. Journey progress, commander package previews,
+contextual casting explanations, and an accessible build action bar guide setup
+through rewards. Spell animations extend beyond fire with cel-shaded shields,
+waves, grimoires, shadow tendrils, grave portals, growing branches, and crystal
+fragments. Effects settings include reduced motion and intensity controls.
 
 Exact prompts and filenames are in [the anime manifest](assets/art/anime/manifest.json).
 Images were created with the built-in image generation tool and are bundled locally.
@@ -89,3 +96,16 @@ They are excluded from active test discovery and do not describe current gamepla
 `python cleanup_artwork.py` reviews the explicit cleanup inventory; `--apply`
 verifies the retained catalog before removing superseded files. It preserves user
 save/settings files and records their hashes in `artifacts/artwork-cleanup.json`.
+
+Solo campaigns include a three-slot equipment inventory, Essence upgrades for
+card designs and individual items, and an optional playable **Learn to play**
+mini-campaign from Rooms. Opponent portraits open a focused battlefield. Human
+solo decisions are untimed, with optional automatic response passing.
+
+Campaigns have branching left-to-right act maps, visible difficulty challenges
+for bonus Essence, and earned treasure chests with independently upgraded items.
+Field and town-street scenery joins the temple battlefield. Collection filters,
+combat-plan reset/counts, target-cost hints, public exile inspection, spending
+confirmations, and reliable live updates preserve the established controls.
+Draws, mana changes, healing, and rewards have additional interruptible motion
+and sound, with reduced-motion and intensity settings.

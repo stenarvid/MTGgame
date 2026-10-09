@@ -4,11 +4,11 @@ Run `python -m tactical.preview --port 8768` and open http://127.0.0.1:8768/.
 This server is local-only, holds its scenarios in memory, and never reads or writes campaign saves.
 The review uses the shared card renderer and the production Battle priority/stack engine.
 Its additional abilities are attached to fixture instances; they do not enter the released card pool.
-Full UI rollout awaits review approval.
+The approved temple composition is integrated into the production 1v1 battlefield through temple-game.js and temple-game.css, with responsive mobile controls.
 
 Choose a scenario and reset it whenever needed. You control the current priority holder in this
 review, so Pass moves control to the next seat. Each opponent's hand stays hidden until that seat
-holds priority. Two consecutive passes resolve one stack entry; the active player then gets priority.
+holds priority. Submitting a cast or non-mana activation normally passes priority to the opponent immediately. Once everyone passes, one stack entry resolves and the active player gets priority again.
 
 - Hover: full card centered over a black fade, effects and keyword explanations on the right.
 - Right-click, long-press, or click a card with no available action: persistent inspection.

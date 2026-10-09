@@ -2,7 +2,7 @@
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const inspectionCards=new Map(),app=document.querySelector('#app');
 let state,selected=null,busy=false,mouse={x:0,y:0},hoverTimer,hoverSource,longTimer,suppressClick=false,attackChoices={},blockChoices={},dragStart=null,pendingHover=null;
-const timingNames={main:'Main-phase ability',instant:'Instant-speed ability',response:'Response-only ability'};
+const timingNames={main:'Sorcery ability',instant:'Instant ability',response:'Instant ability · pending action required'};
 const keywordSymbols={Haste:'ϟ',Guard:'◇',Flying:'↟',Reach:'⌁',Trample:'➤',Lifesteal:'♥',Ward:'⬡',Goad:'⚑'};
 const previewArt=new Set(['commander_wu','w_recruit','u_apprentice','w_shield','r_bolt','r_wipe','relic_lens']);
 window.cardArtURL=key=>(previewArt.has(key)?'/preview-art/':'/art/')+key;
@@ -76,4 +76,4 @@ app.addEventListener('pointerover',e=>{const entry=e.target.closest('[data-stack
 document.querySelector('#scenario').onchange=e=>act({action:'reset',scenario:e.target.value});document.querySelector('#reset').onclick=()=>act({action:'reset',scenario:state.scenario});
 const initialScenario=new URLSearchParams(location.search).get('scenario');request(initialScenario?{action:'reset',scenario:initialScenario,presentation:new URLSearchParams(location.search).get('presentation')==='1'}:undefined).then(next=>{state=next;render();SpireFX.consume(state.battle,{initial:true})}).catch(error);
 
-const reviewScenes=['fire','firecounter','meteors','combatanim','response','summon','commanderarrival','arrivalcounter','exile','bounce'];const nextScene=document.createElement('button');nextScene.textContent='Next scene';nextScene.onclick=()=>act({action:'reset',scenario:reviewScenes[(reviewScenes.indexOf(state.scenario)+1)%reviewScenes.length],presentation:true});document.querySelector('header').append(nextScene);
+const reviewScenes=['fire','firecounter','meteors','combatanim','response','summon','commanderarrival','arrivalcounter','exile','bounce','wisdom','counterseal','shadow','revival','growth','roots','shatter','rally'];const nextScene=document.createElement('button');nextScene.textContent='Next scene';nextScene.onclick=()=>act({action:'reset',scenario:reviewScenes[(reviewScenes.indexOf(state.scenario)+1)%reviewScenes.length],presentation:true});document.querySelector('header').append(nextScene);

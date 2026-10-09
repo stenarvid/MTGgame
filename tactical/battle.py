@@ -3,17 +3,27 @@ import copy
 import random
 import time
 from .content import CARD_MAP, COMMANDER_MAP, RELIC_MAP, KEYWORDS
+from .progression import upgraded_card, EQUIPMENT_MAP, equipment_view
 
 
 class RuleError(ValueError):
     pass
 
 
-class Battle:
+from .battle_items import ItemBattle
+from .items import ITEM_MAP, CONSUMABLE_MAP, EXTRA_TARGETS
+
+
+from .priority import PriorityRules
+
+
+class Battle(PriorityRules, ItemBattle):
     def __init__(self, builds, seed=0, starting=0, encounter=None):
         self.rng = random.Random(seed)
         self.serial = 0
         self.players = []
+        self.gear_cards = {i:copy.deepcopy(build.get('gear_cards', {})) for i,build in enumerate(builds)}
+        self.card_upgrades = {i:copy.deepcopy(build.get("card_upgrades",{})) for i,build in enumerate(builds)}
         self.stack = []
         self.log = []
         self.visual_events = []
@@ -36,16 +46,20 @@ class Battle:
         self.encounter = encounter or {}
         for i, build in enumerate(builds):
             p = dict(id=i, name=build['name'], commander=build['commander'], package=build['package'],
-                     relic=build['relic'], colors=COMMANDER_MAP[build['commander']]['colors'],
-                     hp=25, alive=True, turns=0, completed_turn=False, mulligan=False, kept=False, opening_color=None,
+                     relic=build['relic'], equipment=copy.deepcopy(build.get('equipment')), colors=COMMANDER_MAP[build['commander']]['colors'],
+                     hp=25, alive=True, turns=0, completed_turn=False, mulligan=False, mulligan_count=0, bottom_remaining=0, kept=False, opening_color=None,
                      capacity={}, mana={}, temporary=0, fatigue=0, tax=0, commander_zone='command',
-                     board=[], hand=[], deck=[], grave=[], exile=[], engines=[], spells=0,
+                     board=[], hand=[], deck=[], grave=[], exile=[], engines=[], gear=[],
+                     pouch=copy.deepcopy(build.get('pouch', [])), spent_consumables=[], spells=0,
                      ashes_used=False, points=0, eliminator=None, eliminated_at=None, eliminated_elapsed=None, active_used=False)
             p['deck'] = [self.instance(c, i) for c in build['deck']]
             self.rng.shuffle(p['deck'])
             self.players.append(p)
             self.draw(i, 5)
-        self.note('Choose your opening hand, then choose your first mana color privately.')
+        if 'head_start' in self.encounter.get('modifiers', []):
+            for p in self.players[1:]:
+                self.gain_capacity(p['id'], p['colors'][0])
+        self.note('Keep your opening hand. Choose mana at the start of your main phase.')
 
     def instance(self, card_id, owner, commander=False):
         self.serial += 1
@@ -53,10 +67,10 @@ class Battle:
             spec = COMMANDER_MAP[card_id]
             c = dict(id='commander', name=spec['name'], color=spec['colors'][0], cost=4,
                      pips={color: 1 for color in spec['colors']}, attack=3, health=5,
-                     kind='creature', keywords=[], effect='', text='Commander', commander=True)
+                     kind='creature', keywords=[], effect='', text=self.package(owner)['description'], commander=True)
         else:
-            c = copy.deepcopy(CARD_MAP[card_id])
-        c.update(uid=str(self.serial), owner=owner, printed_attack=c.get('attack',0), printed_health=c.get('health',0), damage=0, tapped=False, sick=True,
+            c = copy.deepcopy(self.gear_cards.get(owner, {}).get(card_id)) or upgraded_card(card_id,self.card_upgrades.get(owner,{}).get(card_id,0))
+        c.update(uid=str(self.serial), owner=owner, origin_owner=owner, printed_attack=c.get('attack',0), printed_health=c.get('health',0), damage=0, tapped=False, sick=True,
                  bonus_attack=0, bonus_health=0, protected=False, token=False, goad=None)
         return c
 
@@ -85,14 +99,14 @@ class Battle:
 
     def find(self, uid):
         for p in self.players:
-            for zone in ('board', 'hand', 'grave', 'engines'):
+            for zone in ('board', 'hand', 'grave', 'engines', 'gear', 'exile'):
                 for c in p[zone]:
                     if c['uid'] == str(uid):
                         return p, zone, c
         return None, None, None
 
     def keywords(self, c):
-        result = set(c['keywords'])
+        result = set(c['keywords']) | self.item_keywords(c)
         owner = c['owner']
         if c.get('commander'):
             passive = self.package(owner)['passive']
@@ -100,23 +114,49 @@ class Battle:
                        'ward':'Ward', 'trample':'Trample', 'lifesteal':'Lifesteal'}.get(passive, '').split())
         if any(e['effect'] == 'anthem' for p in self.players for e in p['engines']):
             result.add('Haste')
+        if c['kind'] == 'creature' and self.timing_override(owner, 'creature_cast'):
+            result.add('Flash')
         if c.get('goad'):
             result.add('Goad')
         return result
 
+    def effect_strength(self, i, effect):
+        p = self.players[i]
+        if p.get('equipment') is not None:
+            return sum(item.get('tier',0)+1 for item in p['equipment']
+                       if item['design'] in EQUIPMENT_MAP and EQUIPMENT_MAP[item['design']]['effect'] == effect)
+        return int(RELIC_MAP.get(p.get('relic'),{}).get('effect') == effect)
+
+    def entry_triggers(self, i, card):
+        if i == 0 and 'silent_entry' in self.encounter.get('modifiers', []):
+            return
+        repeats = 1 + self.effect_strength(i,'entry')
+        effect = card['effect']
+        if effect not in ('draw','foundry'):
+            return
+        for _ in range(repeats):
+            self.push(i,'draw' if effect == 'draw' else 'tokens',
+                      amount=(card.get('amount',1) or 1) if effect == 'draw' else card.get('engine_strength',1),
+                      name=card['name']+' entry',source=card)
+
     def stats(self, c):
         p = self.players[c['owner']]
-        attack = c.get('attack', 0) + c['bonus_attack']
-        health = c.get('health', 0) + c['bonus_health']
+        item_attack, item_health = self.item_stats(c)
+        attack = c.get('attack', 0) + c['bonus_attack'] + item_attack
+        health = c.get('health', 0) + c['bonus_health'] + item_health
         attack += sum(1 for x in p['board'] if x['effect'] == 'formation' and x is not c)
-        if RELIC_MAP[p['relic']]['effect'] == 'edge' and p['hp'] <= 10:
-            attack += 1
+        if p['hp'] <= 10:
+            attack += self.effect_strength(p['id'],'edge')
         if c.get('commander') and self.package(p['id'])['passive'] == 'wide':
             attack += max(0, len(p['board'])-1)
         for other in self.players:
             for e in other['engines']:
                 if e['effect'] == 'anthem':
                     attack += max(0, c['printed_attack']-c['printed_health'])
+                    if other['id'] == c['owner']:
+                        attack += e.get('engine_strength',1)-1
+        if c['owner'] == 0 and 'weak_army' in self.encounter.get('modifiers', []):
+            attack -= 1
         return max(0, attack), health
 
     def draw(self, i, count):
@@ -179,7 +219,7 @@ class Battle:
         return True
 
     def targets(self, i, target_kind):
-        result = []
+        result = self.item_targets(i, target_kind)
         for p in self.players:
             if not p['alive']:
                 continue
@@ -189,6 +229,8 @@ class Battle:
                 result += [c['uid'] for c in p['grave'] if c['kind'] == 'creature' and
                            (target_kind == 'grave' or c['cost'] <= 3)]
             for c in p['board']:
+                if not self.item_target_allowed(i, c):
+                    continue
                 if target_kind in ('creature','any') or (target_kind == 'friendly' and p['id'] == i) or (target_kind == 'enemy' and p['id'] != i) or (target_kind == 'large' and self.stats(c)[0] >= 3):
                     result.append(c['uid'])
             if target_kind == 'engine':
@@ -200,14 +242,16 @@ class Battle:
     def cost_for(self, i, card, target=None):
         cost = card['cost'] + (self.players[i]['tax'] if card.get('commander') else 0)
         _, zone, c = self.find(target)
-        if c and zone == 'board' and c['owner'] != i and 'Ward' in self.keywords(c):
+        if c and zone == 'board' and c['owner'] != i and ('Ward' in c['keywords'] or (c.get('commander') and self.package(c['owner'])['passive'] == 'ward')):
             cost += 1
         return cost
 
     def castable(self, i, card, target=None):
+        if i == 0 and 'creatures_only' in self.encounter.get('modifiers', []) and card['kind'] != 'creature':
+            return False
         if self.finished or i != self.priority or not self.players[i]['alive'] or self.phase in ('opening','grow','blocks'):
             return False
-        if card['kind'] != 'response' and (i != self.active or self.phase not in ('main','main2') or self.stack):
+        if not self.instant_card(i, card) and (i != self.active or self.phase not in ('main','main2') or self.stack):
             return False
         if card.get('target') and target not in self.targets(i, card['target']):
             return False
@@ -236,28 +280,47 @@ class Battle:
         self.visual_serial = getattr(self,'visual_serial',0)+1
         card = action.get('card') or {}
         source = self.find(action.get('source_uid'))[2] or {}
+        relic_uid = action.get('relic_uid')
+        relic_id = action.get('card_id', '') or ''
+        if not relic_uid and relic_id.startswith('relic_'):
+            design = relic_id[len('relic_'):]
+            item = next((item for item in self.players[action['owner']].get('equipment') or []
+                         if item['design'] == design), None)
+            relic_uid = item['uid'] if item else f"legacy:{action['owner']}:{design}"
         event = dict(seq=self.visual_serial,stage=stage,outcome=outcome,
                      action_uid=action.get('uid'),card_id=card.get('id') or action.get('card_id') or source.get('id'),
                      source_uid=action.get('source_uid') or card.get('uid'),owner=action['owner'],
                      effect=action['effect'],kind=action.get('kind','ability'),name=action['name'],
                      color=card.get('color') or action.get('color') or source.get('color') or self.players[action['owner']]['colors'][0],
                      target=action.get('target'),amount=action.get('amount',0),
+                     relic_uid=relic_uid,
                      commander=bool(card.get('commander') or source.get('commander')),
-                     public_card={k:copy.deepcopy(card[k]) for k in ('uid','id','name','color','kind','cost','pips','attack','health','keywords','text','commander') if k in card},
+                     public_card={k:copy.deepcopy(card[k]) for k in ('uid','id','name','color','kind','cost','pips','attack','health','keywords','text','commander','art_style','base_design','design','gems','tier','type_line') if k in card},
                      commander_id=self.players[action['owner']]['commander'],
                      affected_uids=[c['uid'] for p in self.players for c in p['board']] if action['effect'] in ('wipe','goad','anthem') else [])
         self.visual_events = (getattr(self,'visual_events',[])+[event])[-128:]
         return event
 
-    def push(self, i, effect, target=None, amount=0, card=None, kind='ability', name=None, source=None):
+    def push(self, i, effect, target=None, amount=0, card=None, kind='trigger', name=None, source=None):
         self.serial += 1
         s = dict(uid=f's{self.serial}', owner=i, effect=effect, target=target, amount=amount,
                  card=card, kind=kind, name=name or (card['name'] if card else effect),
                  lifesteal=bool(source and 'Lifesteal' in self.keywords(source)))
         s.update(card_id=(card or source or {}).get('id'),color=(card or source or {}).get('color'),source_uid=(source or card or {}).get('uid'))
         if not card and not source:
+            item = next((item for item in self.players[i].get('equipment') or []
+                         if equipment_view(item)['name'] == s['name']), None)
+            if item:
+                s['relic_uid'] = item['uid']
             relic = next((r for r in RELIC_MAP.values() if r['name'] == s['name']),None)
-            if relic: s.update(card_id='relic_'+relic['id'],color='C')
+            if relic:
+                s.update(card_id='relic_'+relic['id'],color='C')
+                owned = next((item for item in self.players[i].get('equipment') or [] if item['design'] == relic['id']), None)
+                if owned:
+                    s['relic_uid'] = owned['uid']
+        if source:
+            s['source_category'] = 'equipment' if source['kind'] == 'equipment' else 'creature'
+            s['source_order'] = source.get('attachment_order', 0) if source['kind'] == 'equipment' else source.get('entry_order', 10**9)
         self.stack.append(s)
         visual=self.visual_event('cast',s)
         s.update(public_card=visual['public_card'],commander=visual['commander'],commander_id=visual['commander_id'])
@@ -265,24 +328,26 @@ class Battle:
         self.note(f"{self.players[i]['name']}: {s['name']} → pending")
 
     def triggers_cast(self, i, card):
+        self.equipment_cast_triggers(i, card)
         if card['kind'] == 'creature':
             return
         p = self.players[i]
         p['spells'] += 1
         for c in list(p['board']):
             if c['effect'] == 'spell_damage':
-                self.push(i, 'all_damage', amount=1, name=c['name'])
+                self.push(i, 'all_damage', amount=1, name=c['name'],source=c)
             if c['effect'] == 'spell_draw' and p['spells'] == 2:
-                self.push(i, 'draw', amount=1, name=c['name'])
+                self.push(i, 'draw', amount=1, name=c['name'],source=c)
         if self.commander_present(i):
             passive = self.package(i)['passive']
             if p['spells'] == 2 and passive in ('second_draw','second_damage'):
-                self.push(i, 'draw' if passive == 'second_draw' else 'all_damage', amount=1, name='Commander trigger')
-        if p['spells'] == 3 and RELIC_MAP[p['relic']]['effect'] == 'lens':
-            self.push(i, 'draw', amount=1, name='Focused Lens')
+                self.push(i, 'draw' if passive == 'second_draw' else 'all_damage', amount=1, name='Commander trigger',source=next(c for c in p['board'] if c.get('commander')))
+        if p['spells'] == 3 and self.effect_strength(i,'lens'):
+            self.push(i, 'draw', amount=self.effect_strength(i,'lens'), name='Focused Lens')
 
     def move_out(self, p, c, destination='grave'):
-        for zone in ('board','engines'):
+        self.detach(c)
+        for zone in ('board','engines','gear'):
             if c in p[zone]:
                 p[zone].remove(c)
         if c.get('commander'):
@@ -292,32 +357,35 @@ class Battle:
             c['damage'] = c['bonus_attack'] = c['bonus_health'] = 0
             c['buffs'] = [x for x in c.get('buffs',[]) if x.get('duration') != 'Until your next turn']
             c['protected'], c['goad'] = False, None
-            p[destination].append(c)
+            c['end_buffs'] = []
+            c['owner'] = c.get('origin_owner', p['id'])
+            self.players[c['owner']][destination].append(c)
 
     def death(self, p, c, watchers=None):
         watchers = list(p['board']) if watchers is None else watchers
+        self.item_death_triggers(p, c, watchers)
         self.note(f"{c['name']} dies.")
         self.move_out(p, c)
         if c['effect'] == 'death_drain':
-            self.push(p['id'], 'drain_all', amount=1, name=c['name'])
+            self.push(p['id'], 'drain_all', amount=1, name=c['name'],source=c)
         for other in watchers:
             if other is c:
                 continue
             if other['effect'] == 'death_grow':
-                self.push(p['id'], 'permanent_buff', other['uid'], 1, name=other['name'])
+                self.push(p['id'], 'permanent_buff', other['uid'], 1, name=other['name'],source=other)
             if other['effect'] == 'death_ping':
                 self.push(p['id'], 'all_damage', amount=1, name=other['name'],source=other)
         if c.get('token'):
             for engine in p['engines']:
                 if engine['effect'] == 'foundry':
-                    self.push(p['id'], 'tokens', amount=1, name=engine['name'])
+                    self.push(p['id'], 'tokens', amount=engine.get('engine_strength',1), name=engine['name'],source=engine)
                 if engine['effect'] == 'relay':
-                    self.push(p['id'], 'relay_ready', amount=1, name=engine['name'])
+                    self.push(p['id'], 'relay_ready', amount=engine.get('engine_strength',1), name=engine['name'],source=engine)
         if any(w.get('commander') for w in watchers) and self.package(p['id'])['passive'] == 'death_heal':
-            self.push(p['id'], 'heal', amount=1, name='Commander death trigger')
-        if RELIC_MAP[p['relic']]['effect'] == 'ashes' and not p['ashes_used']:
+            self.push(p['id'], 'heal', amount=1, name='Commander death trigger',source=next(w for w in watchers if w.get('commander')))
+        if self.effect_strength(p['id'],'ashes') and not p['ashes_used']:
             p['ashes_used'] = True
-            self.push(p['id'], 'heal', amount=1, name='Ash Ledger')
+            self.push(p['id'], 'heal', amount=self.effect_strength(p['id'],'ashes'), name='Ash Ledger')
 
     def check(self):
         if self.finished:
@@ -334,7 +402,7 @@ class Battle:
                 p['eliminated_elapsed'] = self.elapsed
                 self.note(f"{p['name']} is eliminated.")
             for p in victims:
-                for zone in ('board','hand','deck','grave','exile','engines'):
+                for zone in ('board','hand','deck','grave','exile','engines','gear'):
                     p[zone].clear()
                 self.stack = [s for s in self.stack if s['owner'] != p['id']]
                 self.attacks = [a for a in self.attacks if a['defender'] != p['id']]
@@ -389,12 +457,14 @@ class Battle:
             self.note(f"{s['name']} requires its source and has no effect.")
         elif required and target not in self.targets(i, required):
             self.note(f"{s['name']} has no legal target and fizzles.")
+        elif self.item_resolve(s, c, zone, invalid_source or invalid_target):
+            pass
         elif s['kind'] == 'creature':
+            self.mark_entry(card)
             p['board'].append(card)
             if card.get('commander'):
                 p['commander_zone'] = 'board'
-            if card['effect'] == 'draw':
-                self.push(i, 'draw', amount=1, name=card['name']+' entry')
+            self.entry_triggers(i,card)
         elif effect == 'counter':
             pending = next((x for x in self.stack if x['uid'] == target), None)
             if pending:
@@ -418,33 +488,38 @@ class Battle:
             self.draw(i,amount)
             if p['hand']:
                 self.choice = dict(owner=i,kind='discard')
+        elif effect == 'mana':
+            p['temporary'] += amount
         elif effect == 'heal':
             p['hp'] += amount
         elif effect == 'tokens':
             for _ in range(amount):
                 t = self.instance('w_recruit', i)
-                t.update(name='Recruit', attack=1, health=1, printed_attack=1, printed_health=1, token=True)
+                t.update(name='Recruit', attack=1, health=1, printed_attack=1, printed_health=1, token=True, upgrade=0, text='A summoned 1/1 Recruit.')
+                self.mark_entry(t)
                 p['board'].append(t)
         elif effect == 'wipe':
             for other in self.players:
                 for unit in other['board']:
                     self.damage_creature(unit, amount)
         elif effect in ('anthem','relay','foundry'):
+            self.mark_entry(card)
             p['engines'].append(card)
-            if effect == 'foundry':
-                self.push(i,'tokens',amount=1,name='Foundry entry')
+            self.entry_triggers(i,card)
         elif effect == 'relay_ready':
             for unit in p['board']:
                 unit['tapped'] = False
-            p['temporary'] += 1
+            p['temporary'] += amount or 1
         elif effect == 'goad':
             for other in self.players:
                 for unit in other['board']:
                     unit['goad'] = dict(by=i, until=other['turns']+1)
         elif effect == 'ramp':
-            if self.gain_capacity(i, 'G') and RELIC_MAP[p['relic']]['effect'] == 'roots':
-                p['hp'] += 1
-                self.visual_event('resolve',dict(owner=i,effect='heal',name='Root Pact',card_id='relic_roots',color='G',target=f'p:{i}',amount=1))
+            for _ in range(amount or 1):
+                if self.gain_capacity(i,'G'):
+                    heal = self.effect_strength(i,'roots')
+                    if heal:
+                        self.push(i, 'heal', f'p:{i}', heal, name='Root Pact')
         elif effect == 'team_buff':
             for unit in p['board']:
                 unit['bonus_attack'] += amount
@@ -461,6 +536,9 @@ class Battle:
                 self.move_out(owner,c)
             elif effect == 'protect' and zone == 'board':
                 c['protected'] = True
+                if card and card.get('upgrade_health'):
+                    c['bonus_health'] += card['upgrade_health']
+                    self.record_buff(c,s,'Fortified shield',f"+0/+{card['upgrade_health']}",'Until your next turn')
                 self.record_buff(c,s,'Protection','Prevent damage', 'End of this turn')
             elif effect in ('buff','permanent_buff') and zone == 'board':
                 if effect == 'permanent_buff':
@@ -475,6 +553,10 @@ class Battle:
             elif effect in ('recall','revive') and zone == 'grave':
                 owner['grave'].remove(c)
                 owner['board' if effect == 'revive' else 'hand'].append(c)
+                if effect == 'revive':
+                    self.mark_entry(c)
+                    c.update(sick=True,tapped=False,damage=0)
+                    self.entry_triggers(i,c)
             elif effect == 'fight' and zone == 'board':
                 fighters = [u for u in p['board'] if not u['tapped']]
                 if fighters:
@@ -486,6 +568,8 @@ class Battle:
                         p['hp'] += hit_target
                     if 'Lifesteal' in self.keywords(c):
                         owner['hp'] += hit_fighter
+        if card and card.get('upgrade_draw') and not invalid_source and not invalid_target:
+            self.draw(i,card['upgrade_draw'])
         if s.get('lifesteal'):
             p['hp'] += dealt
         self.note(f"Resolved: {s['name']}")
@@ -497,11 +581,15 @@ class Battle:
         if not c:
             return
         p = self.players[s['owner']]
-        if c not in p['board'] and c not in p['engines']:
+        if c not in p['board'] and c not in p['engines'] and c not in p.get('gear', []):
             if c.get('commander'):
                 p['commander_zone'] = 'command'
             elif c not in p['grave']:
                 p['grave'].append(c)
+
+    def finish_opening(self):
+        if all(p['kept'] and not p.get('bottom_remaining',0) for p in self.players):
+            self.start_turn(self.active)
 
     def start_turn(self, i):
         self.active = self.priority = i
@@ -515,18 +603,21 @@ class Battle:
             c['damage'] = c['bonus_attack'] = c['bonus_health'] = 0
             c['buffs'] = [x for x in c.get('buffs',[]) if x.get('duration') != 'Until your next turn']
         p['mana'] = p['capacity'].copy()
-        p['temporary'] = 1 if RELIC_MAP[p['relic']]['effect'] == 'chorus' and len(p['board']) >= 4 else 0
-        if p['temporary']:
-            self.visual_event('resolve',dict(owner=i,effect='mana',name='Chorus Stone',card_id='relic_chorus',color='C',target=f'p:{i}',amount=1))
+        p['temporary'] = 0
+        chorus = self.effect_strength(i, 'chorus') if len(p['board']) >= 4 else 0
+        if chorus:
+            self.push(i, 'mana', amount=chorus, name='Chorus Stone')
         p['active_used'] = False
-        self.phase = 'grow' if p['turns'] > 1 and sum(p['capacity'].values()) < 10 else 'main'
+        # 'grow' is the mandatory mana-choice substep of the first main phase.
+        self.phase = 'draw'
+        self.draw(i, 1)
+        self.check()
         self.note(f"{p['name']} — turn {p['turns']}")
         if self.phase == 'main':
             self.begin_main()
 
     def begin_main(self):
         self.phase = 'main'
-        self.draw(self.active,1)
         self.check()
         # Special enemies are announced publicly, never secret stat multipliers.
         if not self.finished and self.active != 0 and self.encounter.get('rule') == 'reinforcements':
@@ -546,6 +637,7 @@ class Battle:
         result=[]
         for index, spec in enumerate(c.get('abilities',[])):
             item=copy.deepcopy(spec)
+            item['speed'] = 'Sorcery' if spec['timing'] == 'main' else 'Instant'
             item.update(index=index,targets=self.targets(i,spec['target']) if spec.get('target') else [])
             reason=''
             if self.finished or not self.players[i]['alive'] or c['owner'] != i or self.find(c['uid'])[1] != 'board':
@@ -599,10 +691,17 @@ class Battle:
         if spec.get('exhaust'): c['tapped']=True
         if sacrifice: self.death(p,sacrifice)
         if discard: p['hand'].remove(discard);p['grave'].append(discard)
+        if spec['effect'] == 'mana' and not spec.get('target') and not spec.get('extra_effects'):
+            color = spec.get('mana_color', 'G')
+            p['mana'][color] = p['mana'].get(color, 0)+spec.get('amount', 1)
+            self.check()
+            return
         if self.phase == 'blocks':
             self.phase='block_ability_response'
-        self.push(i,spec['effect'],target,spec.get('amount',1),name=spec['name'],source=c)
-        self.stack[-1].update(source_uid=c['uid'],target_kind=spec.get('target'),requires_source=spec.get('requires_source',False))
+        self.push(i,spec['effect'],target,spec.get('amount',1),name=spec['name'],source=c,kind='ability')
+        pending = self.stack[-1]
+        pending.update(source_uid=c['uid'],target_kind=spec.get('target'),requires_source=spec.get('requires_source',False))
+        self.queue_ward(i, target, pending)
         self.check()
 
     def combat_damage(self):
@@ -610,6 +709,7 @@ class Battle:
         visual=self.visual_event('combat',dict(owner=self.active,effect='combat',name='Combat damage',kind='combat',amount=0))
         visual['attacks']=[dict(uid=a['uid'],defender=a['defender'],blockers=list(self.blocks.get(a['uid'],[]))) for a in self.attacks]
         pending = []
+        visual['hits'] = []
         for a in self.attacks:
             _,zone,attacker = self.find(a['uid'])
             if not attacker or zone != 'board':
@@ -627,21 +727,29 @@ class Battle:
             if a['uid'] not in self.blocked or 'Trample' in self.keywords(attacker):
                 pending.append((attacker, f"p:{a['defender']}", power))
         for source,target,amount in pending:
+            target_uid = target if isinstance(target,str) else target['uid']
+            remaining = self.players[int(target[2:])]['hp'] if isinstance(target,str) else max(0,self.stats(target)[1]-target['damage'])
             if isinstance(target,str):
                 dealt = self.damage_player(int(target[2:]),amount,source['owner'])
             else:
                 dealt = self.damage_creature(target,amount)
+            visual['hits'].append(dict(source=source['uid'],target=target_uid,attempted=amount,
+                                       dealt=dealt,remaining=remaining))
             if 'Lifesteal' in self.keywords(source):
                 self.players[source['owner']]['hp'] += dealt
         visual['results']=self.presentation_changes(before)
         self.attacks = []
         self.blocks = {}
         self.blocked = []
-        self.phase = 'main2'
+        self.phase = 'combat_end'
         self.check()
 
     def advance(self):
-        if self.phase == 'main':
+        if self.phase == 'draw':
+            self.phase = 'grow' if sum(self.players[self.active]['capacity'].values()) < 10 else 'main'
+            if self.phase == 'main':
+                self.begin_main()
+        elif self.phase == 'main':
             self.phase = 'precombat'
         elif self.phase == 'precombat':
             self.phase = 'combat'
@@ -655,32 +763,48 @@ class Battle:
             self.priority=self.defenders[0]
         elif self.phase == 'damage_response':
             self.combat_damage()
+        elif self.phase == 'combat_end':
+            self.phase = 'main2'
         elif self.phase == 'main2':
             self.phase = 'end'
+            p = self.players[self.active]
+            amount = self.effect_strength(p['id'], 'reserves')
+            if amount and sum(p['mana'].values())+p['temporary'] >= 2:
+                self.push(p['id'], 'heal', f"p:{p['id']}", amount, name='Patient Reserves')
         elif self.phase == 'end':
             p = self.players[self.active]
             p['completed_turn'] = True
-            if RELIC_MAP[p['relic']]['effect'] == 'reserves' and sum(p['mana'].values())+p['temporary'] >= 2:
-                p['hp'] += 1
-                self.visual_event('resolve',dict(owner=p['id'],effect='heal',name='Patient Reserves',card_id='relic_reserves',color='W',target=f"p:{p['id']}",amount=1))
             for other in self.players:
                 for c in other['board']:
+                    c['end_buffs'] = []
                     c['protected'] = False
                     c['buffs'] = [x for x in c.get('buffs',[]) if x.get('duration') != 'End of this turn']
                     if c['goad'] and c['owner'] == self.active and p['turns'] >= c['goad']['until']:
                         c['goad'] = None
+            # Expiring toughness can cause deaths and create a response window.
+            self.phase = 'cleanup'
+            self.check()
+            if not self.finished and not self.stack:
+                self.start_turn(self.next_player(self.active))
+            else:
+                self.priority = self.active
+                self.passes = 0
+            return
+        elif self.phase == 'cleanup':
             self.start_turn(self.next_player(self.active))
             return
         self.priority = self.active if self.phase != 'blocks' else self.priority
         self.passes = 0
 
-    def action(self, i, action, **data):
+    def _action(self, i, action, **data):
         if self.finished:
             raise RuleError('This battle has ended.')
         p = self.players[i]
         if action == 'stop_loop' and self.loop and self.loop['owner'] == i:
             self.note(f"{p['name']} stops the declared loop.")
             self.loop = None
+            return
+        if self.item_choice(i, action, data):
             return
         if self.choice:
             if action != 'choose_discard' or i != self.choice['owner']:
@@ -696,27 +820,36 @@ class Battle:
             self.passes = 0
             return
         if self.phase == 'opening':
-            if action == 'mulligan' and not p['mulligan'] and not p['kept']:
-                hand = p['hand']
+            count = p.get('mulligan_count',int(p.get('mulligan',False)))
+            if action == 'mulligan' and not p['kept'] and count < 6:
+                p['deck'].extend(p['hand'])
                 p['hand'] = []
-                self.draw(i,5)
-                p['deck'].extend(hand)
                 self.rng.shuffle(p['deck'])
+                self.draw(i,5)
                 p['mulligan'] = True
+                p['mulligan_count'] = count+1
+                self.note(f"{p['name']} redraws five; bottom {max(0,count)} on keep.")
                 return
-            if action == 'keep':
+            if action == 'keep' and not p['kept']:
                 p['kept'] = True
+                p['bottom_remaining'] = max(0,count-1)
+                self.finish_opening()
                 return
-            if action == 'color' and p['kept'] and data.get('color') in p['colors']:
-                p['opening_color'] = data['color']
-                if all(x['opening_color'] for x in self.players):
-                    for x in self.players:
-                        self.gain_capacity(x['id'],x['opening_color'])
-                    self.start_turn(self.active)
+            if action == 'bottom' and p['kept'] and p.get('bottom_remaining',0):
+                c = next((c for c in p['hand'] if c['uid'] == str(data.get('uid'))),None)
+                if not c:
+                    raise RuleError('Choose one opening hand card to put on the bottom.')
+                p['hand'].remove(c)
+                p['deck'].insert(0,c)
+                p['bottom_remaining'] -= 1
+                self.note(f"{p['name']} bottoms an opening card ({p['bottom_remaining']} remaining).")
+                self.finish_opening()
                 return
-            raise RuleError('Keep your hand, then choose a legal mana color.')
+            raise RuleError('Keep your hand and finish any required bottom choices.')
         if i != self.priority:
             raise RuleError('Wait for your priority.')
+        if self.item_action(i, action, data):
+            return
         if action == 'loop':
             _,zone,c = self.find(data.get('uid'))
             count = data.get('count')
@@ -730,7 +863,18 @@ class Battle:
             return
         if action == 'color' and self.phase == 'grow' and data.get('color') in p['colors']:
             self.gain_capacity(i,data['color'])
+            if not p.get('opening_color'):
+                p['opening_color'] = data['color']
             self.begin_main()
+            return
+        if action in ('enter_combat', 'end_combat', 'end_turn'):
+            expected = {'enter_combat':'main', 'end_combat':'combat_end', 'end_turn':'main2'}[action]
+            if i != self.active or self.phase != expected or self.stack:
+                raise RuleError('Finish pending actions before advancing this phase.')
+            self.advance()
+            if action == 'enter_combat':
+                self.priority = self.next_player(i)
+                self.passes = 1
             return
         if action == 'cast':
             uid = str(data.get('uid'))
@@ -761,9 +905,13 @@ class Battle:
             else:
                 p['hand'].remove(c)
             self.push(i,c['effect'],target,c.get('amount',0),c,c['kind'])
+            pending = self.stack[-1]
             self.triggers_cast(i,c)
+            self.queue_ward(i, target, pending)
             return
         if action == 'ability':
+            if self.phase == 'grow':
+                raise RuleError('Choose your main-phase mana color first.')
             _,zone,c = self.find(data.get('uid'))
             if c and c.get('abilities'):
                 self.activate_explicit(i,c,data)
@@ -772,11 +920,11 @@ class Battle:
                 raise RuleError('That creature cannot exhaust for an ability.')
             target = data.get('target')
             if c.get('commander'):
-                if i != self.active or self.phase not in ('main','main2') or self.stack:
-                    raise RuleError('Commander actives require your main phase and an empty stack.')
                 effect = self.package(i)['active']
             else:
                 effect = c['effect']
+                if effect not in ('mana', 'sacrifice'):
+                    raise RuleError('This creature has no printed activated ability.')
             if effect not in ('mana','sacrifice','draw','loot','ramp','damage','token','buff','protect','bounce','recall'):
                 raise RuleError('This creature has no active ability.')
             target_kind = {'damage':'any','buff':'friendly','protect':'friendly','bounce':'creature','recall':'grave'}.get(effect)
@@ -809,7 +957,8 @@ class Battle:
             else:
                 resolved_effect = {'token':'tokens','sacrifice':'draw','loot':'draw'}.get(effect,effect)
                 amount = 2 if effect in ('damage','buff','loot') or (effect == 'sacrifice' and c.get('commander')) else 1
-                self.push(i,resolved_effect,target,amount,name=c['name']+' active',source=c)
+                self.push(i,resolved_effect,target,amount,name=c['name']+' active',source=c,kind='ability')
+                self.queue_ward(i, target, self.stack[-1])
             self.check()
             return
         if action == 'pass':
@@ -850,6 +999,7 @@ class Battle:
                 if 'Guard' not in self.keywords(c):
                     c['tapped'] = True
             self.phase = 'attack_response'
+            self.item_attack_triggers(i, attacks)
             self.passes = 0
             return
         if action == 'block' and self.phase == 'blocks' and self.defenders[0] == i:
@@ -895,7 +1045,7 @@ class Battle:
             p['alive'] = False
             p['eliminated_at'] = time.time()
             p['eliminated_elapsed'] = self.elapsed
-            for zone in ('board','hand','deck','grave','exile','engines'):
+            for zone in ('board','hand','deck','grave','exile','engines','gear'):
                 p[zone].clear()
             self.note(f"{p['name']} concedes; no elimination point awarded.")
             self.attacks = [a for a in self.attacks if a['defender'] != i]
@@ -916,19 +1066,31 @@ class Battle:
             out = {k:copy.deepcopy(v) for k,v in p.items() if k not in ('hand','deck','opening_color')}
             out['hand_count'],out['deck_count'] = len(p['hand']),len(p['deck'])
             out['hand'] = copy.deepcopy(p['hand']) if p['id'] == viewer else []
+            for card in out['hand']:
+                card['speed'] = 'Instant' if self.instant_card(p['id'], card) else 'Sorcery'
+                card['keywords'] = sorted(self.keywords(card))
+            out['creature_flash'] = self.timing_override(p['id'], 'creature_cast')
+            out['instant_equip'] = self.timing_override(p['id'], 'equip')
+            if p.get('equipment') is not None:
+                out['equipment'] = [equipment_view(item) for item in p['equipment']]
             out['opening_color'] = p['opening_color'] if p['id'] == viewer or self.phase != 'opening' else None
             out['board'] = []
             for c in p['board']:
                 shown = copy.deepcopy(c)
                 shown['shown_attack'],shown['shown_health'] = self.stats(c)
                 shown['keywords'] = sorted(self.keywords(c))
+                shown['ability_speed'] = 'Instant'
+                shown['ward_cost'] = int(bool('Ward' in c['keywords'] or (c.get('commander') and self.package(c['owner'])['passive'] == 'ward')))
+                shown['ward_payments'] = [g['bearer_ward'] for g in self.attachments(c) if g.get('bearer_ward')]
                 if c.get('abilities'):
                     shown['abilities'] = self.ability_options(viewer,c)
                 out['board'].append(shown)
             result['players'].append(out)
+        for out in result['players']:
+            out['pouch'] = [dict(item, **CONSUMABLE_MAP[item['design']], speed='Sorcery' if CONSUMABLE_MAP[item['design']].get('sorcery') else 'Instant') for item in out.get('pouch', [])]
         for s in self.stack:
             result['stack'].append({k:v for k,v in s.items() if k != 'card'})
-        result['targets'] = {kind:self.targets(viewer,kind) for kind in ('any','creature','friendly','enemy','large','grave','small_grave','stack','engine')}
+        result['targets'] = {kind:self.targets(viewer,kind) for kind in ('any','creature','friendly','enemy','large','grave','small_grave','stack','engine') + EXTRA_TARGETS}
         return result
 
     def loop_step(self):
@@ -958,26 +1120,35 @@ class Battle:
         loop['remaining'] -= 1
         return True
 
-    def has_legal_response(self, i):
+    def has_legal_response(self, i, meaningful=False):
         """Check actual costs, targets and timings without paying or revealing hands."""
         if self.finished or self.choice or i != self.priority:
             return False
         p = self.players[i]
+        for item in p.get('pouch', []):
+            spec = CONSUMABLE_MAP[item['design']]
+            if not spec.get('sorcery') and spec.get('target') and self.phase not in ('opening', 'grow', 'blocks') and any(self.pay(i, self.cost_for(i, spec, t), spec['pips'], False) for t in self.targets(i, spec['target'])):
+                return True
+            if not spec.get('sorcery') and not spec.get('target') and self.pay(i, spec['cost'], spec['pips'], False):
+                return True
         for card in p['hand']:
-            if card['kind'] == 'response':
+            if self.instant_card(i, card):
                 targets = self.targets(i,card['target']) if card.get('target') else [None]
                 if any(self.castable(i,card,target) for target in targets):
                     return True
         for card in p['board']:
             candidates = []
+            if meaningful and card['effect'] == 'mana' and not card.get('abilities'):
+                continue
             if card.get('abilities'):
                 for spec in self.ability_options(i,card):
-                    if spec['timing'] == 'main' or not spec['available']:
+                    if spec['timing'] == 'main' or not spec['available'] or (meaningful and spec['effect'] == 'mana' and not spec.get('target') and not spec.get('extra_effects')):
                         continue
                     for target in spec['targets'] if spec.get('target') else [None]:
                         candidates.append(dict(uid=card['uid'],ability=spec['index'],target=target))
-            elif not card.get('commander'):
-                kind = {'damage':'any','buff':'friendly','protect':'friendly','bounce':'creature','recall':'grave'}.get(card['effect'])
+            else:
+                effect = self.package(i)['active'] if card.get('commander') else card['effect']
+                kind = {'damage':'any','buff':'friendly','protect':'friendly','bounce':'creature','recall':'grave'}.get(effect)
                 for target in self.targets(i,kind) if kind else [None]:
                     candidates.append(dict(uid=card['uid'],target=target))
             for data in candidates:
@@ -995,9 +1166,9 @@ class Battle:
         if self.finished or self.choice or self.phase in ('opening','grow','blocks'):
             return False
         if not self.stack and (self.phase == 'combat' or
-                (self.priority == self.active and self.phase in ('main','main2'))):
+                (self.priority == self.active and self.phase in ('main','main2','combat_end'))):
             return False
-        return not self.has_legal_response(self.priority)
+        return not self.meaningful_response(self.priority)
 
     def auto_pass_unavailable(self):
         """Advance empty response windows, stopping at every real decision."""
@@ -1010,9 +1181,15 @@ class Battle:
     def ai_action(self, i):
         """Only own hand plus public state; no opponent hand/deck inspection."""
         p = self.players[i]
+        if self.choice and self.choice['kind'] == 'trigger_order':
+            return dict(action='order_triggers',order=self.choice['uids'][:])
+        if self.choice and self.choice['kind'] != 'discard':
+            return self.item_ai(i)
         if self.choice:
             return dict(action='choose_discard',uid=max(p['hand'],key=lambda c:c['cost'])['uid'])
         if self.phase == 'opening':
+            if p.get('bottom_remaining',0):
+                return dict(action='bottom',uid=max(p['hand'],key=lambda c:c['cost'])['uid'])
             if not p['kept']:
                 return dict(action='keep')
             return dict(action='color',color=p['colors'][0])
@@ -1054,6 +1231,9 @@ class Battle:
                 if c['goad'] or safe or len(ready) > 2 or p['hp'] < 8:
                     attacks.append(dict(uid=c['uid'],defender=defender))
             return dict(action='attack',attacks=attacks)
+        item_move = self.item_ai(i)
+        if item_move:
+            return item_move
         candidates = list(p['hand'])
         if p['commander_zone'] == 'command' and not self.stack and i == self.active:
             # A preview must not consume the instance serial.
@@ -1144,8 +1324,30 @@ class Battle:
     def from_dict(cls, data):
         b = cls.__new__(cls)
         b.__dict__.update({k:v for k,v in data.items() if k != 'random_state'})
+        b.gear_cards = {int(k):v for k,v in getattr(b, 'gear_cards', {}).items()}
+        b.card_upgrades = {int(k):v for k,v in getattr(b,'card_upgrades',{}).items()}
+        for p in b.players:
+            p.setdefault('mulligan_count',int(p.get('mulligan',False)))
+            p.setdefault('bottom_remaining',0)
+            p.setdefault('gear', [])
+            p.setdefault('pouch', [])
+            p.setdefault('spent_consumables', [])
+            # Refresh explanatory text in resumed games without changing card stats or effects.
+            for zone in ('hand','deck','board','engines','grave','exile'):
+                for card in p.get(zone,[]):
+                    if card.get('commander'):
+                        card['text'] = b.package(p['id'])['description']
+                    elif card.get('id') in CARD_MAP and not card.get('token') and not card.get('abilities') and not card.get('gems'):
+                        card['text'] = upgraded_card(card['id'],card.get('upgrade',0))['text']
+        b.entry_serial = max([getattr(b, 'entry_serial', 0), *[c.get('entry_order', 0) for p in b.players for c in p['board']+p['engines']]])
+        for p in b.players:
+            for card in p['board']+p['engines']:
+                if 'entry_order' not in card:
+                    b.mark_entry(card)
         b.rng = random.Random()
         def tuples(x):
             return tuple(tuples(v) for v in x) if isinstance(x,list) else x
         b.rng.setstate(tuples(data['random_state']))
+        if b.phase == 'opening':
+            b.finish_opening()
         return b

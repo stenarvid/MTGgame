@@ -20,7 +20,8 @@ class ReviewRules(unittest.TestCase):
         b.action(0,'ability',uid=c['uid'],target=c['uid'])
         self.assertTrue(c['tapped']);self.assertFalse(c['protected'])
         self.assertEqual(sum(b.players[0]['mana'].values()),amount-1)
-        for i in range(1): b.action(b.priority,'pass');self.assertEqual(len(b.stack),1)
+        self.assertEqual(b.priority,1)
+        self.assertEqual(len(b.stack),1)
         b.action(b.priority,'pass');self.assertTrue(c['protected']);self.assertEqual(b.priority,b.active)
 
     def test_source_removal_does_not_remove_pending_ability(self):
@@ -61,7 +62,7 @@ class ReviewRules(unittest.TestCase):
         b=fixture('blocks');c=b.players[0]['board'][1]
         b.action(0,'ability',uid=c['uid'],target=c['uid'])
         self.assertEqual(b.phase,'block_ability_response')
-        for _ in range(2): b.action(b.priority,'pass')
+        b.action(b.priority,'pass')
         self.assertEqual(b.priority,b.active)
         for _ in range(2): b.action(b.priority,'pass')
         self.assertEqual(b.phase,'blocks');self.assertEqual(b.priority,0)

@@ -1,10 +1,10 @@
 /* Noninteractive desktop enlargement; Inspect remains the touch alternative. */
-function installCardHover(root){
+function installCardHover(root,options={}){
     let timer,source,popup,shade;
     const fine=matchMedia('(hover:hover) and (pointer:fine)');
     function hide(){clearTimeout(timer);popup?.remove();popup=null;shade?.remove();shade=null;source=null;}
     function show(card){
-        if(!card.isConnected||document.querySelector('dialog[open]'))return;
+        if(!card.isConnected||document.querySelector('dialog[open]')||options.shouldShow?.(card)===false)return;
         shade=document.createElement('div');shade.className='card-inspection-shade';document.body.append(shade);
         popup=document.createElement('aside');popup.className='card-hover-preview';popup.setAttribute('role','tooltip');
         const copy=card.cloneNode(true);copy.classList.remove('tapped','target');copy.removeAttribute('data-action');copy.removeAttribute('tabindex');copy.removeAttribute('role');
@@ -14,7 +14,7 @@ function installCardHover(root){
         popup.style.left=Math.max(10,Math.min(left,innerWidth-width-10))+'px';
         popup.style.top=Math.max(10,Math.min(rect.top,innerHeight-height-10))+'px';
     }
-    root.addEventListener('pointerover',e=>{if(!fine.matches||e.pointerType==='touch')return;const card=e.target.closest('.card');if(!card||source===card)return;hide();source=card;timer=setTimeout(()=>show(card),350);});
+    root.addEventListener('pointerover',e=>{if(!fine.matches||e.pointerType==='touch')return;const card=e.target.closest('.card');if(!card||source===card||options.shouldShow?.(card)===false)return;hide();source=card;timer=setTimeout(()=>show(card),350);});
     root.addEventListener('pointerout',e=>{if(source&&!source.contains(e.relatedTarget))hide();});
     root.addEventListener('pointerdown',hide);
     document.addEventListener('keydown',e=>{if(e.key==='Escape')hide();});

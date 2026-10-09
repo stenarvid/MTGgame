@@ -11,3 +11,34 @@
 .fx-pending-flame{position:fixed;width:48px;height:58px;pointer-events:none;margin:-29px 0 0 -24px;background:radial-gradient(ellipse at 50% 70%,#fff7b8 0%,#ffc03c 20%,#ff4921 45%,#bd102500 73%);filter:drop-shadow(0 0 14px #ff792a);clip-path:polygon(50% 0%,60% 28%,80% 10%,76% 45%,100% 35%,92% 77%,72% 95%,35% 100%,10% 80%,0% 45%,25% 55%,22% 18%,43% 40%);animation:charge-flame .45s ease-in-out infinite alternate}
 @keyframes charge-flame{from{scale:.9 1;rotate:-5deg}to{scale:1.1 1.13;rotate:5deg}}
 .presentation-reduced .fx-pending-flame{animation:none}
+
+/* Family-specific pending seals use cel edges instead of a generic colored glow. */
+.fx-pending-sigil{position:fixed;width:66px;height:66px;margin:-33px 0 0 -33px;pointer-events:none;filter:drop-shadow(0 0 8px var(--charge-color));animation:sigil-breathe 1.8s ease-in-out infinite}
+.fx-pending-sigil svg,.fx-art-aura svg{width:100%;height:100%;fill:none;stroke:var(--charge-color);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;paint-order:stroke;filter:drop-shadow(0 1px 1px #07101d)}
+.fx-pending-sigil .sigil-orbit{stroke-dasharray:4 8;transform-origin:50% 50%;animation:sigil-orbit 7s linear infinite}.sigil-core{fill:#fff2c8;stroke-width:1}
+.fx-pending-sigil[data-family=shadow],.fx-pending-sigil[data-family=drain],.fx-pending-sigil[data-family=portal]{animation:shadow-weave 2.4s ease-in-out infinite}
+.fx-pending-sigil[data-family=growth],.fx-pending-sigil[data-family=roots]{animation:leaf-unfold 2.2s ease-in-out infinite}
+.fx-pending-sigil[data-family=wave],.fx-pending-sigil[data-family=wind]{animation:tide-drift 2s ease-in-out infinite}
+.fx-art-aura{position:absolute;inset:46px 12px auto;height:105px;pointer-events:none;z-index:4;opacity:.55;animation:sigil-breathe 1.8s ease-in-out infinite}.fx-art-aura svg{stroke-width:1.2;filter:drop-shadow(0 0 4px var(--charge-color))}
+@keyframes sigil-breathe{50%{scale:1.08;opacity:.65}}@keyframes sigil-orbit{to{rotate:360deg}}@keyframes shadow-weave{50%{rotate:12deg;scale:.88;filter:drop-shadow(0 0 13px var(--charge-color))}}@keyframes leaf-unfold{50%{scale:1.1 1.2;translate:0 -4px}}@keyframes tide-drift{50%{translate:6px -3px;rotate:-6deg}}
+.presentation-reduced .fx-pending-sigil,.presentation-reduced .fx-art-aura,.presentation-reduced .sigil-orbit{animation:none}
+@media(prefers-reduced-motion:reduce){.fx-pending-sigil,.fx-art-aura,.sigil-orbit{animation:none}}
+/* Public resource changes and earned rewards never intercept input. */
+.fx-state-number{position:fixed;z-index:1100;pointer-events:none;font:bold 28px Georgia;text-shadow:0 2px 4px #000,0 0 18px currentColor;white-space:nowrap}
+/* Impact feedback stays outside card text and never captures input. */
+.fx-counter-seal{position:fixed;width:66px;height:66px;margin:-33px;color:#bce7ff;pointer-events:none}.fx-counter-seal svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2}
+.fx-counter-shard{position:fixed;width:9px;height:16px;background:linear-gradient(135deg,#ecf9ff,#6db2dc);clip-path:polygon(0 0,100% 25%,35% 100%);pointer-events:none}
+.fx-connection{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}.fx-connection path{fill:none;stroke:#ffe4ad;stroke-width:1.5}
+.fx-item-pulse{position:fixed;width:7px;height:7px;margin:-3px;border-radius:50%;background:#fff1be;box-shadow:0 0 8px #efce73;pointer-events:none}
+.game-shell .item-socket{display:inline-flex;align-items:center;gap:4px}.game-shell .item-socket i{font-style:normal;color:#dcbd85}.game-shell .item-socket[data-gem] i{color:#acebd1}
+@keyframes impact-buckle{0%{filter:brightness(1.2);clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}20%{filter:brightness(1.5);clip-path:polygon(0 0,48% 0,45% 35%,57% 47%,48% 70%,53% 100%,0 100%)}55%{opacity:.8;scale:1 .85;rotate:3deg}100%{opacity:0;scale:.9 .65;rotate:5deg}}
+.fx-depart-fracture{animation:impact-buckle 220ms ease-out forwards}
+.fx-depart-static{animation:impact-fade 120ms linear forwards}@keyframes impact-fade{to{opacity:0}}
+.presentation-reduced .fx-materializing::after{animation:none!important;display:none}.presentation-reduced .fx-materializing{box-shadow:inset 0 0 0 2px #d9cfa7!important}
+.game-shell .temple-table .card{transition:box-shadow 80ms ease-out}.game-shell .temple-table .hand .card{transition:transform 80ms ease-out,box-shadow 80ms ease-out}
+@media(hover:hover) and (min-width:851px){.game-shell .temple-table .hand .card:hover{transition-duration:100ms;box-shadow:0 8px 16px #0008}}
+.presentation-reduced.game-shell .temple-table .hand .card:hover{transform:rotate(var(--fan))!important;transition:none}
+.game-shell .temple-table .chosen-target{box-shadow:inset 0 0 0 2px #ffe1a2!important;outline:2px solid #ffe1a2!important}
+.game-shell .temple-table .combat-arrows path.target-preview{stroke-width:1.5;filter:none}
+.game-shell .temple-table .table-status-icons{position:absolute;right:4px;top:38px;display:flex;gap:3px;z-index:3;pointer-events:none}.game-shell .temple-table .table-status-icons span{min-width:20px;padding:2px;text-align:center;font:bold 13px system-ui;background:#23342df0;color:#fff1c5;border:1px solid #b5a573;border-radius:4px}
+.fx-materializing::after{display:none!important}

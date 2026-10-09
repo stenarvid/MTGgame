@@ -15,7 +15,7 @@ from artwork_catalog import ART_ROOT, anime_catalog
 
 class ArtworkTests(unittest.TestCase):
     def test_every_design_has_a_unique_real_illustration(self):
-        keys = ([c['id'] for c in CARDS] + ['commander_'+c['id'] for c in COMMANDERS]
+        keys = ([c['id'] for c in CARDS if c.get('art_style') != 'sigil'] + ['commander_'+c['id'] for c in COMMANDERS]
                 + ['relic_'+r['id'] for r in RELICS] + ['token_recruit', 'environment'])
         self.assertEqual(set(artwork_catalog()), set(keys))
         files, hashes = set(), set()

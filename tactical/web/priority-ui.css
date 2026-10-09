@@ -1,0 +1,22 @@
+.game-shell.temple-battle{padding-bottom:175px}
+.game-shell .priority-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(950px,100%);z-index:45;border:2px ridge #b89561;border-radius:18px 18px 0 0;background:linear-gradient(#263b31f5,#12251ffb);box-shadow:0 -4px 22px #0008;padding:7px 15px;color:#ffe8bc}
+.game-shell .priority-timeline{display:flex;justify-content:center;gap:20px}
+.game-shell .priority-phase-row{display:flex;align-items:center;gap:3px;font-size:11px}
+.game-shell .priority-phase-row>span{width:57px;color:#c6c9b7}
+.game-shell .priority-bar .phase-marker{position:relative;font-size:11px;padding:6px 8px;border:1px solid #64705a;border-radius:20px;background:#1b2b25;min-height:30px}
+.game-shell .priority-bar .phase-marker.active{color:#fff1cd;border-color:#ff9b42;box-shadow:0 0 9px #ff822b66}
+.game-shell .phase-flame{width:10px;height:14px;vertical-align:middle;color:#ff9b42;margin-right:3px;text-shadow:0 0 6px #ff8c32}
+.game-shell .phase-marker.stop{outline:2px solid #ffd18e;outline-offset:1px}
+.game-shell .phase-marker small{margin-left:3px;color:#ffad56}
+.game-shell .priority-actions{display:flex;justify-content:center;align-items:center;gap:12px;margin:8px 0}
+.game-shell .priority-mode{font-size:12px;min-width:108px}.game-shell .priority-mode small{display:block;color:#bfcbbb;font-size:10px}
+.game-shell .priority-bar .priority-pill{min-width:185px;min-height:42px;border-radius:28px;border:2px solid #e3ae69;background:linear-gradient(#896038,#4e361f);color:#fff3d8;font-weight:700;box-shadow:inset 0 1px 6px #ffd48a44}
+.game-shell .priority-bar .priority-fast{border-radius:50%;background:#b75d22;color:#fff5db;border-color:#ffb064;width:42px;height:42px;padding:4px;font-weight:bold}
+.game-shell .priority-fast.enabled{box-shadow:0 0 10px #ff8e3e66}
+.game-shell .priority-secondary{display:flex;justify-content:center;gap:10px;align-items:center;font-size:11px;min-height:25px}
+.game-shell .priority-secondary details{margin:0}.game-shell .priority-secondary details[open]{position:absolute;bottom:42px;right:10px;background:#18332bf7;border:1px solid #c9a26b;border-radius:10px;padding:12px;max-width:340px;box-shadow:0 0 15px #0009}
+.game-shell .priority-secondary label{display:block;padding:7px 0}.game-shell #response-countdown{min-width:90px}
+.game-shell .priority-bar button:focus-visible{outline:2px solid #fff3bb;outline-offset:3px}
+@media(max-width:850px){.game-shell .priority-bar{padding:7px 5px}.game-shell .priority-timeline{gap:4px;flex-wrap:wrap}.game-shell .priority-phase-row{gap:3px}.game-shell .priority-bar .phase-marker{min-height:32px;padding:4px 8px}.game-shell .priority-actions{gap:6px}.game-shell .priority-mode{min-width:65px;font-size:10px}.game-shell .priority-bar .priority-pill{min-width:130px;font-size:12px}.game-shell .priority-actions .smallbtn{max-width:78px;font-size:10px}.game-shell .priority-secondary{gap:4px}.game-shell.temple-battle{padding-bottom:195px}}
+
+.game-shell .temple-prompt:has([data-action="confirmTriggerOrder"]){max-height:min(280px,50dvh)}

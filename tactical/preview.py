@@ -17,6 +17,14 @@ SCENARIOS={
  'combatanim':'Blocked attack: declare blockers, then resolve combat',
  'exile':'Exile: choose a large creature for Equal Judgment',
  'bounce':'Return: send a creature back to its hand',
+ 'wisdom':'Measured Insight: unfurl a grimoire, then choose a discard',
+ 'counterseal':'Null Sigil: fracture an opposing spell with an arcane seal',
+ 'shadow':'Cruel Exchange: dark tendrils consume a creature',
+ 'revival':'Unearth: open a grave portal and restore a creature',
+ 'growth':'Verdant Surge: branching vines empower a friendly creature',
+ 'roots':'Cultivate: roots channel a new green mana capacity',
+ 'shatter':'Disrupt Engine: fracture an opposing engine into crystal shards',
+ 'rally':'United Front: radiant banners empower your formation',
  'main':'Main phase: inspect, choose abilities, and confirm costs',
  'fire':'Fireball: flame targeting, crackle and a scorched impact',
  'meteors':'Meteor Rain: a shower over every creature',
@@ -95,6 +103,19 @@ def fixture(scenario='main'):
         b.players[0]['hand']=[b.instance('w_exile',0)]
     if scenario=='bounce':
         b.players[0]['hand']=[b.instance('u_return',0)]
+    family_cards={'wisdom':'u_insight','counterseal':'u_counter','shadow':'b_kill',
+                  'revival':'b_revive','growth':'g_growth','roots':'g_ramp',
+                  'shatter':'c_break','rally':'w_rally'}
+    if scenario in family_cards:
+        b.players[0].update(capacity={k:2 for k in 'WUBRG'},mana={k:2 for k in 'WUBRG'})
+        b.players[0]['hand']=[b.instance(family_cards[scenario],0)]
+        if scenario=='revival':
+            b.players[0]['grave']=[b.instance('b_shambler',0)]
+        if scenario=='shatter':
+            b.players[1]['engines']=[b.instance('c_nest',1)]
+        if scenario=='counterseal':
+            b.push(1,'damage',recruit['uid'],3,name='Ember shot',source=attacker)
+            b.priority=0
     if scenario=='combat': b.phase='combat'
     if scenario=='blocks':
         b.phase='blocks';b.active=1;b.defenders=[0];b.attacks=[dict(uid=attacker['uid'],defender=0)];attacker['tapped']=True

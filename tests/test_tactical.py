@@ -16,6 +16,13 @@ from tactical.session import Session
 from tactical.server import make_server, Rooms
 
 
+def legacy_group(*args, **kwargs):
+    # Preserve coverage for already-started four-seat saves. New rooms are 1v1.
+    s = Session(*args, **kwargs)
+    s.size = 4
+    return s
+
+
 def builds():
     return [dict(name=f'Player {i}',commander=cmd,package=0,relic='reserves',
                  deck=starter(COMMANDER_MAP[cmd]['colors'])) for i,cmd in enumerate(('dawn','tide','crypt','ember'))]
@@ -25,7 +32,9 @@ def battle():
     b = Battle(builds(),seed=7)
     for i,p in enumerate(b.players):
         b.action(i,'keep')
-        b.action(i,'color',color=p['colors'][0])
+    while b.phase == 'draw':
+        b.action(b.priority, 'pass')
+    b.action(b.active,'color',color=b.players[b.active]['colors'][0])
     return b
 
 
@@ -47,7 +56,8 @@ class MultiplayerRules(unittest.TestCase):
     def test_private_hands_and_opening_color(self):
         b = Battle(builds())
         b.action(0,'keep')
-        b.action(0,'color',color='W')
+        with self.assertRaises(RuleError):
+            b.action(0,'color',color='W')
         view = b.view(1)
         self.assertIsNone(view['players'][0]['opening_color'])
         self.assertEqual(view['players'][0]['hand'],[])
@@ -88,7 +98,7 @@ class MultiplayerRules(unittest.TestCase):
         b.push(0,'tokens',amount=2,name='Muster')
         b.action(0,'pass')
         b.action(1,'cast',uid=counter['uid'],target=b.stack[0]['uid'])
-        self.assertEqual(b.priority,1)
+        self.assertEqual(b.priority,2)
         resolve_all(b)
         self.assertEqual(len(b.players[0]['board']),0)
         self.assertEqual(p['mana']['U'],3)
@@ -205,8 +215,7 @@ class MultiplayerRules(unittest.TestCase):
         self.assertTrue(b.loop_step())
         self.assertEqual(b.loop['remaining'],1)
         self.assertTrue(b.stack)
-        b.action(0,'pass')
-        self.assertEqual(b.priority,1)
+        self.assertEqual(b.priority,1)  # Activation has already passed priority.
         self.assertFalse(b.loop_step())
         # Opponents have not passed, so nothing resolves automatically.
         b.action(0,'stop_loop')
@@ -222,7 +231,7 @@ class MultiplayerRules(unittest.TestCase):
         token=b.instance('w_recruit',0);token['token']=True
         p['board']=[broker,token];p['engines']=[b.instance('c_nest',0),b.instance('c_relay',0)]
         b.action(0,'loop',uid=broker['uid'],count=100)
-        b.loop_step();b.action(0,'pass')
+        b.loop_step();self.assertEqual(b.priority,1)
         opponent=b.players[1];opponent['mana']={'U':5}
         bounce=b.instance('u_return',1);opponent['hand'].append(bounce)
         b.action(1,'cast',uid=bounce['uid'],target=broker['uid'])
@@ -283,7 +292,7 @@ class Progression(unittest.TestCase):
             for c in 'WUBRGC':self.assertGreaterEqual(counts[c],2)
 
     def test_human_three_round_pick_and_pass(self):
-        s=Session('human',seed=2)
+        s=legacy_group('human',seed=2)
         for i in range(4):s.add_member(str(i))
         s.start(0)
         for m in s.members:s.choose_commander(m['id'],m['offers'][0],0)
@@ -295,28 +304,30 @@ class Progression(unittest.TestCase):
         self.assertTrue(all(len(m['owned'])==75 for m in s.members))
 
     def test_solo_draft_shop_and_boss_relic(self):
-        s=self.solo();self.assertEqual(len(s.members[0]['owned']),45)
+        s=self.solo();self.assertEqual(sum(not ref.startswith('gear:') for ref in s.members[0]['owned']),45)
         s.encounter=3;s.action(0,'ready');opened(s.battle)
-        for i in (1,2,3):s.battle.damage_player(i,100,0)
+        for i in range(1,len(s.battle.players)):s.battle.damage_player(i,100,0)
         s.battle.check();s.apply_results()
-        self.assertEqual(s.encounter,4);self.assertEqual(s.currency,1)
+        self.assertEqual(s.encounter,4)
+        self.assertEqual(s.currency,1+sum(t['currency'] for t in s.treasures))
         self.assertEqual(s.members[0]['reward_left'],2)
         self.assertEqual(len(s.members[0]['relic_options']),3)
-        self.assertNotIn(s.members[0]['relic'],s.members[0]['relic_options'])
-        s.action(0,'buy',index=0);self.assertEqual(s.currency,0)
-        s.apply_results();self.assertEqual(s.currency,0)
+        self.assertEqual(len(set(s.members[0]['relic_options'])),3)
+        before=s.currency
+        s.action(0,'buy',index=0);self.assertEqual(s.currency,before-1)
+        s.apply_results();self.assertEqual(s.currency,before-1)
 
     def test_one_retry_no_reward_for_defeat(self):
         s=self.solo();s.action(0,'ready');opened(s.battle)
         s.battle.damage_player(0,100,1);s.battle.check()
-        for i in (2,3):s.battle.damage_player(i,100,1)
+        for i in range(2,len(s.battle.players)):s.battle.damage_player(i,100,1)
         s.battle.check();s.apply_results()
         self.assertEqual(s.stage,'retry');self.assertEqual(s.currency,0)
         s.action(0,'retry');self.assertEqual(s.retry,0)
         self.assertEqual(s.stage,'battle')
 
     def test_vote_extension_uses_highest_score_and_runoff(self):
-        s=Session('human')
+        s=legacy_group('human')
         for i in range(4):s.add_member(str(i))
         s.stage='vote';s.members[0]['score']=7
         for i,c in enumerate(('extend','extend','quit','restart')):s.vote(i,c)
@@ -325,7 +336,7 @@ class Progression(unittest.TestCase):
         self.assertEqual(s.target,10);self.assertEqual(s.stage,'build')
 
     def test_save_draft_integer_picks_and_private_view(self):
-        s=Session('human',seed=2)
+        s=legacy_group('human',seed=2)
         for i in range(2):s.add_member(str(i))
         s.start(0)
         for m in s.members:s.choose_commander(m['id'],m['offers'][0],0)
@@ -351,15 +362,16 @@ class Progression(unittest.TestCase):
             while m['reward_left']:
                 index=next(j for j,c in enumerate(m['reward']) if legal(c,s.colors(0)))
                 s.action(0,'pick',index=index)
-            if m['relic_options']:s.action(0,'relic',relic=m['relic'])
+            if m['relic_options']:s.action(0,'relic',relic=m['relic_options'][0])
             s.action(0,'ready');opened(s.battle)
-            for i in (1,2,3):s.battle.damage_player(i,100,0)
+            for i in range(1,len(s.battle.players)):s.battle.damage_player(i,100,0)
             s.battle.check();s.apply_results()
-        self.assertEqual(s.stage,'victory');self.assertEqual(s.currency,16)
+        self.assertEqual(s.stage,'victory')
+        self.assertEqual(s.currency,16+sum(t['currency'] for t in s.treasures))
         self.assertEqual(len(s.reports),16)
 
     def test_rewards_cap_and_every_nonsurvivor_gets_a_loss(self):
-        s=Session('human',seed=2)
+        s=legacy_group('human',seed=2)
         for i in range(4):s.add_member(str(i))
         for i,m in enumerate(s.members):
             m.update(commander=builds()[i]['commander'],deck=builds()[i]['deck'],package=0,relic='reserves')
@@ -395,7 +407,7 @@ class Progression(unittest.TestCase):
                     seats[0].update(commander=cmd['id'],package=package,deck=starter(cmd['colors']))
                     b=Battle(seats,seed=index*2+package)
                     for i,p in enumerate(b.players):
-                        b.action(i,'keep');b.action(i,'color',color=p['colors'][0])
+                        b.action(i,'keep')
                     for _ in range(18000):
                         if b.finished:break
                         b.action(b.priority,**b.ai_action(b.priority))
@@ -404,13 +416,13 @@ class Progression(unittest.TestCase):
     def test_solo_defeat_ends_when_human_dies(self):
         s=self.solo();s.action(0,'ready');opened(s.battle)
         s.battle.damage_player(0,100,1);s.battle.check()
-        self.assertFalse(s.battle.finished)
+        self.assertTrue(s.battle.finished)
         s.apply_results()
         self.assertEqual(s.stage,'retry')
         self.assertTrue(s.battle.finished)
 
     def test_departure_then_restart_draft_has_no_ghost_seat(self):
-        s=Session('human',seed=12)
+        s=legacy_group('human',seed=12)
         for i in range(4):s.add_member(str(i))
         s.stage='build'
         s.action(1,'leave')
@@ -428,7 +440,7 @@ class Progression(unittest.TestCase):
         self.assertTrue(all(p['hand']==[] for p in view['battle']['players']))
 
     def test_restart_accepts_replacement_without_reusing_private_token_seat(self):
-        s=Session('human',seed=4)
+        s=legacy_group('human',seed=4)
         for i in range(4):s.add_member(str(i))
         s.stage='build';s.action(1,'leave');s.stage='vote'
         for i in (0,2,3):s.vote(i,'restart')
@@ -465,6 +477,47 @@ class Network(unittest.TestCase):
                 self.assertEqual(seat,0);self.assertEqual(len(session.members),2)
             finally:
                 server.shutdown();server.server_close();thread.join()
+
+
+class CombatFeedbackTests(unittest.TestCase):
+    def test_public_hits_record_simultaneous_exchange_and_prevention(self):
+        b=opened(battle());b.active=0
+        a=b.instance('w_recruit',0);a.update(attack=6,health=10,keywords=['Trample'])
+        first=b.instance('w_recruit',1);first.update(attack=1,health=2,protected=True)
+        second=b.instance('w_recruit',1);second.update(attack=2,health=3)
+        b.players[0]['board']=[a];b.players[1]['board']=[first,second]
+        b.attacks=[dict(uid=a['uid'],defender=1)];b.blocks={a['uid']:[first['uid'],second['uid']]};b.blocked=[a['uid']]
+        b.combat_damage()
+        event=b.visual_events[-1];hits=event['hits']
+        self.assertEqual([(h['source'],h['target'],h['attempted'],h['dealt']) for h in hits],
+            [(a['uid'],first['uid'],2,0),(first['uid'],a['uid'],1,1),
+             (a['uid'],second['uid'],3,3),(second['uid'],a['uid'],2,2),(a['uid'],'p:1',1,1)])
+        self.assertEqual(hits[3]['remaining'],9)
+        self.assertEqual(a['damage'],3)
+        self.assertEqual(event['results']['before']['cards'][a['uid']]['damage'],0)
+        self.assertEqual(event['results']['after']['cards'][a['uid']]['damage'],3)
+        self.assertNotIn('hand',json.dumps(event))
+        self.assertNotIn('deck',json.dumps(event))
+
+    def test_nested_relic_healing_is_attributed_once(self):
+        b=opened(battle());b.players[0]['equipment']=[dict(uid='root-item',design='roots',tier=0)]
+        b.players[0]['hp']=20
+        b.push(0,'ramp',amount=2,name='Public ramp');resolve_all(b)
+        healing=[e for e in b.visual_events if e['effect']=='heal' and e['stage']=='resolve']
+        self.assertEqual(len(healing),2)
+        self.assertEqual([(e['results']['before']['health']['0'],e['results']['after']['health']['0']) for e in healing],[(20,21),(21,22)])
+        self.assertTrue(all(e['relic_uid']=='root-item' for e in healing))
+        parent=next(e for e in b.visual_events if e['effect']=='ramp' and e['stage']=='resolve')
+        self.assertNotIn('delegated_health',parent)  # Healing is a separate respondable trigger.
+
+    def test_relic_resolution_keeps_public_source_identity(self):
+        b=opened(battle());item=dict(uid='owned-relic',design='muster_standard',tier=0,gems={})
+        b.players[0]['equipment']=[item]
+        name=b.view(0)['players'][0]['equipment'][0]['name']
+        b.push(0,'relic_attack',target='public-target',name=name)
+        self.assertEqual(b.visual_events[-1]['relic_uid'],'owned-relic')
+        event=b.visual_event('resolve',b.stack[-1])
+        self.assertEqual(event['relic_uid'],'owned-relic')
 
 
 if __name__ == '__main__':

@@ -6,14 +6,24 @@ from collections import Counter
 from .battle import Battle, RuleError
 from .content import (COLORS, CARDS, CARD_MAP, COMMANDERS, COMMANDER_MAP, RELICS,
                       BASICS, starter, legal, draft_pack, personal_pack)
+from .progression import (EQUIPMENT, EQUIPMENT_MAP, equipment_view, upgraded_card,
+                          upgrade_preview, UPGRADE_COSTS, MAX_TIER, SLOTS)
+from .campaign import MODIFIERS, TREASURE_ODDS, make_map, bonus
 
 
-class Session:
-    def __init__(self, mode='human', seed=None, target=5, size=4):
+from .item_session import ItemSession
+from .items import ITEM_MAP, GEM_FAMILIES, GEM_MAP, CONSUMABLES, CONSUMABLE_MAP, compose, compatible, occupied
+
+
+from .priority import PrioritySession, preferences
+
+
+class Session(PrioritySession, ItemSession):
+    def __init__(self, mode='human', seed=None, target=5, size=2):
         if mode not in ('human','solo') or size not in (2,3,4) or not 1 <= target <= 50:
             raise RuleError('Choose a supported mode, 2–4 seats, and a target of 1–50.')
         self.rng = random.Random(seed)
-        self.mode, self.size, self.target = mode, size, target
+        self.mode, self.size, self.target = mode, 2, target
         self.initial_target = target
         self.host = 0
         self.seating = []
@@ -41,6 +51,57 @@ class Session:
         self.last_tick = time.time()
         self.reports = []
         self.feedback = {}
+        self.item_serial = 0
+        self.tutorial = None
+        self.difficulty = 'normal'
+        self.modifier_nodes = 2
+        self.route_seed = None
+        self.campaign_map = None
+        self.selected_node = None
+        self.treasures = []
+
+    def configure_run(self, difficulty='normal', modifier_nodes=2):
+        if difficulty not in ('normal', 'hard', 'custom'):
+            raise RuleError('Choose normal, hard, or custom difficulty.')
+        if type(modifier_nodes) is not int or not 0 <= modifier_nodes <= 4:
+            raise RuleError('Custom maps allow 0 to 4 challenge nodes.')
+        self.difficulty, self.modifier_nodes = difficulty, modifier_nodes
+
+    def ensure_map(self):
+        if self.mode != 'solo' or self.tutorial or self.encounter >= 16:
+            return
+        act, depth = self.encounter//4+1, self.encounter%4
+        if self.campaign_map and self.campaign_map['act'] == act:
+            return
+        if self.route_seed is None:
+            self.route_seed = self.rng.randrange(2**30)
+        self.campaign_map = make_map(self.route_seed, act, self.difficulty, self.modifier_nodes, depth)
+        self.selected_node = self.campaign_map['reachable'][0]
+
+    def route_node(self):
+        if not self.campaign_map:
+            return None
+        return next((n for n in self.campaign_map['nodes'] if n['id'] == self.selected_node), None)
+
+    def rival_info(self, i=1):
+        if self.stage == 'retry':
+            m = self.members[i]
+            return dict(commander=m['commander'], package=m['package'], relic=m['relic'])
+        node = self.route_node() if not self.tutorial else None
+        return dict(commander=COMMANDERS[(self.encounter+i+(node['lane']*3 if node else 0))%len(COMMANDERS)]['id'],
+                    package=(self.encounter//4)%2, relic=RELICS[(self.encounter+i)%len(RELICS)]['id'])
+
+    def award_treasure(self, boss=False):
+        if self.tutorial or (not boss and self.rng.random() >= .25):
+            return
+        m = self.members[0]
+        items = []
+        for _ in range(self.rng.randint(1, 3)):
+            tier = self.rng.choices([0, 1, 2], weights=[75, 20, 5])[0]
+            items.append(copy.deepcopy(self.add_item(m, self.rng.choice(self.loot_designs()), tier)))
+        currency = self.rng.randint(1, 3)
+        self.currency += currency
+        self.treasures.append(dict(id=f'treasure:{self.battle_number}', items=items, currency=currency, revealed=False))
 
     def add_member(self, name, bot=False):
         if self.stage != 'lobby' or len([m for m in self.members if not m['departed']]) >= self.size:
@@ -51,15 +112,15 @@ class Session:
         self.members.append(dict(id=i,name=name.strip(),bot=bot,commander=None,package=0,
             offers=self.rng.sample([c['id'] for c in COMMANDERS],3),deck=[],owned=[],
             relic=None,relic_options=[],ready=False,score=0,losses=0,reward=[],reward_left=0,
-            timeout_count=0,time_bank=60,auto=False,departed=False,last_seen=time.time(),
-            solo_packs=0))
+            timeout_count=0,time_bank=60,auto=True,departed=False,last_seen=time.time(),
+            solo_packs=0,items=[],equipped=[None]*SLOTS,card_upgrades={},essence=0))
         return i
 
     def start(self, i):
         if i != self.host or self.stage != 'lobby':
             raise RuleError('The host starts the lobby.')
         if self.mode == 'solo':
-            while len(self.members) < 4:
+            while len(self.members) < 2:
                 self.add_member(f"Spire rival {len(self.members)}",True)
         if len([m for m in self.members if not m['departed']]) < 2:
             raise RuleError('At least two players are required.')
@@ -81,7 +142,7 @@ class Session:
             if self.mode == 'human':
                 self.begin_draft_round()
             else:
-                self.members[0]['reward'] = personal_pack(self.rng,self.colors(0),15,5)
+                self.members[0]['reward'] = personal_pack(self.rng,self.colors(0),15,5,legal_only=True)
                 self.members[0]['reward_left'] = 5
 
     def colors(self, i):
@@ -128,7 +189,7 @@ class Session:
     def finish_draft(self):
         self.stage = 'build'
         for m in self.members:
-            m['relic_options'] = self.alternatives()
+            m['relic_options'] = self.rng.sample(self.loot_designs(),3) if self.mode == 'solo' and m['id'] == 0 else self.alternatives()
             m['ready'] = False
 
     def reward_pick(self, i, index):
@@ -145,29 +206,38 @@ class Session:
             if self.stage == 'draft' and self.mode == 'solo':
                 m['solo_packs'] += 1
                 if m['solo_packs'] < 3:
-                    m['reward'] = personal_pack(self.rng,self.colors(i),15,5)
+                    m['reward'] = personal_pack(self.rng,self.colors(i),15,5,legal_only=True)
                     m['reward_left'] = 5
                 else:
                     self.finish_draft()
 
     def validate_deck(self, i, deck):
-        if not isinstance(deck,list) or len(deck) != 30 or any(c not in CARD_MAP for c in deck):
+        m = self.members[i]
+        if not isinstance(deck,list) or len(deck) != 30 or any(not isinstance(c, str) or (c not in CARD_MAP and not self.item_card(m, c)) for c in deck):
             raise RuleError('The deck must contain exactly 30 known cards.')
-        if any(not legal(c,self.colors(i)) for c in deck):
+        if any((self.item_card(m, c) or CARD_MAP.get(c, {})).get('color') not in self.colors(i)+['C'] for c in deck):
             raise RuleError('All cards must fit commander color identity.')
         counts = Counter(deck)
+        if any(n > 1 for ref,n in counts.items() if ref.startswith('gear:')):
+            raise RuleError('Each Equipment card needs a separate owned item.')
         if counts-Counter(self.members[i]['owned']):
             raise RuleError('You can only use cards you own.')
         basics = {BASICS[c] for c in self.colors(i)}
-        if any(n > 2 and c not in basics for c,n in counts.items()):
+        identities = Counter(self.card_identity(m, ref) for ref in deck)
+        if any(n > 2 and c not in basics for c,n in identities.items()):
             raise RuleError('At most two copies per design, except starter basics.')
 
     def begin_battle(self):
+        self.ensure_map()
         self.stage = 'battle'
         self.results_applied = False
         self.pending_retry = False
         self.battle_seed = self.rng.randrange(2**30)
         builds = []
+        if self.mode == 'solo':
+            self.size = 2
+            for m in self.members[2:]:
+                m['departed'] = True
         active_members = [m for m in self.members if not m['departed']]
         if not self.seating:
             self.seating = [m['id'] for m in active_members]
@@ -177,17 +247,16 @@ class Session:
         active_members.sort(key=lambda m:self.seating.index(m['id']))
         if self.mode == 'solo':
             for m in self.members[1:]:
-                cmd = COMMANDERS[(self.encounter+m['id'])%len(COMMANDERS)]
-                m['commander'] = cmd['id']
-                m['package'] = (self.encounter//4)%2
-                m['relic'] = RELICS[(self.encounter+m['id'])%len(RELICS)]['id']
+                spec = self.rival_info(m['id'])
+                cmd = COMMANDER_MAP[spec['commander']]
+                m.update(spec)
                 m['deck'] = self.rival_deck(cmd,self.encounter//4)
         for seat,m in enumerate(active_members):
             m['seat'] = seat
             m['timeout_count'] = 0
             m['time_bank'] = 60
             builds.append(dict(name=m['name'],commander=m['commander'],package=m['package'],
-                               relic=m['relic'],deck=m['deck']))
+                               relic=m['relic'],**(dict(deck=m['deck']) | self.battle_progression(m))))
         self.battle = Battle(builds,self.battle_seed,(self.starting_offset+self.battle_number)%len(builds),self.encounter_info())
         self.last_decision = time.time()
         self.time_signature = None
@@ -211,7 +280,10 @@ class Session:
         boss = self.encounter%4 == 3
         elite = self.encounter%4 == 2
         rule = 'insight' if boss else 'reinforcements' if elite else ''
+        node = self.route_node() if not self.tutorial else None
         return dict(act=self.encounter//4+1, battle=self.encounter%4+1,
+                    node=node['id'] if node else None, terrain=node['terrain'] if node else 'temple',
+                    modifiers=list(node['modifiers']) if node else [], bonus_essence=bonus(node['modifiers']) if node else 0,
                     kind='Boss' if boss else 'Elite' if elite else 'Encounter',
                     rule=rule,coordinated=boss or elite,
                     description='Coordinated rivals; each draws an extra card on even turns.' if boss else
@@ -219,9 +291,11 @@ class Session:
                     'Every rival pursues its own survival.')
 
     def setup_shop(self):
+        self.gear_shop = self.rng.choices(self.loot_designs(),k=2)
         self.shop = self.rng.sample([c['id'] for c in CARDS if legal(c['id'],self.colors(0))],3)
 
     def apply_results(self):
+        self.sync_consumables()
         if self.battle and self.mode == 'solo' and not self.battle.players[0]['alive'] and not self.battle.finished:
             self.battle.finished = True
             self.battle.phase = 'finished'
@@ -246,11 +320,22 @@ class Session:
                 return
             self.currency += 1
             m = self.members[0]
+            boss = self.encounter%4 == 3
+            m['essence'] += (4 if boss else 2) + self.battle.encounter.get('bonus_essence',0)
+            self.award_treasure(boss)
+            if not self.tutorial:
+                self.supply_rewards(m)
             m['reward'] = personal_pack(self.rng,self.colors(0))
             m['reward_left'] = 2
             if self.encounter%4 == 3:
-                m['relic_options'] = self.alternatives(m['relic'])
+                m['relic_options'] = self.rng.sample(self.loot_designs(),3)
+            node = self.route_node()
+            if node and not self.tutorial:
+                node['completed'] = True
+                self.campaign_map['reachable'] = list(node['next'])
+                self.selected_node = node['next'][0] if node['next'] else None
             self.encounter += 1
+            self.ensure_map()
             if self.encounter == 16:
                 self.stage = 'victory'
             self.setup_shop()
@@ -312,11 +397,117 @@ class Session:
                          ready=False,score=0,losses=0,reward=[],reward_left=0,
                          offers=self.rng.sample([c['id'] for c in COMMANDERS],3))
 
+    def battle_progression(self, m):
+        if self.mode != 'solo':
+            return {}
+        self.item_defaults(m)
+        if m['id'] != 0:
+            if self.tutorial:
+                return {}
+            prepared = self.curated_items(m)
+            m['deck'][:] = prepared.pop('deck')
+            return prepared
+        items = {item['uid']:item for item in m['items']}
+        return dict(equipment=[copy.deepcopy(items[uid]) for uid in m['equipped'] if uid],
+                    card_upgrades=copy.deepcopy(m['card_upgrades']),
+                    gear_cards={ref:self.item_card(m, ref) for ref in m['deck'] if ref.startswith('gear:')},
+                    pouch=[copy.deepcopy(x) for x in m['consumables'] if x['uid'] in m['pouch']])
+
+    def add_item(self, m, design, tier=0):
+        if design not in EQUIPMENT_MAP or type(tier) is not int or not 0 <= tier <= MAX_TIER:
+            raise RuleError('Choose a known item and tier 0 to 2.')
+        self.item_serial += 1
+        item = dict(uid='item'+str(self.item_serial),design=design,tier=tier)
+        m['items'].append(item)
+        if design in ITEM_MAP and ITEM_MAP[design]['category'] == 'equipment':
+            m['owned'].append('gear:'+item['uid'])
+            return item
+        if None in m['equipped'] and not any(x['uid'] in m['equipped'] and x['design'] == design for x in m['items'] if design in ITEM_MAP):
+            m['equipped'][m['equipped'].index(None)] = item['uid']
+        return item
+
+    def inventory_action(self, i, action, data):
+        m = self.members[i]
+        if self.mode != 'solo' or i != 0 or self.stage not in ('build','retry') or m['ready']:
+            raise RuleError('Equipment and upgrades are available between solo encounters.')
+        if action == 'buy_item':
+            index = data.get('index')
+            if self.stage != 'build' or not isinstance(index,int) or isinstance(index,bool) or not 0 <= index < len(getattr(self,'gear_shop',[])):
+                raise RuleError('Choose an available shop item.')
+            if self.currency < 2:
+                raise RuleError('Equipment costs 2 currency.')
+            item = self.add_item(m,self.gear_shop.pop(index))
+            self.currency -= 2
+            return item
+        if action == 'upgrade_card':
+            design = data.get('design')
+            if design not in m['owned'] or design not in CARD_MAP or CARD_MAP[design].get('art_style') == 'sigil':
+                raise RuleError('Choose a card design you own.')
+            tier = m['card_upgrades'].get(design,0)
+        else:
+            item = next((item for item in m['items'] if item['uid'] == data.get('uid')),None)
+            if not item:
+                raise RuleError('Choose an item you own.')
+            if action in ('equip','unequip'):
+                if item['design'] in ITEM_MAP and ITEM_MAP[item['design']]['category'] == 'equipment':
+                    raise RuleError('Add Equipment to your deck; it is not a loadout Relic.')
+                if action == 'equip' and any(x['design'] == item['design'] and x['uid'] != item['uid'] and x['uid'] in m['equipped'] for x in m['items']):
+                    if item['design'] in ITEM_MAP:
+                        raise RuleError('Only one Relic of each name may be active.')
+                slot = data.get('slot')
+                if not isinstance(slot,int) or isinstance(slot,bool) or not 0 <= slot < SLOTS:
+                    raise RuleError('Choose one of the three equipment slots.')
+                if action == 'unequip':
+                    if m['equipped'][slot] != item['uid']:
+                        raise RuleError('That item is not in this slot.')
+                    m['equipped'][slot] = None
+                else:
+                    if item['uid'] in m['equipped'] and m['equipped'][slot] != item['uid']:
+                        raise RuleError('Each slot needs a separately owned item copy.')
+                    m['equipped'][slot] = item['uid']
+                return
+            tier = item['tier']
+        if tier >= MAX_TIER:
+            raise RuleError('This upgrade is already at the +2 maximum.')
+        cost = UPGRADE_COSTS[tier]
+        if m['essence'] < cost:
+            raise RuleError(f'This upgrade requires {cost} Essence.')
+        if action == 'upgrade_card':
+            m['card_upgrades'][design] = tier+1
+        else:
+            item['tier'] += 1
+        m['essence'] -= cost
+
     def action(self, i, action, **data):
         m = self.members[i]
         if m['departed']:
             raise RuleError('You have left this competition.')
         m['last_seen'] = time.time()
+        if action == 'treasure_revealed' and self.mode == 'solo' and i == 0:
+            treasure = next((t for t in self.treasures if t['id'] == data.get('id')), None)
+            if not treasure:
+                raise RuleError('No such earned treasure.')
+            treasure['revealed'] = True
+            return
+        if action == 'route' and self.mode == 'solo' and i == 0 and self.stage == 'build' and not self.tutorial:
+            self.ensure_map()
+            if data.get('node') not in self.campaign_map['reachable']:
+                raise RuleError('Choose a connected battle on the current path.')
+            self.selected_node = data['node']
+            return
+        if self.tutorial:
+            from .tutorial import tutorial_action
+            handled = tutorial_action(self,i,action,data)
+            if handled:
+                return
+        if action in ('socket_gem', 'preview_socket', 'clear_socket', 'upgrade_gem', 'buy_gem', 'buy_consumable', 'pouch'):
+            return self.new_item_action(i, action, data)
+        if action in ('equip','unequip','upgrade_item','upgrade_card','buy_item'):
+            result = self.inventory_action(i,action,data)
+            if self.tutorial:
+                from .tutorial import after_action
+                after_action(self,action,data)
+            return result
         if action == 'feedback' and self.stage in ('build','retry','complete','victory','defeat'):
             text = data.get('text','')
             if not isinstance(text,str) or len(text)>500:
@@ -333,11 +524,13 @@ class Session:
             return self.draft_pick(i,data.get('index')) if self.stage == 'draft' else self.reward_pick(i,data.get('index'))
         if action == 'relic' and self.stage == 'build':
             choice = data.get('relic')
-            if choice != m['relic'] and choice not in m['relic_options']:
+            if (self.mode == 'solo' and choice not in m['relic_options']) or (choice != m['relic'] and choice not in m['relic_options']):
                 raise RuleError('Choose an offered relic or keep the current one.')
             if not choice:
                 raise RuleError('An initial relic is required.')
             m['relic'],m['relic_options'] = choice,[]
+            if self.mode == 'solo' and i == 0:
+                self.add_item(m,choice)
             return
         if action == 'deck' and self.stage in ('build','retry') and not m['ready']:
             deck = data.get('deck')
@@ -380,8 +573,13 @@ class Session:
             return
         if action == 'retry' and self.stage == 'retry' and i == 0 and self.retry:
             self.retry -= 1
-            builds = [dict(name=x['name'],commander=x['commander'],package=x['package'],relic=x['relic'],deck=x['deck']) for x in self.members]
-            self.battle = Battle(builds,self.battle_seed,(self.starting_offset+self.battle_number-1)%self.size,self.encounter_info())
+            if self.mode == 'solo':
+                self.size = 2
+                for rival in self.members[2:]:
+                    rival['departed'] = True
+            builds = [dict(name=x['name'],commander=x['commander'],package=x['package'],relic=x['relic'],**(dict(deck=x['deck']) | self.battle_progression(x))) for x in self.members if not x['departed']]
+            frozen = copy.deepcopy(self.battle.encounter)
+            self.battle = Battle(builds,self.battle_seed,(self.starting_offset+self.battle_number-1)%len(builds),frozen)
             self.results_applied = False
             self.stage = 'battle'
             self.last_decision = time.time()
@@ -389,8 +587,7 @@ class Session:
         if action == 'end_run' and self.stage == 'retry':
             self.stage = 'defeat'
             return
-        if action == 'auto':
-            m['auto'] = bool(data.get('enabled'))
+        if self.priority_control(m, action, data):
             return
         if action == 'reclaim':
             if self.mode == 'solo' and i != 0:
@@ -399,14 +596,29 @@ class Session:
             m['timeout_count'] = 0
             return
         if self.stage == 'battle':
+            preferences(m)
+            self.battle.auto_order = {str(x.get('seat', 0)):x.get('auto_order', True) for x in self.members}
+            if action in ('cast', 'ability', 'consume', 'equip_gear'):
+                data['hold_priority'] = m['hold_priority']
             self.battle.action(m['seat'],action,**data)
+            if action in ('enter_combat', 'end_combat', 'end_turn'):
+                self.after_phase_action(m, action)
             m['timeout_count'] = 0
             self.last_decision = time.time()
             self.apply_results()
+            if self.tutorial:
+                from .tutorial import after_action
+                after_action(self,action,data)
             return
         raise RuleError('That action is unavailable on this screen.')
 
     def tick(self, now=None):
+        self._tick(now)
+        if self.tutorial:
+            from .tutorial import sync
+            sync(self)
+
+    def _tick(self, now=None):
         now = time.time() if now is None else now
         delta = max(0,now-self.last_tick)
         self.last_tick = now
@@ -417,7 +629,7 @@ class Session:
         if self.stage == 'battle':
             self.battle.elapsed += delta
         for m in self.members:
-            if not m['bot'] and not m['departed'] and now-m['last_seen'] > 90 and self.stage not in ('lobby','complete','victory','defeat','retry'):
+            if self.mode != 'solo' and not m['bot'] and not m['departed'] and now-m['last_seen'] > 90 and self.stage not in ('lobby','complete','victory','defeat','retry'):
                 m['bot'] = True
                 if self.battle:
                     self.battle.note(f"{m['name']} disconnected; AI temporarily controls the seat. Reclaim to resume.")
@@ -454,27 +666,34 @@ class Session:
                 if m['bot'] and not m['departed']:
                     seat = m['seat']
                     p = b.players[seat]
-                    if not p['opening_color']:
+                    if b.phase == 'opening' and (not p['kept'] or p.get('bottom_remaining',0)):
                         act = b.ai_action(seat)
                         b.action(seat,**act)
             return
         seat = b.priority
         m = next(m for m in self.members if not m['departed'] and m['seat'] == seat)
-        signature = (b.active,b.priority,b.phase,tuple(s['uid'] for s in b.stack),len(b.log))
+        signature = b.decision_key()
         if signature != self.time_signature:
             self.time_signature = signature
             self.last_decision = now
-        if b.loop_step():
+        self.apply_phase_stops(b)
+        preferences(m)
+        if (m['bot'] or m['auto']) and b.loop_step():
             self.apply_results()
             return
         if m['bot'] and now-self.ai_since >= .45:
-            b.action(seat,**b.ai_action(seat))
+            if self.tutorial:
+                from .tutorial import ai_action
+                move = ai_action(self,seat)
+            else:
+                move = b.ai_action(seat)
+            b.action(seat,**move)
             self.ai_since = now
             self.apply_results()
             return
-        if b.should_auto_pass():
-            b.action(seat,'pass')
-            self.apply_results()
+        if self.automation_tick(b, m, now):
+            return
+        if self.mode == 'solo' and not m['bot']:
             return
         timeout = 30 if b.stack or b.phase in ('attack_response','damage_response') else 60
         elapsed = now-self.last_decision
@@ -506,7 +725,12 @@ class Session:
             self.apply_results()
 
     def view(self, i):
+        self.ensure_map()
+        if self.tutorial:
+            from .tutorial import sync
+            sync(self)
         m = self.members[i]
+        self.item_defaults(m)
         public = []
         for x in self.members:
             public.append({k:copy.deepcopy(v) for k,v in x.items() if k in
@@ -515,15 +739,41 @@ class Session:
         mine.pop('last_seen',None)
         seat = -1 if m['departed'] else m.get('seat',0)
         out = dict(mode=self.mode,stage=self.stage,members=public,me=mine,size=self.size,target=self.target,host=self.host,
-            cards=CARDS,commanders=COMMANDERS,relics=RELICS,draft_round=self.draft_round+1,
+            cards=[upgraded_card(c['id'],m.get('card_upgrades',{}).get(c['id'],0)) for c in CARDS] if self.mode == 'solo' and i == 0 else CARDS,commanders=COMMANDERS,relics=RELICS,draft_round=self.draft_round+1,
             draft_pick=self.pick_number%15+1,pack=self.packs[i] if self.stage == 'draft' and self.mode == 'human' else [],
             picked=i in self.picks,currency=self.currency,retry=self.retry,encounter=self.encounter_info(),
             shop=getattr(self,'shop',[]),votes={str(k):v for k,v in self.votes.items()},vote_options=self.vote_options,
             vote_message=self.vote_message,battle_number=self.battle_number,
             reports=copy.deepcopy(self.reports[-4:]),feedback=self.feedback.get(f'{self.battle_number}:{i}',''),
-            upcoming=[dict(commander=COMMANDERS[(self.encounter+j)%len(COMMANDERS)]['id'],
-                           package=(self.encounter//4)%2,relic=RELICS[(self.encounter+j)%len(RELICS)]['id']) for j in (1,2,3)] if self.mode == 'solo' else [],
+            upcoming=[self.rival_info()] if self.mode == 'solo' else [],
             timer=max(0,round((30 if self.battle and (self.battle.stack or self.battle.phase in ('attack_response','damage_response')) else 60)-(time.time()-self.last_decision))))
+        out['untimed'] = self.mode == 'solo'
+        if self.stage == 'battle':
+            out['priority_flow'] = self.priority_view(m)
+        out['cards'] += [self.item_card(m, ref) for ref in m['owned'] if ref.startswith('gear:') and self.item_card(m, ref)]
+        out['gems'] = copy.deepcopy(GEM_FAMILIES)
+        out['consumable_catalog'] = copy.deepcopy(CONSUMABLES)
+        out['socket_options'] = {x['uid']:[dict(gem=g, tier=t, preview=compose(dict(x, gems=dict(x.get('gems', {}), **{g:t})))) for g, top in m['gem_unlocks'].items() for t in range(top+1) if compatible(x['design'],g) and self.socket_fits(x,g,t)] for x in m['items'] if x['design'] in ITEM_MAP}
+        if self.mode == 'solo' and not self.tutorial and m['commander'] and len(self.members) > 1:
+            rival = dict(self.members[1], **self.rival_info())
+            self.item_defaults(rival)
+            loadout = self.curated_items(rival)
+            out['upcoming_loadout'] = dict(relics=[equipment_view(x) for x in loadout['equipment']], pouch=[CONSUMABLE_MAP[x['design']] for x in loadout['pouch']])
+        out['equipment_catalog'] = [equipment_view(dict(uid='',design=e['id'],tier=0)) for e in EQUIPMENT]
+        out['inventory'] = [dict(equipment_view(item),next=equipment_view(dict(item,tier=item['tier']+1)) if item['tier'] < 2 else None) for item in m.get('items',[])]
+        out['upgrade_previews'] = [upgrade_preview(design,m.get('card_upgrades',{}).get(design,0)) for design in sorted(set(m['owned'])) if design in CARD_MAP and not CARD_MAP[design].get('art_style')] if self.mode == 'solo' and i == 0 else []
+        out['gear_shop'] = getattr(self,'gear_shop',[]) if self.mode == 'solo' else []
+        out['tutorial'] = copy.deepcopy(self.tutorial)
+        out['campaign_map'] = copy.deepcopy(self.campaign_map) if self.mode == 'solo' and i == 0 and not self.tutorial else None
+        out['selected_node'] = self.selected_node
+        out['difficulty'] = self.difficulty
+        out['modifiers'] = MODIFIERS
+        out['treasure_odds'] = TREASURE_ODDS
+        out['treasures'] = [dict(t, items=[equipment_view(item) for item in t['items']]) for t in self.treasures] if self.mode == 'solo' and i == 0 else []
+        out['basics'] = [BASICS[c] for c in self.colors(i)] if m['commander'] else []
+        if self.tutorial:
+            from .tutorial import lesson_view
+            out['lesson'] = lesson_view(self)
         if self.battle:
             out['battle'] = self.battle.view(seat)
         return out
@@ -538,6 +788,26 @@ class Session:
     def from_dict(cls,data):
         s = cls.__new__(cls)
         s.__dict__.update({k:v for k,v in data.items() if k not in ('random_state','battle')})
+        if s.stage == 'lobby':
+            s.size = 2
+            if s.mode == 'solo':
+                s.members = s.members[:2]
+        s.tutorial = getattr(s,'tutorial',None)
+        for key, default in dict(difficulty='normal', modifier_nodes=2, route_seed=None, campaign_map=None, selected_node=None, treasures=[]).items():
+            if not hasattr(s, key):
+                setattr(s, key, copy.deepcopy(default))
+        s.item_serial = getattr(s,'item_serial',0)
+        for m in s.members:
+            s.item_defaults(m)
+            legacy = 'items' not in m
+            m.setdefault('items',[])
+            m.setdefault('equipped',[None]*SLOTS)
+            m.setdefault('essence',0)
+            m.setdefault('card_upgrades',{})
+            if s.mode == 'solo' and m['id'] == 0:
+                m['bot'] = False
+                if legacy and m.get('relic') in EQUIPMENT_MAP:
+                    s.add_item(m,m['relic'])
         s.picks = {int(k):v for k,v in s.picks.items()}
         s.votes = {int(k):v for k,v in s.votes.items()}
         s.battle = Battle.from_dict(data['battle']) if data.get('battle') else None
@@ -545,7 +815,12 @@ class Session:
         def tuples(x):
             return tuple(tuples(v) for v in x) if isinstance(x,list) else x
         s.rng.setstate(tuples(data['random_state']))
-        s.last_decision = time.time()
+        if s.mode == 'solo' and s.stage == 'draft' and s.members[0].get('commander'):
+            m = s.members[0]
+            choices = [c['id'] for c in CARDS if legal(c['id'],s.colors(0))]
+            m['reward'] = [design if legal(design,s.colors(0)) else choices[j % len(choices)]
+                           for j,design in enumerate(m['reward'])]
+        s.last_decision = data.get('last_decision', time.time())
         s.last_tick = time.time()
-        s.time_signature = None
+        s.time_signature = data.get('time_signature')
         return s

@@ -48,8 +48,14 @@ class Rooms:
             self.error = f'Save failed: {exc}'
 
     def create(self, body):
-        session = Session(body.get('mode','solo'),target=body.get('target',5),size=4 if body.get('mode','solo') == 'solo' else body.get('size',4))
+        session = Session(body.get('mode','solo'),target=body.get('target',5),size=2)
+        session.configure_run(body.get('difficulty','normal'), body.get('modifier_nodes',2))
         seat = session.add_member(body.get('name','Player'))
+        if body.get('tutorial'):
+            if session.mode != 'solo':
+                raise RuleError('Tutorials use a separate solo room.')
+            from .tutorial import initialize
+            initialize(session)
         code = secrets.token_hex(3).upper()
         while code in self.rooms:
             code = secrets.token_hex(3).upper()
@@ -125,9 +131,17 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(data)
             return
-        if parsed.path in ('/', '/style.css', '/cards.js', '/card-hover.js', '/spell-fx.js', '/spell-fx.css', '/effect-profiles.json', '/battle-presentation.js', '/battle-presentation.css'):
+        if parsed.path in ('/temple-table.png','/battlefield-field.png','/battlefield-town.png'):
+            data = (ROOT.parent/'assets'/'art'/parsed.path[1:]).read_bytes()
+            self.send_response(200)
+            self.send_header('Content-Type','image/png')
+            self.send_header('Content-Length',str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+            return
+        if parsed.path in ('/priority-ui.js', '/priority-ui.css', '/qol.js', '/qol.css', '/temple-game.js', '/temple-game.css', '/', '/inventory.js', '/item-ui.js', '/style.css', '/cards.js', '/card-hover.js', '/spell-fx.js', '/spell-fx.css', '/effect-profiles.json', '/battle-presentation.js', '/battle-presentation.css'):
             filename = 'index.html' if parsed.path == '/' else parsed.path[1:]
-            content_type = {'index.html':'text/html','style.css':'text/css','cards.js':'text/javascript','card-hover.js':'text/javascript','spell-fx.js':'text/javascript','spell-fx.css':'text/css','effect-profiles.json':'application/json','battle-presentation.js':'text/javascript','battle-presentation.css':'text/css'}[filename]
+            content_type = {'priority-ui.js':'text/javascript','priority-ui.css':'text/css','qol.js':'text/javascript','qol.css':'text/css','temple-game.js':'text/javascript','temple-game.css':'text/css','inventory.js':'text/javascript','item-ui.js':'text/javascript','index.html':'text/html','style.css':'text/css','cards.js':'text/javascript','card-hover.js':'text/javascript','spell-fx.js':'text/javascript','spell-fx.css':'text/css','effect-profiles.json':'application/json','battle-presentation.js':'text/javascript','battle-presentation.css':'text/css'}[filename]
             data = (ROOT/'web'/filename).read_bytes()
             self.send_response(200)
             self.send_header('Content-Type',content_type+'; charset=utf-8')

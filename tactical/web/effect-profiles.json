@@ -231,7 +231,7 @@
     "family": "clash",
     "color": "G",
     "seed": 2970,
-    "name": "Predator\u2019s Challenge"
+    "name": "Predator’s Challenge"
   },
   "g_insight": {
     "family": "wisdom",
@@ -376,5 +376,143 @@
     "color": "W",
     "seed": 101,
     "name": "Recruit"
+  },
+  "w_spire_recruit": {
+    "family": "summon",
+    "color": "W",
+    "seed": 5028,
+    "name": "Spire Recruit"
+  },
+  "w_stand_together": {
+    "family": "rally",
+    "color": "W",
+    "seed": 13571,
+    "name": "Stand Together"
+  },
+  "u_artificer_study": {
+    "family": "sigil",
+    "color": "U",
+    "seed": 15756,
+    "name": "Artificer’s Study"
+  },
+  "u_disrupt_ritual": {
+    "family": "counter",
+    "color": "U",
+    "seed": 33127,
+    "name": "Disrupt the Ritual"
+  },
+  "b_graveward_squire": {
+    "family": "summon",
+    "color": "B",
+    "seed": 2694,
+    "name": "Graveward Squire"
+  },
+  "b_cut_weak": {
+    "family": "shadow",
+    "color": "B",
+    "seed": 44449,
+    "name": "Cut Down the Weak"
+  },
+  "r_forgefire_raider": {
+    "family": "summon",
+    "color": "R",
+    "seed": 19720,
+    "name": "Forgefire Raider"
+  },
+  "r_cinder_strike": {
+    "family": "fireball",
+    "color": "R",
+    "seed": 31032,
+    "name": "Cinder Strike"
+  },
+  "g_wildsteel_tender": {
+    "family": "summon",
+    "color": "G",
+    "seed": 30476,
+    "name": "Wildsteel Tender"
+  },
+  "g_break_armory": {
+    "family": "shatter",
+    "color": "G",
+    "seed": 37736,
+    "name": "Break the Armory"
+  },
+  "spiresteel_blade": {
+    "family": "sigil",
+    "color": "C",
+    "seed": 65140,
+    "name": "Spiresteel Blade"
+  },
+  "dawnward_shield": {
+    "family": "sigil",
+    "color": "W",
+    "seed": 36310,
+    "name": "Dawnward Shield"
+  },
+  "embercleave_axe": {
+    "family": "sigil",
+    "color": "R",
+    "seed": 31891,
+    "name": "Embercleave Axe"
+  },
+  "gravebound_fang": {
+    "family": "sigil",
+    "color": "B",
+    "seed": 32703,
+    "name": "Gravebound Fang"
+  },
+  "rootbreaker_maul": {
+    "family": "sigil",
+    "color": "G",
+    "seed": 51654,
+    "name": "Rootbreaker Maul"
+  },
+  "smith_insignia": {
+    "family": "sigil",
+    "color": "C",
+    "seed": 62233,
+    "name": "Smith’s Insignia"
+  },
+  "muster_standard": {
+    "family": "sigil",
+    "color": "C",
+    "seed": 2086,
+    "name": "Muster Standard"
+  },
+  "sovereign_crest": {
+    "family": "sigil",
+    "color": "C",
+    "seed": 31698,
+    "name": "Sovereign’s Crest"
+  },
+  "healing_draught": {
+    "family": "shield",
+    "color": "C",
+    "seed": 5028,
+    "name": "Healing Draught"
+  },
+  "ember_flask": {
+    "family": "fireball",
+    "color": "R",
+    "seed": 53684,
+    "name": "Ember Flask"
+  },
+  "mistveil_vial": {
+    "family": "shield",
+    "color": "U",
+    "seed": 29451,
+    "name": "Mistveil Vial"
+  },
+  "barkskin_tonic": {
+    "family": "growth",
+    "color": "G",
+    "seed": 17219,
+    "name": "Barkskin Tonic"
+  },
+  "militia_beacon": {
+    "family": "summon",
+    "color": "W",
+    "seed": 3791,
+    "name": "Militia Beacon"
   }
 }
